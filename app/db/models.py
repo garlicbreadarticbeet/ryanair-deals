@@ -109,6 +109,9 @@ class User(Base):
     sent_alerts: Mapped[list["SentAlert"]] = relationship(
         cascade="all, delete-orphan", passive_deletes=True
     )
+    subscription: Mapped["Subscription"] = relationship(
+        back_populates="user", uselist=False, cascade="all, delete-orphan", passive_deletes=True
+    )
 
     __table_args__ = (
         CheckConstraint("status IN ('active','paused','deleted')", name="ck_users_status"),
@@ -299,4 +302,36 @@ class AuthToken(Base):
             "purpose IN ('email_login','telegram_link','session')", name="ck_auth_tokens_purpose"
         ),
         Index("ix_auth_tokens_expires", "expires_at"),
+    )
+
+
+class Subscription(Base):
+    """Mollie-abonnementsstatus per gebruiker (Fase 2). Eén rij per gebruiker.
+
+    De feitelijke premium-toegang zit in users.tier; deze tabel houdt de Mollie-koppeling
+    en de levenscyclus bij zodat de webhook tier kan bij- en afschalen.
+    """
+
+    __tablename__ = "subscriptions"
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        BigInteger, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True
+    )
+    mollie_customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    mollie_subscription_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    status: Mapped[str] = mapped_column(String(16), nullable=False, server_default=text("'pending'"))
+    current_period_end: Mapped[datetime.datetime | None] = mapped_column(_TS, nullable=True)
+    created_at: Mapped[datetime.datetime] = _now()
+    updated_at: Mapped[datetime.datetime] = mapped_column(
+        _TS, nullable=False, server_default=func.now(), onupdate=func.now()
+    )
+
+    user: Mapped["User"] = relationship(back_populates="subscription")
+
+    __table_args__ = (
+        CheckConstraint(
+            "status IN ('pending','active','canceled','suspended','failed')",
+            name="ck_subscriptions_status",
+        ),
     )

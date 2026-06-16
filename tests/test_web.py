@@ -90,3 +90,46 @@ def test_delete_me_removes_account(db, client):
     assert client.delete("/me", headers=auth_header).status_code == 204
     # Account weg → sessietoken (cascade verwijderd) werkt niet meer.
     assert client.get("/prefs", headers=auth_header).status_code == 401
+
+
+def test_billing_checkout_returns_url(db, client, monkeypatch):
+    import app.mollie as mollie
+    from app.settings import settings
+
+    monkeypatch.setattr(settings, "premium_price", "2.99")
+    monkeypatch.setattr(mollie, "create_customer", lambda email=None, name=None: {"id": "cst_x"})
+    monkeypatch.setattr(
+        mollie, "create_first_payment",
+        lambda **kw: {"_links": {"checkout": {"href": "https://pay.mollie/x"}}},
+    )
+    raw = accounts.start_email_login(db, "pay@example.nl")
+    token = client.get("/auth/verify", params={"token": raw}).json()["session_token"]
+
+    resp = client.post("/billing/checkout", headers={"Authorization": f"Bearer {token}"})
+    assert resp.status_code == 200
+    assert resp.json()["checkout_url"] == "https://pay.mollie/x"
+
+
+def test_billing_webhook_activates_premium(db, client, monkeypatch):
+    from sqlalchemy import func, select
+
+    import app.mollie as mollie
+    from app.db.models import Subscription, User
+    from app.settings import settings
+
+    monkeypatch.setattr(settings, "premium_price", "2.99")
+    raw = accounts.start_email_login(db, "hook@example.nl")
+    client.get("/auth/verify", params={"token": raw})
+    user = db.execute(select(User).where(func.lower(User.email) == "hook@example.nl")).scalar_one()
+    db.add(Subscription(user_id=user.id, mollie_customer_id="cst_hook", status="pending"))
+    db.flush()
+
+    monkeypatch.setattr(
+        mollie, "get_payment",
+        lambda pid: {"status": "paid", "sequenceType": "first", "customerId": "cst_hook"},
+    )
+    monkeypatch.setattr(mollie, "create_subscription", lambda **kw: {"id": "sub_hook"})
+
+    resp = client.post("/billing/webhook", content="id=tr_hook")
+    assert resp.status_code == 200
+    assert user.tier == "premium"

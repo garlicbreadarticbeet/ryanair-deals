@@ -7,13 +7,15 @@ plus een GDPR-verwijderpad. Mollie-webhooks komen in Fase 2.
 from __future__ import annotations
 
 from collections.abc import Iterator
+from urllib.parse import parse_qs
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Response
+from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app import accounts
+from app import accounts, billing
+from app.billing import BillingError
 from app.channels.email import send_email
 from app.db.models import User, UserOrigin
 from app.db.session import SessionLocal
@@ -166,4 +168,40 @@ def put_prefs(
 @app.delete("/me", status_code=204)
 def delete_me(user: User = Depends(current_user), db: Session = Depends(get_db)) -> Response:
     accounts.delete_account(db, user)
+    return Response(status_code=204)
+
+
+# ---------- billing (Mollie-abonnement) ----------
+
+@app.post("/billing/checkout")
+def billing_checkout(user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
+    try:
+        url = billing.start_subscription_checkout(db, user)
+    except BillingError as exc:
+        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    return {"checkout_url": url}
+
+
+@app.post("/billing/webhook")
+async def billing_webhook(request: Request, db: Session = Depends(get_db)) -> dict:
+    # Mollie POST't form-encoded met veld 'id'. Altijd 200 teruggeven (geen retry-storm);
+    # eigen fouten loggen we maar laten we de afhandeling niet blokkeren.
+    raw = (await request.body()).decode("utf-8")
+    payment_id = parse_qs(raw).get("id", [None])[0]
+    if payment_id:
+        try:
+            billing.handle_webhook(db, payment_id)
+        except Exception as exc:  # noqa: BLE001
+            print("billing-webhook-fout:", exc)
+    return {"received": True}
+
+
+@app.get("/billing/return")
+def billing_return() -> dict:
+    return {"status": "Betaling ontvangen — je account wordt zo bijgewerkt."}
+
+
+@app.delete("/billing/subscription", status_code=204)
+def billing_cancel(user: User = Depends(current_user), db: Session = Depends(get_db)) -> Response:
+    billing.cancel_subscription(db, user)
     return Response(status_code=204)
