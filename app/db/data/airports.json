@@ -1,0 +1,1584 @@
+[
+  {
+    "iata": "AAR",
+    "name": "Aarhus",
+    "country_code": "dk",
+    "city": "Aarhus",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ABZ",
+    "name": "Aberdeen",
+    "country_code": "gb",
+    "city": "Aberdeen",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ACE",
+    "name": "Lanzarote",
+    "country_code": "es",
+    "city": "Lanzarote",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "AGA",
+    "name": "Agadir",
+    "country_code": "ma",
+    "city": "Agadir",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "AGP",
+    "name": "Malaga",
+    "country_code": "es",
+    "city": "Malaga",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "AHO",
+    "name": "Alghero",
+    "country_code": "it",
+    "city": "Alghero",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ALC",
+    "name": "Alicante",
+    "country_code": "es",
+    "city": "Alicante",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "AMM",
+    "name": "Amman Jordan",
+    "country_code": "jo",
+    "city": "Amman",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "AMS",
+    "name": "Amsterdam",
+    "country_code": "nl",
+    "city": "Amsterdam",
+    "is_origin_seed": true
+  },
+  {
+    "iata": "AOI",
+    "name": "Ancona",
+    "country_code": "it",
+    "city": "Ancona",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ARN",
+    "name": "Stockholm Arlanda",
+    "country_code": "se",
+    "city": "Stockholm",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ATH",
+    "name": "Athens",
+    "country_code": "gr",
+    "city": "Athens",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BBU",
+    "name": "Bucharest Baneasa ",
+    "country_code": "ro",
+    "city": "Bucharest",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BCN",
+    "name": "Barcelona",
+    "country_code": "es",
+    "city": "Barcelona",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BDS",
+    "name": "Brindisi",
+    "country_code": "it",
+    "city": "Brindisi",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BEM",
+    "name": "Beni Mellal",
+    "country_code": "ma",
+    "city": "Beni Mellal",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BER",
+    "name": "Berlin Brandenburg",
+    "country_code": "de",
+    "city": "Berlin",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BFS",
+    "name": "Belfast International",
+    "country_code": "gb",
+    "city": "Belfast",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BGY",
+    "name": "Milan Bergamo",
+    "country_code": "it",
+    "city": "Bergamo",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BHX",
+    "name": "Birmingham",
+    "country_code": "gb",
+    "city": "Birmingham",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BIQ",
+    "name": "Biarritz",
+    "country_code": "fr",
+    "city": "Biarritz",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BJV",
+    "name": "Bodrum",
+    "country_code": "tr",
+    "city": "Bodrum",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BLQ",
+    "name": "Bologna",
+    "country_code": "it",
+    "city": "Bologna",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BNX",
+    "name": "Banja Luka",
+    "country_code": "ba",
+    "city": "Banja Luka",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BOH",
+    "name": "Bournemouth",
+    "country_code": "gb",
+    "city": "Bournemouth",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BOJ",
+    "name": "Burgas",
+    "country_code": "bg",
+    "city": "Burgas",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BRE",
+    "name": "Bremen",
+    "country_code": "de",
+    "city": "Bremen",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BRI",
+    "name": "Bari",
+    "country_code": "it",
+    "city": "Bari",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BRQ",
+    "name": "Brno",
+    "country_code": "cz",
+    "city": "Brno",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BRS",
+    "name": "Bristol",
+    "country_code": "gb",
+    "city": "Bristol",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BRU",
+    "name": "Brussels",
+    "country_code": "be",
+    "city": "Brussels",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BSL",
+    "name": "Basel",
+    "country_code": "ch",
+    "city": "Basel",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BTS",
+    "name": "Bratislava",
+    "country_code": "sk",
+    "city": "Bratislava",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BUD",
+    "name": "Budapest",
+    "country_code": "hu",
+    "city": "Budapest",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BVA",
+    "name": "Paris Beauvais",
+    "country_code": "fr",
+    "city": "Paris",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BVE",
+    "name": "Brive",
+    "country_code": "fr",
+    "city": "Brive",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BZG",
+    "name": "Bydgoszcz",
+    "country_code": "pl",
+    "city": "Bydgoszcz",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "BZR",
+    "name": "Beziers Cap d'Agde",
+    "country_code": "fr",
+    "city": "Beziers",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CAG",
+    "name": "Cagliari",
+    "country_code": "it",
+    "city": "Cagliari",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CCF",
+    "name": "Carcassonne",
+    "country_code": "fr",
+    "city": "Carcassonne",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CDT",
+    "name": "Castellon (Valencia)",
+    "country_code": "es",
+    "city": "Castellon",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CFU",
+    "name": "Corfu",
+    "country_code": "gr",
+    "city": "Corfu",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CGN",
+    "name": "Cologne",
+    "country_code": "de",
+    "city": "Cologne",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CHQ",
+    "name": "Chania",
+    "country_code": "gr",
+    "city": "Chania",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CIA",
+    "name": "Rome Ciampino",
+    "country_code": "it",
+    "city": "Rome",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CLJ",
+    "name": "Cluj",
+    "country_code": "ro",
+    "city": "Cluj",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CPH",
+    "name": "Copenhagen",
+    "country_code": "dk",
+    "city": "Copenhagen",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CRL",
+    "name": "Brussels Charleroi",
+    "country_code": "be",
+    "city": "Charleroi",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CRV",
+    "name": "Crotone",
+    "country_code": "it",
+    "city": "Crotone",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CTA",
+    "name": "Catania",
+    "country_code": "it",
+    "city": "Catania",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CUF",
+    "name": "Cuneo",
+    "country_code": "it",
+    "city": "Cuneo",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "CWL",
+    "name": "Cardiff",
+    "country_code": "gb",
+    "city": "Cardiff",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "DBV",
+    "name": "Dubrovnik",
+    "country_code": "hr",
+    "city": "Dubrovnik",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "DLE",
+    "name": "Dole",
+    "country_code": "fr",
+    "city": "Dole",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "DLM",
+    "name": "Dalaman",
+    "country_code": "tr",
+    "city": "Dalaman",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "DUB",
+    "name": "Dublin",
+    "country_code": "ie",
+    "city": "Dublin",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "EDI",
+    "name": "Edinburgh",
+    "country_code": "gb",
+    "city": "Edinburgh",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "EFL",
+    "name": "Kefalonia",
+    "country_code": "gr",
+    "city": "Kefalonia",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "EGC",
+    "name": "Bergerac",
+    "country_code": "fr",
+    "city": "Bergerac",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "EIN",
+    "name": "Eindhoven",
+    "country_code": "nl",
+    "city": "Eindhoven",
+    "is_origin_seed": true
+  },
+  {
+    "iata": "EMA",
+    "name": "East Midlands",
+    "country_code": "gb",
+    "city": "East Midlands",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ERH",
+    "name": "Errachidia",
+    "country_code": "ma",
+    "city": "Errachidia",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ESU",
+    "name": "Essaouira",
+    "country_code": "ma",
+    "city": "Essaouira",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "EXT",
+    "name": "Exeter",
+    "country_code": "gb",
+    "city": "Exeter",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FAO",
+    "name": "Faro",
+    "country_code": "pt",
+    "city": "Faro",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FCO",
+    "name": "Rome Fiumicino",
+    "country_code": "it",
+    "city": "Rome",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FDH",
+    "name": "Friedrichshafen",
+    "country_code": "de",
+    "city": "Friedrichshafen",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FEZ",
+    "name": "Fez",
+    "country_code": "ma",
+    "city": "Fez",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FKB",
+    "name": "Karlsruhe / Baden-Baden",
+    "country_code": "de",
+    "city": "Karlsruhe",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FMM",
+    "name": "Memmingen",
+    "country_code": "de",
+    "city": "Memmingen",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FMO",
+    "name": "Münster",
+    "country_code": "de",
+    "city": "Münster",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FNC",
+    "name": "Madeira Funchal",
+    "country_code": "pt",
+    "city": "Funchal",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FNI",
+    "name": "Nimes",
+    "country_code": "fr",
+    "city": "Nimes",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FRL",
+    "name": "Bologna Forlí-Ravenna",
+    "country_code": "it",
+    "city": "Bologna",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FSC",
+    "name": "Figari-Corsica",
+    "country_code": "fr",
+    "city": "Figari",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "FUE",
+    "name": "Fuerteventura",
+    "country_code": "es",
+    "city": "Fuerteventura",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "GDN",
+    "name": "Gdansk",
+    "country_code": "pl",
+    "city": "Gdansk",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "GLA",
+    "name": "Glasgow",
+    "country_code": "gb",
+    "city": "Glasgow",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "GNB",
+    "name": "Grenoble",
+    "country_code": "fr",
+    "city": "Grenoble",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "GOA",
+    "name": "Genoa",
+    "country_code": "it",
+    "city": "Genoa",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "GOT",
+    "name": "Göteborg Landvetter",
+    "country_code": "se",
+    "city": "Gothenburg",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "GRO",
+    "name": "Barcelona Girona",
+    "country_code": "es",
+    "city": "Girona",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "GRQ",
+    "name": "Groningen Eelde",
+    "country_code": "nl",
+    "city": "Groningen",
+    "is_origin_seed": true
+  },
+  {
+    "iata": "HAM",
+    "name": "Hamburg",
+    "country_code": "de",
+    "city": "Hamburg",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "HEL",
+    "name": "Helsinki",
+    "country_code": "fi",
+    "city": "Helsinki",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "HER",
+    "name": "Heraklion Crete",
+    "country_code": "gr",
+    "city": "Heraklion",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "HHN",
+    "name": "Frankfurt Hahn",
+    "country_code": "de",
+    "city": "Frankfurt",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "IAS",
+    "name": "Iasi",
+    "country_code": "ro",
+    "city": "IASI",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "IBZ",
+    "name": "Ibiza",
+    "country_code": "es",
+    "city": "Ibiza",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "INI",
+    "name": "Nis",
+    "country_code": "rs",
+    "city": "Nis",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "JMK",
+    "name": "Mykonos",
+    "country_code": "gr",
+    "city": "Mykonos",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "JSI",
+    "name": "Skiathos",
+    "country_code": "gr",
+    "city": "Skiathos",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "JTR",
+    "name": "Santorini",
+    "country_code": "gr",
+    "city": "Santorini",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "KGS",
+    "name": "Kos",
+    "country_code": "gr",
+    "city": "Kos",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "KIR",
+    "name": "Kerry",
+    "country_code": "ie",
+    "city": "Kerry",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "KLU",
+    "name": "Klagenfurt",
+    "country_code": "at",
+    "city": "Klagenfurt",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "KLX",
+    "name": "Kalamata",
+    "country_code": "gr",
+    "city": "Kalamata",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "KRK",
+    "name": "Krakow",
+    "country_code": "pl",
+    "city": "Krakow",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "KSC",
+    "name": "Kosice",
+    "country_code": "sk",
+    "city": "Kosice",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "KTW",
+    "name": "Katowice",
+    "country_code": "pl",
+    "city": "Katowice",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "KUN",
+    "name": "Kaunas",
+    "country_code": "lt",
+    "city": "Kaunas",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LBA",
+    "name": "Leeds Bradford",
+    "country_code": "gb",
+    "city": "Leeds",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LBC",
+    "name": "Lubeck",
+    "country_code": "de",
+    "city": "Hamburg",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LCA",
+    "name": "Larnaca",
+    "country_code": "cy",
+    "city": "Larnaca",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LCJ",
+    "name": "Lodz",
+    "country_code": "pl",
+    "city": "Lodz",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LDE",
+    "name": "Lourdes–Pyrenees",
+    "country_code": "fr",
+    "city": "Lourdes",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LDY",
+    "name": "Derry",
+    "country_code": "gb",
+    "city": "Derry",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LEI",
+    "name": "Almeria",
+    "country_code": "es",
+    "city": "Almeria",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LGW",
+    "name": "London Gatwick",
+    "country_code": "gb",
+    "city": "London",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LIG",
+    "name": "Limoges",
+    "country_code": "fr",
+    "city": "Limoges",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LIL",
+    "name": "Lille",
+    "country_code": "fr",
+    "city": "Lille",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LIS",
+    "name": "Lisbon",
+    "country_code": "pt",
+    "city": "Lisbon",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LNZ",
+    "name": "Linz",
+    "country_code": "at",
+    "city": "Linz",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LPA",
+    "name": "Gran Canaria",
+    "country_code": "es",
+    "city": "Gran Canaria",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LPL",
+    "name": "Liverpool",
+    "country_code": "gb",
+    "city": "Liverpool",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LRH",
+    "name": "La Rochelle",
+    "country_code": "fr",
+    "city": "La Rochelle",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LTN",
+    "name": "London Luton",
+    "country_code": "gb",
+    "city": "London",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LUX",
+    "name": "Luxembourg",
+    "country_code": "lu",
+    "city": "Luxembourg",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LUZ",
+    "name": "Lublin",
+    "country_code": "pl",
+    "city": "Lublin",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "LXS",
+    "name": "Lemnos",
+    "country_code": "gr",
+    "city": "Lemnos",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "MAD",
+    "name": "Madrid",
+    "country_code": "es",
+    "city": "Madrid",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "MAH",
+    "name": "Menorca",
+    "country_code": "es",
+    "city": "Menorca",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "MAN",
+    "name": "Manchester",
+    "country_code": "gb",
+    "city": "Manchester",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "MLA",
+    "name": "Malta",
+    "country_code": "mt",
+    "city": "Malta",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "MME",
+    "name": "Teesside",
+    "country_code": "gb",
+    "city": "Newcastle",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "MMX",
+    "name": "Malmo",
+    "country_code": "se",
+    "city": "Malmo",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "MRS",
+    "name": "Marseille",
+    "country_code": "fr",
+    "city": "Marseille",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "MST",
+    "name": "Maastricht Aachen",
+    "country_code": "nl",
+    "city": "Maastricht",
+    "is_origin_seed": true
+  },
+  {
+    "iata": "MXP",
+    "name": "Milan Malpensa",
+    "country_code": "it",
+    "city": "Milan",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "NAP",
+    "name": "Naples",
+    "country_code": "it",
+    "city": "Naples",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "NCE",
+    "name": "Nice",
+    "country_code": "fr",
+    "city": "Nice",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "NCL",
+    "name": "Newcastle",
+    "country_code": "gb",
+    "city": "Newcastle",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "NDR",
+    "name": "Nador",
+    "country_code": "ma",
+    "city": "Nador",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "NOC",
+    "name": "Knock",
+    "country_code": "ie",
+    "city": "Knock",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "NQY",
+    "name": "Newquay Cornwall",
+    "country_code": "gb",
+    "city": "Newquay",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "NRN",
+    "name": "Dusseldorf Weeze",
+    "country_code": "de",
+    "city": "Dusseldorf",
+    "is_origin_seed": true
+  },
+  {
+    "iata": "NTE",
+    "name": "Nantes",
+    "country_code": "fr",
+    "city": "Nantes",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "NUE",
+    "name": "Nuremberg",
+    "country_code": "de",
+    "city": "Nuremberg",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "NWI",
+    "name": "Norwich",
+    "country_code": "gb",
+    "city": "Norwich",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "OLB",
+    "name": "Olbia",
+    "country_code": "it",
+    "city": "Olbia",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "OPO",
+    "name": "Porto",
+    "country_code": "pt",
+    "city": "Porto",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ORK",
+    "name": "Cork",
+    "country_code": "ie",
+    "city": "Cork",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "OSI",
+    "name": "Osijek",
+    "country_code": "hr",
+    "city": "Osijek",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "OSL",
+    "name": "Oslo",
+    "country_code": "no",
+    "city": "Oslo",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "OSR",
+    "name": "Ostrava",
+    "country_code": "cz",
+    "city": "Ostrava",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "OTP",
+    "name": "Bucharest Otopeni",
+    "country_code": "ro",
+    "city": "Bucharest",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "OUD",
+    "name": "Oujda",
+    "country_code": "ma",
+    "city": "Oujda",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "OZZ",
+    "name": "Ouarzazate",
+    "country_code": "ma",
+    "city": "Ouarzazate",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PAD",
+    "name": "Paderborn",
+    "country_code": "de",
+    "city": "Paderborn",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PDV",
+    "name": "Plovdiv",
+    "country_code": "bg",
+    "city": "Plovdiv",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PED",
+    "name": "Pardubice",
+    "country_code": "cz",
+    "city": "Pardubice",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PEG",
+    "name": "Perugia",
+    "country_code": "it",
+    "city": "Perugia",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PFO",
+    "name": "Paphos",
+    "country_code": "cy",
+    "city": "Paphos",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PGF",
+    "name": "Perpignan",
+    "country_code": "fr",
+    "city": "Perpignan",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PIK",
+    "name": "Glasgow Prestwick",
+    "country_code": "gb",
+    "city": "Glasgow",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PIS",
+    "name": "Poitiers",
+    "country_code": "fr",
+    "city": "Poitiers",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PLQ",
+    "name": "Palanga",
+    "country_code": "lt",
+    "city": "Palanga",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PMF",
+    "name": "Parma",
+    "country_code": "it",
+    "city": "Parma",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PMI",
+    "name": "Palma de Mallorca",
+    "country_code": "es",
+    "city": "Palma",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PMO",
+    "name": "Palermo",
+    "country_code": "it",
+    "city": "Palermo",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "POZ",
+    "name": "Poznan",
+    "country_code": "pl",
+    "city": "Poznan",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PRG",
+    "name": "Prague",
+    "country_code": "cz",
+    "city": "Prague",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PSA",
+    "name": "Pisa",
+    "country_code": "it",
+    "city": "Pisa",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PSR",
+    "name": "Pescara",
+    "country_code": "it",
+    "city": "Pescara",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PUY",
+    "name": "Pula",
+    "country_code": "hr",
+    "city": "Pula",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "PVK",
+    "name": "Preveza - Aktion",
+    "country_code": "gr",
+    "city": "Preveza",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "QSR",
+    "name": "Salerno Costa d'Amalfi",
+    "country_code": "it",
+    "city": "Salerno ",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RAK",
+    "name": "Marrakesh",
+    "country_code": "ma",
+    "city": "Marrakesh",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RBA",
+    "name": "Rabat",
+    "country_code": "ma",
+    "city": "Rabat",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RDZ",
+    "name": "Rodez",
+    "country_code": "fr",
+    "city": "Rodez",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "REG",
+    "name": "Reggio Calabria",
+    "country_code": "it",
+    "city": "Reggio Calabria",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "REU",
+    "name": "Barcelona Reus",
+    "country_code": "es",
+    "city": "Reus",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RHO",
+    "name": "Rhodes",
+    "country_code": "gr",
+    "city": "Rhodes",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RIX",
+    "name": "Riga",
+    "country_code": "lv",
+    "city": "Riga",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RJK",
+    "name": "Rijeka",
+    "country_code": "hr",
+    "city": "Rijeka",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RMI",
+    "name": "Rimini",
+    "country_code": "it",
+    "city": "Rimini",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RMU",
+    "name": "Murcia International",
+    "country_code": "es",
+    "city": "Murcia",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RVN",
+    "name": "Lapland Rovaniemi",
+    "country_code": "fi",
+    "city": "Rovaniemi",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "RZE",
+    "name": "Rzeszow",
+    "country_code": "pl",
+    "city": "Rzeszow",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SCN",
+    "name": "Saarbrücken",
+    "country_code": "de",
+    "city": "Saarbrücken",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SCQ",
+    "name": "Santiago",
+    "country_code": "es",
+    "city": "Santiago",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SDR",
+    "name": "Santander",
+    "country_code": "es",
+    "city": "Santander",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SFT",
+    "name": "Skelleftea",
+    "country_code": "se",
+    "city": "Skelleftea",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SJJ",
+    "name": "Sarajevo",
+    "country_code": "ba",
+    "city": "Sarajevo",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SKG",
+    "name": "Thessaloniki",
+    "country_code": "gr",
+    "city": "Thessaloniki",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SNN",
+    "name": "Shannon",
+    "country_code": "ie",
+    "city": "Shannon",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SOF",
+    "name": "Sofia",
+    "country_code": "bg",
+    "city": "Sofia",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SPU",
+    "name": "Split",
+    "country_code": "hr",
+    "city": "Split",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "STN",
+    "name": "London Stansted",
+    "country_code": "gb",
+    "city": "London",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SUF",
+    "name": "Lamezia",
+    "country_code": "it",
+    "city": "Lamezia",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SVQ",
+    "name": "Seville",
+    "country_code": "es",
+    "city": "Seville",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SZG",
+    "name": "Salzburg",
+    "country_code": "at",
+    "city": "Salzburg",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SZY",
+    "name": "Olsztyn - Mazury",
+    "country_code": "pl",
+    "city": "Olsztyn",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "SZZ",
+    "name": "Szczecin",
+    "country_code": "pl",
+    "city": "Szczecin",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TFS",
+    "name": "Tenerife South",
+    "country_code": "es",
+    "city": "Tenerife",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TGD",
+    "name": "Podgorica",
+    "country_code": "me",
+    "city": "Podgorica",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TIA",
+    "name": "Tirana",
+    "country_code": "al",
+    "city": "Tirana",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TLL",
+    "name": "Tallinn",
+    "country_code": "ee",
+    "city": "Tallinn",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TLS",
+    "name": "Toulouse",
+    "country_code": "fr",
+    "city": "Toulouse",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TNG",
+    "name": "Tangier",
+    "country_code": "ma",
+    "city": "Tangier",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TPS",
+    "name": "Trapani-Marsala",
+    "country_code": "it",
+    "city": "Trapani",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TRF",
+    "name": "Oslo Torp",
+    "country_code": "no",
+    "city": "Sandefjord",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TRN",
+    "name": "Turin",
+    "country_code": "it",
+    "city": "Turin",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TRS",
+    "name": "Trieste",
+    "country_code": "it",
+    "city": "Trieste",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TSF",
+    "name": "Venice Treviso",
+    "country_code": "it",
+    "city": "Venice",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TTU",
+    "name": "Tétouan",
+    "country_code": "ma",
+    "city": "Tétouan",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "TUF",
+    "name": "Tours Loire Valley",
+    "country_code": "fr",
+    "city": "Tours",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VAR",
+    "name": "Varna",
+    "country_code": "bg",
+    "city": "Varna",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VCE",
+    "name": "Venice M.Polo",
+    "country_code": "it",
+    "city": "Venice",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VIE",
+    "name": "Vienna",
+    "country_code": "at",
+    "city": "Vienna",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VIL",
+    "name": "Dakhla ",
+    "country_code": "ma",
+    "city": "Dakhla",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VIT",
+    "name": "Vitoria (Basque Country)",
+    "country_code": "es",
+    "city": "Vitoria-Gasteiz",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VLC",
+    "name": "Valencia",
+    "country_code": "es",
+    "city": "Valencia",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VNO",
+    "name": "Vilnius",
+    "country_code": "lt",
+    "city": "Vilnius",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VOL",
+    "name": "Volos",
+    "country_code": "gr",
+    "city": "Volos",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VRN",
+    "name": "Verona",
+    "country_code": "it",
+    "city": "Verona",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VST",
+    "name": "Stockholm Västerås",
+    "country_code": "se",
+    "city": "Stockholm",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "VXO",
+    "name": "Växjö Småland",
+    "country_code": "se",
+    "city": "Växjö",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "WAW",
+    "name": "Warsaw Chopin",
+    "country_code": "pl",
+    "city": "Warsaw",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "WMI",
+    "name": "Warsaw Modlin",
+    "country_code": "pl",
+    "city": "Warsaw",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "WRO",
+    "name": "Wroclaw",
+    "country_code": "pl",
+    "city": "Wroclaw",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "XCR",
+    "name": "Paris Vatry",
+    "country_code": "fr",
+    "city": "Paris",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ZAD",
+    "name": "Zadar",
+    "country_code": "hr",
+    "city": "Zadar",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ZAG",
+    "name": "Zagreb",
+    "country_code": "hr",
+    "city": "Zagreb",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ZAZ",
+    "name": "Zaragoza",
+    "country_code": "es",
+    "city": "Zaragoza",
+    "is_origin_seed": false
+  },
+  {
+    "iata": "ZTH",
+    "name": "Zakynthos",
+    "country_code": "gr",
+    "city": "Zakynthos",
+    "is_origin_seed": false
+  }
+]

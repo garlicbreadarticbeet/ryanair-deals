@@ -66,3 +66,55 @@ Drempel eenmalig overschrijven:
 ```bash
 .venv/bin/python deals.py watch --threshold 40
 ```
+
+---
+
+## Multi-user backend (in ontwikkeling — Fase B)
+
+De single-user CLI hierboven blijft ongewijzigd werken. Daarnaast wordt een
+multi-user kern opgebouwd onder `app/`, met PostgreSQL i.p.v. `state.json` en een
+uitbreidbare provider-/kanaal-architectuur.
+
+### Architectuur
+
+```
+app/
+  settings.py     # centrale config via env (pydantic-settings)
+  providers/      # maatschappij-adapters achter één FlightProvider-interface
+                  #   base.py (DailyFare/Route + Protocol), registry.py,
+                  #   ryanair.py (bewezen logica ingepakt), wizzair.py (stub)
+  core/           # provider- én kanaal-agnostisch
+                  #   combine.py (retour-combinatie), horizon.py
+  channels/       # Notifier-interface (Telegram/e-mail/WhatsApp) — Fase C
+  db/             # SQLAlchemy-modellen, sessie, seed (airports.json)
+  web/            # FastAPI (health, magic-link, voorkeuren) — Fase C
+migrations/       # Alembic
+tests/            # o.a. no-regression: combine == bewezen deals.best_returns
+```
+
+Twee uitbreidingspunten, elk **één nieuw bestand**:
+- **Nieuwe maatschappij** → adapter onder `app/providers/` die het `FlightProvider`-
+  Protocol implementeert + een rij in de `providers`-tabel. `app/core/` verandert niet
+  (een test bewaakt dat `core/` geen maatschappij-/kanaalnamen bevat).
+- **Nieuw kanaal** → Notifier onder `app/channels/` (Fase C).
+
+### Database opzetten (lokaal / Docker)
+
+```bash
+docker compose up -d db                      # Postgres op poort 5433 (geïsoleerd)
+.venv/bin/alembic upgrade head               # schema aanmaken (9 tabellen)
+.venv/bin/python -m app.db.seed_airports     # luchthavens + providers seeden
+```
+
+Config staat in `.env` (zie `.env.example`): `DATABASE_URL`, `TELEGRAM_*`,
+`RESEND_API_KEY`, `ENABLED_PROVIDERS`, en de standaard-voorkeuren. Nooit in git.
+
+### Tests
+
+```bash
+.venv/bin/python -m pytest        # incl. no-regression-bewijs voor de combine-logica
+```
+
+> De luchthavenlijst (`app/db/data/airports.json`) is een gebundelde momentopname van
+> Ryanair's publieke airports-endpoint; verversen kan met
+> `python scripts/refresh_airports.py`.
