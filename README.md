@@ -69,52 +69,110 @@ Drempel eenmalig overschrijven:
 
 ---
 
-## Multi-user backend (in ontwikkeling — Fase B)
+## Multi-user dienst (`app/`)
 
-De single-user CLI hierboven blijft ongewijzigd werken. Daarnaast wordt een
-multi-user kern opgebouwd onder `app/`, met PostgreSQL i.p.v. `state.json` en een
-uitbreidbare provider-/kanaal-architectuur.
+De single-user CLI hierboven blijft ongewijzigd werken. Daarnaast staat onder `app/`
+de multi-user kern: PostgreSQL i.p.v. `state.json`, een uitbreidbare provider-/kanaal-
+architectuur, accounts + voorkeuren, een ontkoppelde **scan → match → notify**-lus, en
+kanalen Telegram + e-mail (WhatsApp als stub).
 
 ### Architectuur
 
 ```
 app/
-  settings.py     # centrale config via env (pydantic-settings)
-  providers/      # maatschappij-adapters achter één FlightProvider-interface
-                  #   base.py (DailyFare/Route + Protocol), registry.py,
-                  #   ryanair.py (bewezen logica ingepakt), wizzair.py (stub)
-  core/           # provider- én kanaal-agnostisch
-                  #   combine.py (retour-combinatie), horizon.py
-  channels/       # Notifier-interface (Telegram/e-mail/WhatsApp) — Fase C
-  db/             # SQLAlchemy-modellen, sessie, seed (airports.json)
-  web/            # FastAPI (health, magic-link, voorkeuren) — Fase C
-migrations/       # Alembic
-tests/            # o.a. no-regression: combine == bewezen deals.best_returns
+  settings.py        # centrale config via env (pydantic-settings)
+  net.py             # gedeelde requests+certifi-sessie (nooit urllib)
+  providers/         # maatschappij-adapters achter één FlightProvider-interface
+                     #   base.py (DailyFare/Route + Protocol), registry.py,
+                     #   ryanair.py (bewezen logica ingepakt), wizzair.py (stub)
+  core/              # provider- én kanaal-agnostisch (test bewaakt dat hier geen
+                     #   maatschappij-/kanaalnaam in voorkomt)
+                     #   combine.py (retour-combinatie), horizon.py,
+                     #   scan.py (orkestratie), match.py (per-user), dedup.py, gating.py
+  channels/          # Notifier-interface + registry
+                     #   telegram.py, email.py (Resend), whatsapp.py (stub)
+  db/                # SQLAlchemy-modellen, sessie, repo (queries), seed (airports.json)
+  web/               # FastAPI (main.py) + magic-link/sessietokens (auth.py)
+  accounts.py        # onboarding-service (Telegram + e-mail) + voorkeuren
+  dispatch.py        # stuurt gematchte deals naar de kanalen van een gebruiker
+  telegram_handlers.py  # multi-user botcommando's
+  worker.py          # scan -> match -> notify-lus (once / scheduler)
+migrations/          # Alembic
+tests/               # o.a. no-regression (combine == deals.best_returns) + DB-tests
 ```
 
 Twee uitbreidingspunten, elk **één nieuw bestand**:
 - **Nieuwe maatschappij** → adapter onder `app/providers/` die het `FlightProvider`-
   Protocol implementeert + een rij in de `providers`-tabel. `app/core/` verandert niet
-  (een test bewaakt dat `core/` geen maatschappij-/kanaalnamen bevat).
-- **Nieuw kanaal** → Notifier onder `app/channels/` (Fase C).
+  (een test faalt als `core/` een maatschappij-/kanaalnaam bevat).
+- **Nieuw kanaal** → een `Notifier` onder `app/channels/` + registratie. `core/` verandert niet.
 
-### Database opzetten (lokaal / Docker)
+### Lokaal opzetten
 
 ```bash
 docker compose up -d db                      # Postgres op poort 5433 (geïsoleerd)
 .venv/bin/alembic upgrade head               # schema aanmaken (9 tabellen)
 .venv/bin/python -m app.db.seed_airports     # luchthavens + providers seeden
+.venv/bin/python -m pytest                   # testsuite (incl. no-regression-bewijs)
 ```
 
-Config staat in `.env` (zie `.env.example`): `DATABASE_URL`, `TELEGRAM_*`,
-`RESEND_API_KEY`, `ENABLED_PROVIDERS`, en de standaard-voorkeuren. Nooit in git.
+Config staat in `.env` (kopieer `.env.example`): `DATABASE_URL`, `TELEGRAM_*`,
+`RESEND_API_KEY`, `APP_BASE_URL`, `ENABLED_PROVIDERS`, en de standaard-voorkeuren.
+Nooit in git.
 
-### Tests
+### Draaien
 
 ```bash
-.venv/bin/python -m pytest        # incl. no-regression-bewijs voor de combine-logica
+.venv/bin/python -m app.worker once          # één scan -> match -> notify
+.venv/bin/python -m app.worker run           # blijven draaien (elke 4 uur)
+.venv/bin/python bot.py --forever            # Telegram-bot (onboarding + commando's)
+.venv/bin/python bot.py --register           # /-commandomenu (her)instellen
+.venv/bin/uvicorn app.web.main:app           # web-API (health, magic-link, /prefs)
 ```
 
+Botcommando's: `/start` (account aanmaken/koppelen), `/origins EIN NRN`, `/drempel 50`,
+`/reisduren 3 5 7`, `/mij`, `/deals` (uit de DB), `/stop` (account + data wissen).
+
+### Deploy op Hetzner (volledige stack)
+
+```bash
+cp .env.example .env        # en vul je waarden in (token, Resend-key, ...)
+docker compose up -d --build
+```
+
+Start `db` + `migrate` (alembic + seed, eenmalig) + always-on `worker`, `bot` en `web`.
+Alles geïsoleerd onder projectnaam `goedkoopvliegen`, Postgres op hostpoort **5433** zodat
+een ander project op dezelfde server niet botst.
+
+> GitHub Actions (`.github/workflows/`) blijft als alternatief bestaan, maar de cron staat
+> standaard **uit** — draai het niet tegelijk met de always-on worker (dubbele alerts).
+
+### Migratie `state.json` → Postgres
+
+`state.json` was single-user dedup-historie en is **niet** als data gemigreerd: hij is uit
+git gehaald (`git rm --cached`) en de cloud committeert hem niet meer terug. De per-gebruiker
+dedup zit nu in de `sent_alerts`-tabel. De eerste multi-user run kan daardoor eenmalig de
+huidige deals (opnieuw) melden; daarna is het stil tenzij een deal nieuw of goedkoper is.
+
+### Naden klaar voor Fase 2
+
+- **Betalingen/premium-gating** → `app/core/gating.py` (`can_use(user, feature)`): vul
+  `PREMIUM_ONLY_FEATURES` en voeg een Mollie-webhook toe in `app/web/main.py`. `tier`-veld staat klaar.
+- **WhatsApp** → `app/channels/whatsapp.py` (interface bestaat; alleen `send()` invullen).
+- **Gemengde carriers** (heen Ryanair, terug Wizz) → `# TODO(mixed-carrier)` in `app/core/combine.py`.
+- **E-mail digest** → `alert_mode='digest'` staat in de voorkeuren; dispatch kan een digest-pad krijgen.
+
+### Acceptatiecriteria
+
+| # | Criterium | Status |
+|---|---|---|
+| 1 | Nieuwe maatschappij = 1 adapter, geen wijziging in match/combine/notify | ✅ registry + core-purity-test |
+| 2 | Meerdere origins; scan op gededupte unie (schaalt niet met #users) | ✅ `repo.deduped_origin_targets` + test |
+| 3 | `state.json` → Postgres; per-user dedup via `sent_alerts` | ✅ `core/dedup.py` (== detect_new_deals) |
+| 4 | Twee users, andere voorkeuren → aantoonbaar andere alerts | ✅ `test_match_two_users` |
+| 5 | Telegram + e-mail werken; WhatsApp als stub | ✅ `app/channels/` |
+| 6 | Tests groen; migraties schoon op lege DB; README + `.env.example` bij | ✅ |
+| 7 | Netwerk via requests/certifi; geen geheimen in git | ✅ `app/net.py`, env-only |
+
 > De luchthavenlijst (`app/db/data/airports.json`) is een gebundelde momentopname van
-> Ryanair's publieke airports-endpoint; verversen kan met
-> `python scripts/refresh_airports.py`.
+> Ryanair's publieke airports-endpoint; verversen kan met `python scripts/refresh_airports.py`.
