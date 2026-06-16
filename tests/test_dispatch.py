@@ -89,3 +89,23 @@ def test_skips_when_not_opted_in(db, make_user, monkeypatch):
 
     assert dispatch.notify_user(db, user, [_deal()]) == 0
     assert fake.calls == []
+
+
+def test_whatsapp_gated_for_free_user(db, make_user, monkeypatch):
+    user = make_user(origins=["EIN"], tier="free")
+    _add_channel(db, user, ctype="whatsapp")
+
+    def _guard(ct):
+        assert ct != "whatsapp", "whatsapp-kanaal mag voor free niet eens opgehaald worden"
+        return None
+
+    monkeypatch.setattr(dispatch, "get_notifier", _guard)
+    assert dispatch.notify_user(db, user, [_deal()]) == 0
+
+
+def test_whatsapp_premium_attempted_but_noop_while_disabled(db, make_user):
+    user = make_user(origins=["EIN"], tier="premium")
+    _add_channel(db, user, ctype="whatsapp")
+    # Echte registry: premium mag whatsapp (can_use True), maar de flag staat uit → send() False.
+    assert dispatch.notify_user(db, user, [_deal()]) == 0
+    assert dedup.get_prev_alert(db, user.id, "whatsapp", _deal()) is None
