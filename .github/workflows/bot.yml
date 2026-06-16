@@ -1,9 +1,10 @@
 name: Bot (commando's)
 
-# Elke ~5 minuten: kijk of er Telegram-commando's zijn (zoals /deals) en beantwoord ze.
+# OPTIONEEL alternatief voor de always-on bot op de Hetzner-server.
+# Draai dit NIET tegelijk met die bot. Cron staat standaard uit; gebruik anders de worker-host.
 on:
-  schedule:
-    - cron: "*/5 * * * *"
+  # schedule:
+  #   - cron: "*/5 * * * *"   # elke ~5 min — uncomment als dit je enige bot-runner is
   workflow_dispatch: {}
 
 concurrency:
@@ -22,6 +23,6 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Poll & beantwoord commando's
         env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python bot.py

@@ -1,11 +1,24 @@
-# Lokale/Hetzner Postgres voor de deal-dienst.
-# Geïsoleerd (eigen volume + projectnaam) zodat een andere app op dezelfde
-# Hetzner-server er geen last van heeft. Start: `docker compose up -d db`.
+# Volledige stack voor de deal-dienst (lokaal of op de Hetzner-server).
+# Geïsoleerd (eigen volume + projectnaam) zodat een andere app op dezelfde server
+# er geen last van heeft.
 #
-# De worker- en web-services volgen in Fase D; dit bestand levert nu de database
-# waartegen `alembic upgrade head` en de tests draaien.
+#   Alleen de database (voor tests/migraties):  docker compose up -d db
+#   Volledige stack (Hetzner):                  docker compose up -d --build
+#
+# De app-services (migrate/worker/bot/web) lezen secrets uit .env (kopieer .env.example).
+# DATABASE_URL wordt hier overschreven naar de interne 'db'-host (niet de 5433-hostpoort).
 
 name: goedkoopvliegen
+
+x-app: &app
+  build: .
+  env_file: .env
+  environment:
+    DATABASE_URL: postgresql+psycopg://ryanair:ryanair@db:5432/ryanair
+  depends_on:
+    migrate:
+      condition: service_completed_successfully
+  restart: unless-stopped
 
 services:
   db:
@@ -27,6 +40,35 @@ services:
       timeout: 5s
       retries: 10
     restart: unless-stopped
+
+  # Eenmalig: schema migreren + luchthavens/providers seeden, dan stoppen.
+  migrate:
+    build: .
+    command: sh -c "alembic upgrade head && python -m app.db.seed_airports"
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://ryanair:ryanair@db:5432/ryanair
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  # Always-on: scan -> match -> notify, elke 4 uur.
+  worker:
+    <<: *app
+    command: python -m app.worker run --interval 240
+
+  # Always-on: Telegram-bot (onboarding + commando's).
+  bot:
+    <<: *app
+    command: python bot.py --forever
+
+  # Web-API (health, magic-link, voorkeuren).
+  web:
+    <<: *app
+    command: uvicorn app.web.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
 
 volumes:
   gv_pgdata:
