@@ -22,6 +22,22 @@ HELP = (
     "€{t:.0f} (heen+terug)."
 ).format(m=config.MONTHS_AHEAD, t=config.ALERT_THRESHOLD)
 
+# Korte beschrijving (max 120 tekens) — profiel & gedeelde links
+SHORT_DESC = (
+    f"Goedkoopste Ryanair-retours ({'/'.join(map(str, config.TRIP_LENGTHS))} dagen) "
+    f"vanaf NL & grensvelden. Alerts onder €{config.ALERT_THRESHOLD:.0f} + /deals voor alle deals."
+)
+
+# Lange beschrijving (max 512 tekens) — leeg chatvenster vóór /start
+LONG_DESC = (
+    "✈️ Vindt de goedkoopste Ryanair-retourvluchten vanaf Eindhoven, Weeze, Amsterdam, "
+    f"Maastricht en Groningen — voor trips van {', '.join(map(str, config.TRIP_LENGTHS[:-1]))} "
+    f"of {config.TRIP_LENGTHS[-1]} dagen, tot {config.MONTHS_AHEAD} maanden vooruit.\n\n"
+    f"Je krijgt automatisch een melding zodra er een nieuwe retour onder "
+    f"€{config.ALERT_THRESHOLD:.0f} (heen+terug) opduikt.\n\n"
+    "Tik /deals voor het volledige actuele overzicht, of /help voor uitleg."
+)
+
 
 def _url(method):
     return f"https://api.telegram.org/bot{notify._token()}/{method}"
@@ -126,12 +142,19 @@ def poll_forever():
 
 
 def register_commands():
+    """Zet commandomenu + korte/lange beschrijving in Telegram."""
     cmds = [
         {"command": "deals", "description": f"Alle huidige retour-deals ({config.MONTHS_AHEAD} mnd)"},
         {"command": "help", "description": "Uitleg en commando's"},
     ]
-    r = requests.post(_url("setMyCommands"), data={"commands": json.dumps(cmds)}, timeout=20).json()
-    print("setMyCommands ok:", r.get("ok"), r.get("description", ""))
+    calls = {
+        "setMyCommands": {"commands": json.dumps(cmds)},
+        "setMyShortDescription": {"short_description": SHORT_DESC},
+        "setMyDescription": {"description": LONG_DESC},
+    }
+    for method, data in calls.items():
+        r = requests.post(_url(method), data=data, timeout=20).json()
+        print(f"{method}: ok={r.get('ok')} {'' if r.get('ok') else r.get('description', '')}")
 
 
 if __name__ == "__main__":
