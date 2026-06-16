@@ -1,4 +1,4 @@
-"""De worker-lus: één scan → per user match → notify, en dedup over runs heen.
+"""De worker-lus: instant (premium, per run) vs digest (gratis, dagelijks), met gedeelde dedup.
 Met nep-provider en nep-notifier (geen netwerk).
 """
 from __future__ import annotations
@@ -10,8 +10,7 @@ import app.dispatch as dispatch_mod
 from app.channels.base import AlertItem
 from app.db.models import Channel
 from app.providers.base import DailyFare, Route
-from app.web import auth  # noqa: F401  (zorgt dat app.web importeerbaar is)
-from app.worker import run_once
+from app.worker import run_digest, run_once
 
 TODAY = datetime.date(2026, 6, 16)
 OUT = TODAY + datetime.timedelta(days=10)
@@ -44,29 +43,49 @@ class _FakeNotifier:
         return True
 
 
-def test_worker_scans_matches_notifies_and_dedups(db, make_user, monkeypatch):
-    user = make_user(origins=["EIN"], threshold=50)
+def _telegram(db, user):
     user.channels.append(
         Channel(type="telegram", address="900", verified=True, opted_in_at=OPT_IN, enabled=True)
     )
     db.flush()
 
-    fake_notifier = _FakeNotifier()
+
+def _patch(monkeypatch, notifier):
     monkeypatch.setattr(scan_mod, "get_provider", lambda code: _FakeProvider())
-    monkeypatch.setattr(
-        dispatch_mod, "get_notifier", lambda ct: fake_notifier if ct == "telegram" else None
-    )
+    monkeypatch.setattr(dispatch_mod, "get_notifier", lambda ct: notifier if ct == "telegram" else None)
+
+
+def test_instant_premium_user_alerted_by_run_once(db, make_user, monkeypatch):
+    user = make_user(origins=["EIN"], threshold=50, tier="premium", alert_mode="instant")
+    _telegram(db, user)
+    notifier = _FakeNotifier()
+    _patch(monkeypatch, notifier)
 
     stats = run_once(db, today=TODAY)
-    assert stats["deals"] >= 1
+    assert stats["mode"] == "instant"
     assert stats["alerts"] == 1
-    assert len(fake_notifier.calls) == 1
-    address, items = fake_notifier.calls[0]
-    assert address == "900"
-    assert items[0].deal.total == 35.0
+    assert notifier.calls[0][1][0].deal.total == 35.0
 
-    # Tweede run: zelfde deal → per-kanaal dedup → geen nieuwe alert.
-    fake_notifier.calls.clear()
-    stats2 = run_once(db, today=TODAY)
-    assert stats2["alerts"] == 0
-    assert fake_notifier.calls == []
+    # Tweede run: dedup → niets nieuws.
+    notifier.calls.clear()
+    assert run_once(db, today=TODAY)["alerts"] == 0
+    assert notifier.calls == []
+
+
+def test_digest_user_skipped_by_run_once_then_alerted_by_digest(db, make_user, monkeypatch):
+    user = make_user(origins=["EIN"], threshold=50, tier="free", alert_mode="digest")
+    _telegram(db, user)
+    notifier = _FakeNotifier()
+    _patch(monkeypatch, notifier)
+
+    # run_once scant (vult deals-tabel) maar meldt de digest-gebruiker NIET.
+    once = run_once(db, today=TODAY)
+    assert once["deals"] >= 1
+    assert once["alerts"] == 0
+    assert notifier.calls == []
+
+    # De dagelijkse digest meldt 'm wél, uit de gepersisteerde deals.
+    digest = run_digest(db)
+    assert digest["mode"] == "digest"
+    assert digest["alerts"] == 1
+    assert notifier.calls[0][1][0].deal.total == 35.0

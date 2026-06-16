@@ -43,6 +43,20 @@ class ReturnDeal:
     in_departure: str | None = None
 
 
+def deal_row_to_return_deal(row) -> ReturnDeal:
+    """Zet een opgeslagen deal-rij (duck-typed, met .total_price etc.) om naar ReturnDeal.
+
+    Gedeeld door de worker (digest) en de bot (/deals) zodat match op DB-deals dezelfde
+    weg loopt als op verse scan-resultaten. Geen import van het DB-model nodig.
+    """
+    return ReturnDeal(
+        provider=row.provider, origin=row.origin, destination=row.destination,
+        nights=row.nights, total=float(row.total_price),
+        out_date=row.out_date, in_date=row.in_date,
+        out_price=float(row.out_price), in_price=float(row.in_price),
+    )
+
+
 def best_returns(
     outbound: Iterable[DailyFare],
     inbound: Iterable[DailyFare],

@@ -70,6 +70,7 @@ def make_user(db):
         dest_blacklist=(),
         dest_countries=(),
         tier="free",
+        alert_mode="instant",
     ) -> User:
         user = User(status="active", tier=tier)
         db.add(user)
@@ -83,6 +84,7 @@ def make_user(db):
                 dest_whitelist=list(dest_whitelist),
                 dest_blacklist=list(dest_blacklist),
                 dest_countries=list(dest_countries),
+                alert_mode=alert_mode,
             )
         )
         for iata in origins:

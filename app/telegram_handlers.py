@@ -11,10 +11,10 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app import accounts
-from app.core.combine import ReturnDeal
+from app.core.combine import ReturnDeal, deal_row_to_return_deal
 from app.core.match import match_user
 from app.db import repo
-from app.db.models import Airport, Channel, Deal, User, UserOrigin
+from app.db.models import Airport, Channel, User, UserOrigin
 from app.errors import PremiumRequired
 from app.settings import settings
 
@@ -38,15 +38,6 @@ def _user_for_chat(session: Session, chat_id: str) -> User | None:
     return session.get(User, channel.user_id) if channel else None
 
 
-def _deal_to_returndeal(deal: Deal) -> ReturnDeal:
-    return ReturnDeal(
-        provider=deal.provider, origin=deal.origin, destination=deal.destination,
-        nights=deal.nights, total=float(deal.total_price),
-        out_date=deal.out_date, in_date=deal.in_date,
-        out_price=float(deal.out_price), in_price=float(deal.in_price),
-    )
-
-
 def _prefs_text(session: Session, user: User) -> str:
     prefs = user.preferences
     origins = sorted(
@@ -67,7 +58,7 @@ def _deals_text(session: Session, user: User) -> str:
     pairs = repo.allowed_provider_origins(session, user.id)
     if not pairs:
         return "Je hebt nog geen vertrekvelden ingesteld. Gebruik bijv. /origins EIN NRN."
-    deals = [_deal_to_returndeal(d) for d in repo.deals_for_origins(session, pairs)]
+    deals = [deal_row_to_return_deal(d) for d in repo.deals_for_origins(session, pairs)]
     matched = match_user(session, user, deals)
     if not matched:
         return f"Geen deals onder €{float(user.preferences.threshold):.0f} op dit moment."
