@@ -1,41 +1,34 @@
 #!/usr/bin/env python3
-"""Telegram-bot: reageert op commando's.
+"""Telegram-bot (multi-user): reageert op commando's en doet onboarding via /start.
 
   python bot.py             -> één keer pollen en afhandelen (cron / GitHub Actions)
-  python bot.py --forever   -> blijven pollen (lokaal, bv. via launchd)
+  python bot.py --forever   -> blijven pollen (lokaal of op de worker-host)
   python bot.py --register  -> zet het '/'-commandomenu in Telegram
+
+De commandologica zit in app/telegram_handlers.py (testbaar). Deze module doet alleen
+de Telegram-polling en het versturen. Vereist DATABASE_URL (zie .env).
 """
-import json
 import sys
 
 import requests
 
-import config
-import deals
 import notify
+from app import telegram_handlers
+from app.db.session import session_scope
 
-HELP = (
-    "🤖 <b>Ryanair deal-bot</b>\n\n"
-    "/deals — alle huidige retour-deals (vandaag t/m {m} maanden), per reisduur\n"
-    "/help — deze uitleg\n\n"
-    "Je krijgt daarnaast automatisch een melding bij nieuwe deals onder "
-    "€{t:.0f} (heen+terug)."
-).format(m=config.MONTHS_AHEAD, t=config.ALERT_THRESHOLD)
-
-# Korte beschrijving (max 120 tekens) — profiel & gedeelde links
+# Korte beschrijving (max 120 tekens) — profiel & gedeelde links.
 SHORT_DESC = (
-    f"Goedkoopste Ryanair-retours ({'/'.join(map(str, config.TRIP_LENGTHS))} dagen) "
-    f"vanaf NL & grensvelden. Alerts onder €{config.ALERT_THRESHOLD:.0f} + /deals voor alle deals."
+    "Goedkoopste retourvluchten vanaf de vertrekvelden die jij kiest. "
+    "Stel je velden + drempel in en krijg automatisch alerts."
 )
 
-# Lange beschrijving (max 512 tekens) — leeg chatvenster vóór /start
+# Lange beschrijving (max 512 tekens) — leeg chatvenster vóór /start.
 LONG_DESC = (
-    "✈️ Vindt de goedkoopste Ryanair-retourvluchten vanaf Eindhoven, Weeze, Amsterdam, "
-    f"Maastricht en Groningen — voor trips van {', '.join(map(str, config.TRIP_LENGTHS[:-1]))} "
-    f"of {config.TRIP_LENGTHS[-1]} dagen, tot {config.MONTHS_AHEAD} maanden vooruit.\n\n"
-    f"Je krijgt automatisch een melding zodra er een nieuwe retour onder "
-    f"€{config.ALERT_THRESHOLD:.0f} (heen+terug) opduikt.\n\n"
-    "Tik /deals voor het volledige actuele overzicht, of /help voor uitleg."
+    "✈️ Vindt de goedkoopste retourvluchten (heen + terug) vanaf de vertrekvelden die "
+    "jij kiest, tot enkele maanden vooruit.\n\n"
+    "Tik /start om te beginnen, stel je vertrekvelden in met /origins en je prijsdrempel "
+    "met /drempel. Je krijgt automatisch een melding bij nieuwe deals onder je drempel.\n\n"
+    "/deals voor je actuele deals, /help voor alle commando's."
 )
 
 
@@ -54,60 +47,22 @@ def send(chat_id, text, parse_mode="HTML"):
             print("send-fout:", e)
 
 
-def send_document(chat_id, path, caption=""):
-    try:
-        with open(path, "rb") as fh:
-            requests.post(_url("sendDocument"),
-                          data={"chat_id": chat_id, "caption": caption},
-                          files={"document": fh}, timeout=60)
-    except Exception as e:
-        print("send_document-fout:", e)
-
-
-def deals_summary(recs, top=12):
-    """Korte tekst: goedkoopste retours per reisduur (top N per duur)."""
-    lines = [f"✈️ <b>Actuele retour-deals</b> — vandaag t/m {config.MONTHS_AHEAD} mnd "
-             f"(prijs = heen+terug)"]
-    for n in config.TRIP_LENGTHS:
-        items = sorted(
-            ((r["by_length"][n]["total"], r, r["by_length"][n])
-             for r in recs if n in r["by_length"]),
-            key=lambda t: t[0])
-        if not items:
-            continue
-        lines.append(f"\n<b>━━━ {n} dagen ━━━</b>")
-        for total, r, v in items[:top]:
-            lines.append(f"€{total:.2f} — {r['origin']} ⇄ {r['destinationFull']} "
-                         f"({deals.fmt_day(v['out_date'])}→{deals.fmt_day(v['in_date'])})")
-    lines.append(f"\n📄 Volledige lijst ({len(recs)} bestemmingen) in het bijgevoegde bestand.")
-    return "\n".join(lines)
-
-
 def handle_update(upd):
+    """Verwerk één Telegram-update: bepaal het antwoord (DB) en stuur het."""
     msg = upd.get("message") or upd.get("edited_message") or {}
     chat = msg.get("chat") or {}
     chat_id = chat.get("id")
     text = (msg.get("text") or "").strip()
     if not chat_id or not text:
         return
-    # alleen reageren op de geconfigureerde eigenaar (anders kan iedereen scans triggeren)
-    owner = notify._chat_id()
-    if owner and str(chat_id) != str(owner):
-        return
-    cmd = text.split()[0].lstrip("/").split("@")[0].lower()
-    if cmd in ("start", "help"):
-        send(chat_id, HELP)
-    elif cmd == "deals":
-        send(chat_id, "⏳ Even de actuele deals ophalen (~10 sec)...")
-        results = deals.scan(verbose=False)
-        if not results:
-            send(chat_id, "Geen deals gevonden (tijdelijk API-probleem?). Probeer zo nog eens.")
-            return
-        recs = deals.write_reports(results)
-        send(chat_id, deals_summary(recs))
-        send_document(chat_id, str(config.REPORT_MD), "Alle retour-deals")
-    else:
-        send(chat_id, "Onbekend commando. Probeer /deals of /help.")
+    try:
+        with session_scope() as session:
+            reply = telegram_handlers.handle_command(session, chat_id, text)
+    except Exception as e:  # noqa: BLE001 — één kapotte update mag de bot niet stoppen
+        print("handle-fout:", e)
+        reply = "Er ging iets mis. Probeer het zo nog eens."
+    if reply:
+        send(chat_id, reply)
 
 
 def get_updates(offset=None, timeout=0):
@@ -143,8 +98,16 @@ def poll_forever():
 
 def register_commands():
     """Zet commandomenu + korte/lange beschrijving in Telegram."""
+    import json
+
     cmds = [
-        {"command": "deals", "description": f"Alle huidige retour-deals ({config.MONTHS_AHEAD} mnd)"},
+        {"command": "start", "description": "Account aanmaken of koppelen"},
+        {"command": "deals", "description": "Je actuele retour-deals"},
+        {"command": "origins", "description": "Vertrekvelden instellen (bv. EIN NRN)"},
+        {"command": "drempel", "description": "Maximale retourprijs (€)"},
+        {"command": "reisduren", "description": "Gewenste reisduren (nachten)"},
+        {"command": "mij", "description": "Je huidige instellingen"},
+        {"command": "stop", "description": "Account en gegevens verwijderen"},
         {"command": "help", "description": "Uitleg en commando's"},
     ]
     calls = {

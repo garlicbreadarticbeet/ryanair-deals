@@ -114,6 +114,15 @@ def allowed_provider_origins(session: Session, user_id: int) -> set[tuple[str, s
     return {(code, iata) for code, iata in rows}
 
 
+def deals_for_origins(session: Session, pairs: set[tuple[str, str]]) -> list[Deal]:
+    """Markt-deals voor de gegeven (provider_code, origin)-paren (voor /deals uit de DB)."""
+    if not pairs:
+        return []
+    origins = {iata for _, iata in pairs}
+    rows = session.execute(select(Deal).where(Deal.origin.in_(origins))).scalars().all()
+    return [d for d in rows if (d.provider, d.origin) in pairs]
+
+
 def delete_user(session: Session, user_id: int) -> None:
     """GDPR: verwijder de gebruiker; ON DELETE CASCADE ruimt prefs/channels/origins/
     sent_alerts/auth_tokens mee op."""
