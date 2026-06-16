@@ -295,6 +295,8 @@ class AuthToken(Base):
     created_at: Mapped[datetime.datetime] = _now()
 
     __table_args__ = (
-        CheckConstraint("purpose IN ('email_login','telegram_link')", name="ck_auth_tokens_purpose"),
+        CheckConstraint(
+            "purpose IN ('email_login','telegram_link','session')", name="ck_auth_tokens_purpose"
+        ),
         Index("ix_auth_tokens_expires", "expires_at"),
     )
