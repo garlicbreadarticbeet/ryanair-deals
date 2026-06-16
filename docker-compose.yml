@@ -1,0 +1,32 @@
+# Lokale/Hetzner Postgres voor de deal-dienst.
+# Geïsoleerd (eigen volume + projectnaam) zodat een andere app op dezelfde
+# Hetzner-server er geen last van heeft. Start: `docker compose up -d db`.
+#
+# De worker- en web-services volgen in Fase D; dit bestand levert nu de database
+# waartegen `alembic upgrade head` en de tests draaien.
+
+name: goedkoopvliegen
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: gv_postgres
+    environment:
+      POSTGRES_USER: ryanair
+      POSTGRES_PASSWORD: ryanair
+      POSTGRES_DB: ryanair
+    ports:
+      # Host-poort 5433 (niet 5432) zodat een andere Postgres op dezelfde server
+      # niet botst. Container-intern blijft het 5432.
+      - "5433:5432"
+    volumes:
+      - gv_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ryanair -d ryanair"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  gv_pgdata:

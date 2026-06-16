@@ -1,2 +1,22 @@
+# Bestaande databron (niet weggooien)
 ryanair-py
 requests
+certifi            # expliciet gepind: netwerkcalls gaan via requests + certifi (handoff-regel)
+
+# Datalaag
+SQLAlchemy>=2.0
+alembic
+psycopg[binary]    # PostgreSQL-driver (psycopg 3)
+
+# Config & validatie
+pydantic>=2
+pydantic-settings
+
+# Web & scheduler (worker / Fase C-D)
+fastapi
+uvicorn[standard]
+APScheduler
+
+# Tests
+pytest
+httpx              # FastAPI TestClient (Fase C)
