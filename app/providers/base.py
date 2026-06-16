@@ -11,8 +11,7 @@ from collections.abc import Iterable, Sequence
 from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
-import certifi
-import requests
+from app.net import get_session  # re-export: netwerk via requests + certifi
 
 
 @dataclass(frozen=True)
@@ -74,13 +73,6 @@ class FlightProvider(Protocol):
         ...
 
 
-def get_session() -> requests.Session:
-    """Gedeelde requests-sessie met certifi-CA's.
-
-    Harde regel: netwerkcalls via requests (+certifi), nooit urllib. Elke adapter die zelf
-    HTTP doet, gebruikt deze helper. (NB: ryanair-py beheert zijn eigen requests-sessie voor
-    get_cheapest_flights; die is óók requests-based, geen urllib.)
-    """
-    session = requests.Session()
-    session.verify = certifi.where()
-    return session
+# get_session wordt hierboven uit app.net geïmporteerd en hier re-geëxporteerd, zodat
+# bestaande imports (`from app.providers.base import get_session`) blijven werken.
+__all__ = ["DailyFare", "Route", "FlightProvider", "get_session"]

@@ -50,8 +50,11 @@ def _chunks(text, size=3900):
         yield cur
 
 
-def send_telegram(text, parse_mode="HTML"):
-    token, chat_id = _token(), _chat_id()
+def send_telegram(text, chat_id=None, parse_mode="HTML"):
+    # chat_id optioneel: valt terug op de env-eigenaar (single-user CLI-compat).
+    # Multi-user: de dispatcher geeft per kanaal de chat_id mee.
+    token = _token()
+    chat_id = str(chat_id) if chat_id is not None else _chat_id()
     if not (token and chat_id):
         return False
     url = f"https://api.telegram.org/bot{token}/sendMessage"

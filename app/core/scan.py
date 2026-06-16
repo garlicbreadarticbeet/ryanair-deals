@@ -1,0 +1,73 @@
+"""Scan-orkestratie — provider-agnostisch, draait op GLOBALE aggregaten.
+
+Schaalt met het aantal unieke (provider, origin)-paren, niet met het aantal gebruikers:
+de unie komt uit één SELECT DISTINCT (repo.deduped_origin_targets). Vult/ververst de
+deals-tabel en retourneert de verse ReturnDeals zodat match direct kan draaien.
+
+Eén scan i.p.v. één per gebruiker: dezelfde route wordt maar één keer bij de provider opgehaald.
+"""
+from __future__ import annotations
+
+import datetime
+from concurrent.futures import ThreadPoolExecutor
+
+from sqlalchemy.orm import Session
+
+from app.core.combine import ReturnDeal, best_returns
+from app.core.horizon import months_in_horizon
+from app.db import repo
+from app.providers.registry import get_provider
+from app.settings import settings
+
+
+def run_scan(session: Session, today: datetime.date | None = None) -> list[ReturnDeal]:
+    """Scan alle door gebruikers gekozen (provider, origin)-paren en upsert de deals.
+
+    Retourneert de gevonden ReturnDeals (vers, voor directe match). Fase 1 is EUR-only.
+    """
+    today = today or datetime.date.today()
+    targets = repo.deduped_origin_targets(session)
+    if not targets:
+        return []
+
+    months_ahead = repo.max_months_ahead(session) or settings.default_months_ahead
+    trip_lengths = repo.union_trip_lengths(session) or settings.default_trip_length_list
+    horizon_end = today + datetime.timedelta(days=int(months_ahead * 30.5))
+    months = months_in_horizon(months_ahead, trip_lengths, today)
+
+    # Groepeer de origins per provider (één adapter-instantie per provider).
+    by_provider: dict[str, list[str]] = {}
+    for code, iata in targets:
+        by_provider.setdefault(code, []).append(iata)
+
+    all_deals: list[ReturnDeal] = []
+    for code, origins in by_provider.items():
+        provider = get_provider(code)
+        routes = list(provider.discover_routes(origins, today, horizon_end))
+
+        def _fetch(route) -> list[ReturnDeal]:
+            # Heen (origin->dest) én terug (dest->origin), zoals de oude scan().
+            outbound = list(provider.daily_fares(route.origin, route.destination, months, settings.currency))
+            inbound = list(provider.daily_fares(route.destination, route.origin, months, settings.currency))
+            return best_returns(outbound, inbound, trip_lengths, today, horizon_end)
+
+        # Parallel ophalen (politeness: dezelfde CONCURRENCY-cap als vroeger). De DB-upsert
+        # gebeurt in de hoofdthread, want de SQLAlchemy-sessie is niet thread-safe.
+        with ThreadPoolExecutor(max_workers=settings.concurrency) as pool:
+            for deals in pool.map(_fetch, routes):
+                for d in deals:
+                    repo.upsert_deal(
+                        session,
+                        provider=d.provider,
+                        origin=d.origin,
+                        destination=d.destination,
+                        nights=d.nights,
+                        out_date=d.out_date,
+                        in_date=d.in_date,
+                        out_price=d.out_price,
+                        in_price=d.in_price,
+                        total_price=d.total,
+                        currency=settings.currency,
+                    )
+                    all_deals.append(d)
+    return all_deals
