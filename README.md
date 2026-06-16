@@ -73,8 +73,9 @@ Drempel eenmalig overschrijven:
 
 De single-user CLI hierboven blijft ongewijzigd werken. Daarnaast staat onder `app/`
 de multi-user kern: PostgreSQL i.p.v. `state.json`, een uitbreidbare provider-/kanaal-
-architectuur, accounts + voorkeuren, een ontkoppelde **scan → match → notify**-lus, en
-kanalen Telegram + e-mail (WhatsApp als stub).
+architectuur, accounts + voorkeuren, een ontkoppelde **scan → match → notify**-lus, kanalen
+Telegram + e-mail (WhatsApp achter een feature-flag), en een **premium-abonnement via Mollie**
+met instant-vs-digest-alerts.
 
 ### Architectuur
 
@@ -123,11 +124,12 @@ Nooit in git.
 ### Draaien
 
 ```bash
-.venv/bin/python -m app.worker once          # één scan -> match -> notify
-.venv/bin/python -m app.worker run           # blijven draaien (elke 4 uur)
+.venv/bin/python -m app.worker once          # één scan + instant-alerts (premium)
+.venv/bin/python -m app.worker digest        # één digest-ronde (gratis-gebruikers)
+.venv/bin/python -m app.worker run           # blijven draaien: instant elke 4u + dagelijkse digest
 .venv/bin/python bot.py --forever            # Telegram-bot (onboarding + commando's)
 .venv/bin/python bot.py --register           # /-commandomenu (her)instellen
-.venv/bin/uvicorn app.web.main:app           # web-API (health, magic-link, /prefs)
+.venv/bin/uvicorn app.web.main:app           # web-API (health, magic-link, /prefs, /billing)
 ```
 
 Botcommando's: `/start` (account aanmaken/koppelen), `/origins EIN NRN`, `/drempel 50`,
@@ -154,13 +156,32 @@ git gehaald (`git rm --cached`) en de cloud committeert hem niet meer terug. De 
 dedup zit nu in de `sent_alerts`-tabel. De eerste multi-user run kan daardoor eenmalig de
 huidige deals (opnieuw) melden; daarna is het stil tenzij een deal nieuw of goedkoper is.
 
-### Naden klaar voor Fase 2
+### Premium / abonnement (Fase 2)
 
-- **Betalingen/premium-gating** → `app/core/gating.py` (`can_use(user, feature)`): vul
-  `PREMIUM_ONLY_FEATURES` en voeg een Mollie-webhook toe in `app/web/main.py`. `tier`-veld staat klaar.
-- **WhatsApp** → `app/channels/whatsapp.py` (interface bestaat; alleen `send()` invullen).
+Premium-features (instelbaar via `PREMIUM_ONLY_FEATURES`): **instant alerts**, **meer
+vertrekvelden** (gratis = `FREE_MAX_ORIGINS`), en het **WhatsApp-kanaal**. Gratis krijgt een
+**dagelijkse digest**, beperkte velden, en Telegram/e-mail. De policy zit op één plek:
+`app/core/gating.py` (`can_use`, `max_origins`, `effective_alert_mode`) — gevoed door settings,
+zodat `core/` vrij blijft van kanaal-/maatschappijnamen.
+
+**Mollie-abonnement** (terugkerend): `app/billing.py` + `app/mollie.py`, endpoints in
+`app/web/main.py`:
+- `POST /billing/checkout` (sessietoken) → Mollie-checkout-URL (eerste betaling + mandaat);
+- `POST /billing/webhook` → activeert/schaalt `tier` op betaalstatus (Mollie roept dit aan);
+- `DELETE /billing/subscription` → opzeggen (terug naar gratis).
+
+Zet in `.env`: `MOLLIE_API_KEY`, `PREMIUM_PRICE`, `PREMIUM_INTERVAL`, `PREMIUM_CURRENCY`.
+De webhook vereist dat `APP_BASE_URL` publiek (HTTPS) bereikbaar is.
+
+**WhatsApp** is volledig gebouwd maar staat **uit** tot `WHATSAPP_ENABLED=true` +
+`WHATSAPP_TOKEN`/`WHATSAPP_PHONE_ID` zijn gezet (Cloud API; business-initiated berichten
+vereisen goedgekeurde templates — zie `# TODO(channel)`).
+
+### Nog open (toekomst)
+
 - **Gemengde carriers** (heen Ryanair, terug Wizz) → `# TODO(mixed-carrier)` in `app/core/combine.py`.
-- **E-mail digest** → `alert_mode='digest'` staat in de voorkeuren; dispatch kan een digest-pad krijgen.
+- **Wizz Air-adapter** → `app/providers/wizzair.py` invullen + provider op `enabled` zetten.
+- **WhatsApp live** → credentials + goedgekeurde templates.
 
 ### Acceptatiecriteria
 
