@@ -12,7 +12,9 @@ from decimal import Decimal
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.core import gating
 from app.db.models import Channel, Preference, Provider, User, UserOrigin
+from app.errors import PremiumRequired
 from app.settings import settings
 from app.web import auth
 
@@ -142,7 +144,17 @@ def set_trip_lengths(session: Session, user: User, lengths: Sequence[int]) -> No
 
 
 def set_origins(session: Session, user: User, provider_code: str, iatas: Sequence[str]) -> None:
-    """Vervang de vertrekvelden van deze gebruiker voor één provider."""
+    """Vervang de vertrekvelden van deze gebruiker voor één provider.
+
+    Handhaaft de gratis-limiet (gating.max_origins): raised PremiumRequired bij overschrijding.
+    """
+    iatas = [i.upper() for i in iatas]
+    limit = gating.max_origins(user)
+    if len(set(iatas)) > limit:
+        raise PremiumRequired(
+            f"Met een gratis account kun je max {limit} vertrekveld(en) kiezen. "
+            "Upgrade naar premium voor meer."
+        )
     provider_id = session.execute(
         select(Provider.id).where(Provider.code == provider_code)
     ).scalar_one()

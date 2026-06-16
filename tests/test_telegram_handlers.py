@@ -38,11 +38,19 @@ def test_command_requires_start_first(db):
 
 def test_set_preferences_and_show(db):
     th.handle_command(db, 444, "/start")
+    th._user_for_chat(db, 444).tier = "premium"  # 2 origins → premium
+    db.flush()
     assert "EIN" in th.handle_command(db, 444, "/origins ein nrn")
     assert "40" in th.handle_command(db, 444, "/drempel 40")
     assert "3" in th.handle_command(db, 444, "/reisduren 3 5")
     overview = th.handle_command(db, 444, "/mij")
     assert "EIN" in overview and "NRN" in overview and "40" in overview
+
+
+def test_free_origin_limit_message(db):
+    th.handle_command(db, 445, "/start")  # gratis
+    reply = th.handle_command(db, 445, "/origins ein nrn")
+    assert "premium" in reply.lower()  # nette upgrade-melding i.p.v. crash
 
 
 def test_unknown_origin_rejected(db):

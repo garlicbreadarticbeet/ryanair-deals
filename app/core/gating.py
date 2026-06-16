@@ -1,30 +1,42 @@
-"""De ENIGE plek met free/premium-logica: can_use(user, feature).
+"""De ENIGE plek met free/premium-logica: can_use(user, feature) + limieten.
 
-Fase 1 heeft nog geen echte gating (geen Mollie/betalingen). Model: premium mag alles;
-free mag alles wat NIET expliciet premium-only is. De deny-set is in Fase 1 leeg — Fase 2
-vult 'm (bv. een instant-modus of een premium-kanaal). Zo staan er bewust geen kanaal- of
-maatschappijnamen in core/: de caller (dispatcher) geeft de feature-string door.
+De premium-feature-namen komen uit settings/env (settings.premium_only_feature_set), niet
+hardgecodeerd hier — zo blijft core/ vrij van kanaal-/maatschappijnamen (purity-test). Match
+en scan blijven gating-vrij; alleen notify, de worker (instant vs digest) en de web/bot-laag
+(voorkeurslimieten) vragen hier toestemming.
 """
 from __future__ import annotations
 
 from typing import Protocol
 
+from app.settings import settings
 
-class _HasTier(Protocol):
+_PREMIUM_MANY = 10_000  # praktisch "onbeperkt" voor premium
+
+
+class _User(Protocol):
     tier: str
 
 
-# Features die alleen premium mag. Leeg in Fase 1; Fase 2 vult deze deny-set
-# (bv. "mode:instant" of een premium-kanaal). De caller bepaalt de feature-string.
-PREMIUM_ONLY_FEATURES: frozenset[str] = frozenset()
+def _is_premium(user) -> bool:
+    return getattr(user, "tier", "free") == "premium"
 
 
-def can_use(user: _HasTier, feature: str) -> bool:
-    """Mag deze gebruiker deze feature gebruiken?
-
-    Fase 1: premium mag alles; free mag alles behalve de (nu lege) PREMIUM_ONLY_FEATURES.
-    De echte premium-businessregels komen in Fase 2 hier — zonder de rest aan te raken.
-    """
-    if getattr(user, "tier", "free") == "premium":
+def can_use(user, feature: str) -> bool:
+    """Premium mag alles; free mag alles behalve de premium-only features (uit settings)."""
+    if _is_premium(user):
         return True
-    return feature not in PREMIUM_ONLY_FEATURES
+    return feature not in settings.premium_only_feature_set
+
+
+def max_origins(user) -> int:
+    """Maximum aantal vertrekvelden: premium ~onbeperkt, free settings.free_max_origins."""
+    return _PREMIUM_MANY if _is_premium(user) else settings.free_max_origins
+
+
+def effective_alert_mode(user) -> str:
+    """De werkelijke alert-modus: 'instant' alleen als de gebruiker het koos én mag; anders 'digest'."""
+    chosen = getattr(getattr(user, "preferences", None), "alert_mode", "digest")
+    if chosen == "instant" and can_use(user, "mode:instant"):
+        return "instant"
+    return "digest"

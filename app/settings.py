@@ -47,6 +47,28 @@ class Settings(BaseSettings):
     default_months_ahead: int = 3
     default_trip_lengths: str = "3,5,7" # CSV van reisduren (nachten)
 
+    # --- Premium / gating (Fase 2) ---
+    # Features die alleen premium mag (CSV). Hier staan de kanaal-/modusnamen, NIET in core/.
+    premium_only_features: str = "mode:instant,channel:whatsapp"
+    free_max_origins: int = 1           # max vertrekvelden voor een gratis account
+
+    # --- Mollie-abonnement (Fase 2) ---
+    mollie_api_key: str = ""            # test_... of live_...
+    premium_price: str = ""             # bv. "2.99" — verplicht in te vullen vóór checkout
+    premium_currency: str = "EUR"
+    premium_interval: str = "1 month"   # Mollie-intervalformaat
+    premium_description: str = "Goedkoop Vliegen Premium"
+
+    # --- WhatsApp (Fase 2; uit tot credentials aanwezig zijn) ---
+    whatsapp_enabled: bool = False
+    whatsapp_token: str = ""
+    whatsapp_phone_id: str = ""
+
+    @property
+    def premium_only_feature_set(self) -> set[str]:
+        """Premium-only features als set (uit de CSV-env)."""
+        return {f.strip() for f in self.premium_only_features.split(",") if f.strip()}
+
     @property
     def enabled_provider_list(self) -> list[str]:
         """Actieve providercodes als lijst (uit de CSV-env)."""

@@ -1,10 +1,12 @@
 """Onboarding-service: Telegram-start/koppeling, e-mail magic-link, voorkeuren."""
 from __future__ import annotations
 
+import pytest
 from sqlalchemy import func, select
 
 from app import accounts
 from app.db.models import Channel, User, UserOrigin
+from app.errors import PremiumRequired
 from app.web import auth
 
 
@@ -54,6 +56,8 @@ def test_email_magic_link_flow(db):
 
 def test_set_origins_replaces(db):
     user, _ = accounts.get_or_create_telegram_user(db, 9001)
+    user.tier = "premium"  # meerdere origins → premium
+    db.flush()
 
     accounts.set_origins(db, user, "ryanair", ["ein", "nrn"])  # lowercase → uppercase
     origins = set(
@@ -66,3 +70,19 @@ def test_set_origins_replaces(db):
         db.execute(select(UserOrigin.origin_iata).where(UserOrigin.user_id == user.id)).scalars()
     )
     assert origins == {"AMS"}  # vervangen, niet toegevoegd
+
+
+def test_free_origin_limit_enforced(db):
+    user, _ = accounts.get_or_create_telegram_user(db, 9101)  # gratis
+    accounts.set_origins(db, user, "ryanair", ["EIN"])        # 1 mag
+
+    with pytest.raises(PremiumRequired):
+        accounts.set_origins(db, user, "ryanair", ["EIN", "NRN"])  # 2 > gratis-limiet
+
+    user.tier = "premium"
+    db.flush()
+    accounts.set_origins(db, user, "ryanair", ["EIN", "NRN", "AMS"])  # premium mag wel
+    origins = set(
+        db.execute(select(UserOrigin.origin_iata).where(UserOrigin.user_id == user.id)).scalars()
+    )
+    assert origins == {"EIN", "NRN", "AMS"}

@@ -17,6 +17,7 @@ from app import accounts
 from app.channels.email import send_email
 from app.db.models import User, UserOrigin
 from app.db.session import SessionLocal
+from app.errors import PremiumRequired
 from app.settings import settings
 from app.web import auth
 
@@ -154,7 +155,10 @@ def put_prefs(
     if body.dest_countries is not None:
         prefs.dest_countries = [c.lower() for c in body.dest_countries]
     if body.origins is not None:
-        accounts.set_origins(db, user, "ryanair", body.origins)
+        try:
+            accounts.set_origins(db, user, "ryanair", body.origins)
+        except PremiumRequired as exc:
+            raise HTTPException(status_code=403, detail=str(exc)) from exc
     db.flush()
     return _prefs_out(db, user)
 

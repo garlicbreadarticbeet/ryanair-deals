@@ -15,6 +15,7 @@ from app.core.combine import ReturnDeal
 from app.core.match import match_user
 from app.db import repo
 from app.db.models import Airport, Channel, Deal, User, UserOrigin
+from app.errors import PremiumRequired
 from app.settings import settings
 
 HELP = (
@@ -93,7 +94,10 @@ def _set_origins(session: Session, user: User, args: list[str]) -> str:
     unknown = [i for i in iatas if i not in known]
     if unknown:
         return f"Onbekende luchthaven(s): {', '.join(unknown)}."
-    accounts.set_origins(session, user, "ryanair", iatas)
+    try:
+        accounts.set_origins(session, user, "ryanair", iatas)
+    except PremiumRequired as exc:
+        return str(exc)
     return f"Vertrekvelden bijgewerkt: {', '.join(iatas)}."
 
 

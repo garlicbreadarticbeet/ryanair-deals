@@ -46,13 +46,35 @@ def test_verify_then_prefs_roundtrip(db, client):
 
     resp = client.put(
         "/prefs", headers=auth_header,
-        json={"threshold": 35, "origins": ["ein", "nrn"], "trip_lengths": [3, 5]},
+        json={"threshold": 35, "origins": ["ein"], "trip_lengths": [3, 5]},  # 1 origin = gratis
     )
     assert resp.status_code == 200
     body = resp.json()
     assert body["threshold"] == 35.0
-    assert set(body["origins"]) == {"EIN", "NRN"}
+    assert set(body["origins"]) == {"EIN"}
     assert body["trip_lengths"] == [3, 5]
+
+
+def test_put_multiple_origins_requires_premium(db, client):
+    from sqlalchemy import func, select
+
+    from app.db.models import User
+
+    raw = accounts.start_email_login(db, "multi@example.nl")
+    session_token = client.get("/auth/verify", params={"token": raw}).json()["session_token"]
+    auth_header = {"Authorization": f"Bearer {session_token}"}
+
+    # Gratis: 2 vertrekvelden → 403.
+    resp = client.put("/prefs", headers=auth_header, json={"origins": ["EIN", "NRN"]})
+    assert resp.status_code == 403
+
+    # Premium: wel toegestaan.
+    user = db.execute(select(User).where(func.lower(User.email) == "multi@example.nl")).scalar_one()
+    user.tier = "premium"
+    db.flush()
+    resp = client.put("/prefs", headers=auth_header, json={"origins": ["EIN", "NRN"]})
+    assert resp.status_code == 200
+    assert set(resp.json()["origins"]) == {"EIN", "NRN"}
 
 
 def test_prefs_requires_valid_token(client):
