@@ -4,1441 +4,1441 @@
     "out_date": "2026-08-12",
     "in_date": "2026-08-15",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "AMS-DUB-5d": {
     "price": 59.98,
     "out_date": "2026-08-13",
     "in_date": "2026-08-18",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "AMS-DUB-7d": {
     "price": 59.98,
     "out_date": "2026-08-11",
     "in_date": "2026-08-18",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "AMS-AGP-3d": {
     "price": 85.98,
     "out_date": "2026-09-01",
     "in_date": "2026-09-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "AMS-AGP-5d": {
-    "price": 95.86,
+    "price": 94.26,
     "out_date": "2026-08-28",
     "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "AMS-AGP-7d": {
     "price": 89.11,
     "out_date": "2026-08-25",
     "in_date": "2026-09-01",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-SOF-3d": {
     "price": 77.58,
     "out_date": "2026-09-15",
     "in_date": "2026-09-18",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-SOF-5d": {
-    "price": 86.58,
-    "out_date": "2026-09-16",
-    "in_date": "2026-09-21",
+    "price": 99.98,
+    "out_date": "2026-09-11",
+    "in_date": "2026-09-16",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-SOF-7d": {
     "price": 77.58,
     "out_date": "2026-09-15",
     "in_date": "2026-09-22",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-STN-3d": {
-    "price": 42.97,
-    "out_date": "2026-07-15",
-    "in_date": "2026-07-18",
+    "price": 41.98,
+    "out_date": "2026-09-13",
+    "in_date": "2026-09-16",
     "alerted_price": 37.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-STN-5d": {
-    "price": 38.98,
-    "out_date": "2026-09-10",
-    "in_date": "2026-09-15",
+    "price": 35.98,
+    "out_date": "2026-07-16",
+    "in_date": "2026-07-21",
     "alerted_price": 35.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-STN-7d": {
-    "price": 34.98,
-    "out_date": "2026-06-23",
-    "in_date": "2026-06-30",
+    "price": 36.98,
+    "out_date": "2026-09-16",
+    "in_date": "2026-09-23",
     "alerted_price": 31.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-REU-3d": {
-    "price": 96.98,
-    "out_date": "2026-08-30",
-    "in_date": "2026-09-02",
+    "price": 98.38,
+    "out_date": "2026-07-07",
+    "in_date": "2026-07-10",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-REU-5d": {
     "price": 64.98,
     "out_date": "2026-08-27",
     "in_date": "2026-09-01",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-REU-7d": {
-    "price": 54.98,
+    "price": 55.98,
     "out_date": "2026-08-27",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-WMI-3d": {
-    "price": 69.98,
+    "price": 66.98,
     "out_date": "2026-09-07",
     "in_date": "2026-09-10",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-WMI-7d": {
     "price": 56.98,
     "out_date": "2026-08-27",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-PSA-3d": {
-    "price": 80.98,
+    "price": 79.98,
     "out_date": "2026-08-25",
     "in_date": "2026-08-28",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-PSA-5d": {
-    "price": 68.98,
+    "price": 69.98,
     "out_date": "2026-08-25",
     "in_date": "2026-08-30",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-PSA-7d": {
     "price": 57.98,
     "out_date": "2026-08-26",
     "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-MAN-3d": {
-    "price": 66.98,
+    "price": 68.98,
     "out_date": "2026-09-08",
     "in_date": "2026-09-11",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-MAN-7d": {
     "price": 55.98,
     "out_date": "2026-08-24",
     "in_date": "2026-08-31",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TSF-3d": {
-    "price": 96.78,
-    "out_date": "2026-09-13",
-    "in_date": "2026-09-16",
+    "price": 93.98,
+    "out_date": "2026-08-30",
+    "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TSF-5d": {
-    "price": 79.63,
+    "price": 78.48,
     "out_date": "2026-08-26",
     "in_date": "2026-08-31",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TSF-7d": {
-    "price": 61.71,
-    "out_date": "2026-06-22",
-    "in_date": "2026-06-29",
+    "price": 68.98,
+    "out_date": "2026-08-17",
+    "in_date": "2026-08-24",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-ZAG-3d": {
     "price": 106.54,
     "out_date": "2026-09-04",
     "in_date": "2026-09-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-ZAG-7d": {
     "price": 81.98,
     "out_date": "2026-08-31",
     "in_date": "2026-09-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TIA-3d": {
-    "price": 164.59,
-    "out_date": "2026-07-03",
-    "in_date": "2026-07-06",
+    "price": 124.58,
+    "out_date": "2026-06-19",
+    "in_date": "2026-06-22",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TIA-5d": {
-    "price": 131.58,
-    "out_date": "2026-07-01",
-    "in_date": "2026-07-06",
+    "price": 117.48,
+    "out_date": "2026-06-19",
+    "in_date": "2026-06-24",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TIA-7d": {
-    "price": 104.86,
+    "price": 93.61,
     "out_date": "2026-06-24",
     "in_date": "2026-07-01",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BGY-3d": {
-    "price": 70.98,
-    "out_date": "2026-09-14",
-    "in_date": "2026-09-17",
+    "price": 71.98,
+    "out_date": "2026-08-18",
+    "in_date": "2026-08-21",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BGY-5d": {
     "price": 61.98,
     "out_date": "2026-09-01",
     "in_date": "2026-09-06",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BGY-7d": {
-    "price": 60.98,
+    "price": 59.98,
     "out_date": "2026-08-26",
     "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-VIE-3d": {
-    "price": 90.79,
+    "price": 100.29,
     "out_date": "2026-09-09",
     "in_date": "2026-09-12",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-VIE-7d": {
     "price": 82.98,
     "out_date": "2026-09-02",
     "in_date": "2026-09-09",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-CTA-3d": {
-    "price": 183.69,
-    "out_date": "2026-07-04",
-    "in_date": "2026-07-07",
+    "price": 162.73,
+    "out_date": "2026-07-11",
+    "in_date": "2026-07-14",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-CTA-5d": {
-    "price": 160.1,
+    "price": 144.82,
     "out_date": "2026-07-09",
     "in_date": "2026-07-14",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-CTA-7d": {
-    "price": 140.26,
+    "price": 139.57,
     "out_date": "2026-09-15",
     "in_date": "2026-09-22",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-FEZ-5d": {
     "price": 111.68,
     "out_date": "2026-09-13",
     "in_date": "2026-09-18",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-FEZ-7d": {
     "price": 125.98,
     "out_date": "2026-09-13",
     "in_date": "2026-09-20",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-IBZ-3d": {
-    "price": 58.61,
+    "price": 59.25,
     "out_date": "2026-06-29",
     "in_date": "2026-07-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-IBZ-5d": {
-    "price": 58.61,
+    "price": 59.87,
     "out_date": "2026-06-27",
     "in_date": "2026-07-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-IBZ-7d": {
-    "price": 63.8,
+    "price": 64.42,
     "out_date": "2026-06-27",
     "in_date": "2026-07-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-AGP-3d": {
-    "price": 91.98,
-    "out_date": "2026-09-01",
-    "in_date": "2026-09-04",
+    "price": 87.37,
+    "out_date": "2026-08-31",
+    "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-AGP-5d": {
-    "price": 96.04,
+    "price": 87.37,
     "out_date": "2026-08-31",
     "in_date": "2026-09-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-AGP-7d": {
-    "price": 75.98,
+    "price": 77.58,
     "out_date": "2026-08-25",
     "in_date": "2026-09-01",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TNG-3d": {
-    "price": 151.83,
+    "price": 144.98,
     "out_date": "2026-09-13",
     "in_date": "2026-09-16",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TNG-7d": {
-    "price": 130.13,
-    "out_date": "2026-09-13",
-    "in_date": "2026-09-20",
+    "price": 129.98,
+    "out_date": "2026-09-09",
+    "in_date": "2026-09-16",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-ZAD-3d": {
-    "price": 135.36,
-    "out_date": "2026-09-04",
-    "in_date": "2026-09-07",
+    "price": 101.17,
+    "out_date": "2026-07-03",
+    "in_date": "2026-07-06",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-ZAD-7d": {
     "price": 79.98,
     "out_date": "2026-08-31",
     "in_date": "2026-09-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BLQ-3d": {
     "price": 82.18,
     "out_date": "2026-09-02",
     "in_date": "2026-09-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BLQ-5d": {
-    "price": 83.98,
-    "out_date": "2026-09-07",
-    "in_date": "2026-09-12",
+    "price": 75.04,
+    "out_date": "2026-08-30",
+    "in_date": "2026-09-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BLQ-7d": {
-    "price": 88.18,
-    "out_date": "2026-09-05",
-    "in_date": "2026-09-12",
+    "price": 81.75,
+    "out_date": "2026-08-15",
+    "in_date": "2026-08-22",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-KRK-3d": {
-    "price": 66.78,
-    "out_date": "2026-09-07",
-    "in_date": "2026-09-10",
+    "price": 63.98,
+    "out_date": "2026-09-09",
+    "in_date": "2026-09-12",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-KRK-5d": {
     "price": 66.78,
     "out_date": "2026-09-07",
     "in_date": "2026-09-12",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-KRK-7d": {
     "price": 63.98,
     "out_date": "2026-09-02",
     "in_date": "2026-09-09",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-ALC-3d": {
-    "price": 147.04,
-    "out_date": "2026-06-28",
-    "in_date": "2026-07-01",
+    "price": 138.72,
+    "out_date": "2026-08-26",
+    "in_date": "2026-08-29",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-ALC-5d": {
-    "price": 150.98,
-    "out_date": "2026-08-28",
-    "in_date": "2026-09-02",
+    "price": 145.52,
+    "out_date": "2026-08-26",
+    "in_date": "2026-08-31",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-ALC-7d": {
-    "price": 139.57,
+    "price": 109.52,
     "out_date": "2026-08-26",
     "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-GRO-3d": {
     "price": 108.56,
     "out_date": "2026-09-13",
     "in_date": "2026-09-16",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-GRO-5d": {
-    "price": 112.28,
-    "out_date": "2026-09-06",
-    "in_date": "2026-09-11",
+    "price": 100.8,
+    "out_date": "2026-07-01",
+    "in_date": "2026-07-06",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-GRO-7d": {
-    "price": 114.7,
-    "out_date": "2026-08-24",
-    "in_date": "2026-08-31",
+    "price": 99.59,
+    "out_date": "2026-07-01",
+    "in_date": "2026-07-08",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-PMI-3d": {
-    "price": 73.46,
+    "price": 77.98,
     "out_date": "2026-08-31",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-PMI-5d": {
-    "price": 106.42,
+    "price": 109.24,
     "out_date": "2026-07-02",
     "in_date": "2026-07-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-PMI-7d": {
-    "price": 81.98,
+    "price": 76.98,
     "out_date": "2026-06-30",
     "in_date": "2026-07-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BTS-3d": {
     "price": 67.98,
     "out_date": "2026-09-07",
     "in_date": "2026-09-10",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BTS-5d": {
     "price": 74.98,
     "out_date": "2026-09-16",
     "in_date": "2026-09-21",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BTS-7d": {
     "price": 66.98,
     "out_date": "2026-09-14",
     "in_date": "2026-09-21",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-FAO-3d": {
-    "price": 121.02,
+    "price": 121.86,
     "out_date": "2026-08-30",
     "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-FAO-5d": {
-    "price": 91.72,
+    "price": 91.04,
     "out_date": "2026-08-27",
     "in_date": "2026-09-01",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-FAO-7d": {
-    "price": 94.72,
+    "price": 93.04,
     "out_date": "2026-08-27",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-FCO-3d": {
     "price": 94.98,
     "out_date": "2026-08-26",
     "in_date": "2026-08-29",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-FCO-5d": {
-    "price": 96.48,
+    "price": 95.13,
     "out_date": "2026-08-27",
     "in_date": "2026-09-01",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-FCO-7d": {
-    "price": 90.98,
-    "out_date": "2026-08-25",
-    "in_date": "2026-09-01",
+    "price": 90.13,
+    "out_date": "2026-08-27",
+    "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-RAK-3d": {
-    "price": 166.23,
+    "price": 159.98,
     "out_date": "2026-09-03",
     "in_date": "2026-09-06",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-RAK-5d": {
-    "price": 132.08,
+    "price": 130.3,
     "out_date": "2026-08-30",
     "in_date": "2026-09-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-RAK-7d": {
-    "price": 122.98,
-    "out_date": "2026-09-04",
-    "in_date": "2026-09-11",
+    "price": 120.3,
+    "out_date": "2026-08-30",
+    "in_date": "2026-09-06",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-VNO-3d": {
-    "price": 92.98,
+    "price": 93.98,
     "out_date": "2026-09-11",
     "in_date": "2026-09-14",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-VNO-5d": {
     "price": 76.98,
-    "out_date": "2026-09-04",
-    "in_date": "2026-09-09",
+    "out_date": "2026-09-11",
+    "in_date": "2026-09-16",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-VNO-7d": {
     "price": 61.98,
     "out_date": "2026-09-02",
     "in_date": "2026-09-09",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BDS-3d": {
-    "price": 112.98,
+    "price": 111.98,
     "out_date": "2026-06-30",
     "in_date": "2026-07-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BDS-5d": {
-    "price": 160.98,
-    "out_date": "2026-06-28",
-    "in_date": "2026-07-03",
+    "price": 167.13,
+    "out_date": "2026-08-16",
+    "in_date": "2026-08-21",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-BDS-7d": {
-    "price": 118.97,
+    "price": 119.97,
     "out_date": "2026-06-30",
     "in_date": "2026-07-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-LIS-3d": {
-    "price": 119.9,
+    "price": 120.42,
     "out_date": "2026-09-07",
     "in_date": "2026-09-10",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-LIS-5d": {
-    "price": 110.38,
+    "price": 110.78,
     "out_date": "2026-09-14",
     "in_date": "2026-09-19",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-LIS-7d": {
-    "price": 132.28,
+    "price": 126.18,
     "out_date": "2026-08-29",
     "in_date": "2026-09-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TFS-3d": {
-    "price": 190.49,
-    "out_date": "2026-06-20",
-    "in_date": "2026-06-23",
+    "price": 195.98,
+    "out_date": "2026-09-05",
+    "in_date": "2026-09-08",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-TFS-7d": {
-    "price": 151.98,
-    "out_date": "2026-09-15",
-    "in_date": "2026-09-22",
+    "price": 149.98,
+    "out_date": "2026-09-05",
+    "in_date": "2026-09-12",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-PFO-3d": {
-    "price": 94.09,
+    "price": 94.2,
     "out_date": "2026-09-14",
     "in_date": "2026-09-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-PFO-7d": {
-    "price": 102.62,
-    "out_date": "2026-09-14",
-    "in_date": "2026-09-21",
+    "price": 102.63,
+    "out_date": "2026-09-10",
+    "in_date": "2026-09-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-VLC-3d": {
     "price": 83.98,
     "out_date": "2026-09-16",
     "in_date": "2026-09-19",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-VLC-5d": {
-    "price": 84.98,
+    "price": 82.98,
     "out_date": "2026-08-29",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-VLC-7d": {
-    "price": 91.98,
+    "price": 89.98,
     "out_date": "2026-08-27",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-SVQ-3d": {
-    "price": 98.98,
-    "out_date": "2026-09-07",
-    "in_date": "2026-09-10",
+    "price": 96.04,
+    "out_date": "2026-08-31",
+    "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-SVQ-7d": {
-    "price": 96.53,
+    "price": 92.98,
     "out_date": "2026-08-27",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-SKG-3d": {
-    "price": 194.88,
+    "price": 175.11,
     "out_date": "2026-07-02",
     "in_date": "2026-07-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-SKG-7d": {
-    "price": 153.81,
+    "price": 116.37,
     "out_date": "2026-06-18",
     "in_date": "2026-06-25",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-OPO-3d": {
-    "price": 133.06,
+    "price": 137.56,
     "out_date": "2026-09-01",
     "in_date": "2026-09-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-OPO-5d": {
     "price": 130.38,
     "out_date": "2026-09-03",
     "in_date": "2026-09-08",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-OPO-7d": {
-    "price": 123.18,
+    "price": 127.68,
     "out_date": "2026-09-01",
     "in_date": "2026-09-08",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-NAP-3d": {
-    "price": 89.98,
+    "price": 91.98,
     "out_date": "2026-08-31",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-NAP-7d": {
-    "price": 100.31,
+    "price": 94.37,
     "out_date": "2026-08-27",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-MAD-7d": {
-    "price": 123.32,
+    "price": 125.11,
     "out_date": "2026-09-07",
     "in_date": "2026-09-14",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-MLA-3d": {
-    "price": 136.44,
+    "price": 141.29,
     "out_date": "2026-07-02",
     "in_date": "2026-07-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "EIN-MLA-7d": {
-    "price": 132.23,
+    "price": 135.88,
     "out_date": "2026-07-02",
     "in_date": "2026-07-09",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-AOI-3d": {
-    "price": 41.98,
+    "price": 45.98,
     "out_date": "2026-06-22",
     "in_date": "2026-06-25",
     "alerted_price": 38.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-AOI-7d": {
-    "price": 44.98,
+    "price": 43.98,
     "out_date": "2026-06-29",
     "in_date": "2026-07-06",
     "alerted_price": 41.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-REU-3d": {
-    "price": 63.18,
+    "price": 60.98,
     "out_date": "2026-09-02",
     "in_date": "2026-09-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-REU-7d": {
-    "price": 44.98,
+    "price": 46.98,
     "out_date": "2026-08-29",
     "in_date": "2026-09-05",
     "alerted_price": 44.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-EDI-3d": {
-    "price": 47.18,
+    "price": 42.18,
     "out_date": "2026-06-29",
     "in_date": "2026-07-02",
-    "alerted_price": 46.18,
-    "last_seen": "2026-06-17T04:13:25"
+    "alerted_price": 42.18,
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-EDI-5d": {
-    "price": 48.73,
+    "price": 46.14,
     "out_date": "2026-06-25",
     "in_date": "2026-06-30",
     "alerted_price": 40.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-EDI-7d": {
-    "price": 46.98,
-    "out_date": "2026-06-23",
-    "in_date": "2026-06-30",
+    "price": 44.18,
+    "out_date": "2026-06-25",
+    "in_date": "2026-07-02",
     "alerted_price": 40.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-SZY-3d": {
     "price": 29.97,
     "out_date": "2026-06-28",
     "in_date": "2026-07-01",
     "alerted_price": 29.97,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-SZY-7d": {
     "price": 29.96,
     "out_date": "2026-07-01",
     "in_date": "2026-07-08",
     "alerted_price": 29.96,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PUY-3d": {
-    "price": 42.63,
+    "price": 45.38,
     "out_date": "2026-06-30",
     "in_date": "2026-07-03",
     "alerted_price": 39.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PUY-5d": {
     "price": 44.98,
     "out_date": "2026-08-30",
     "in_date": "2026-09-04",
     "alerted_price": 44.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PUY-7d": {
-    "price": 34.98,
+    "price": 37.73,
     "out_date": "2026-06-30",
     "in_date": "2026-07-07",
     "alerted_price": 32.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ZAG-3d": {
-    "price": 80.33,
-    "out_date": "2026-06-27",
-    "in_date": "2026-06-30",
+    "price": 79.98,
+    "out_date": "2026-07-11",
+    "in_date": "2026-07-14",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ZAG-5d": {
-    "price": 57.98,
+    "price": 58.98,
     "out_date": "2026-08-29",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ZAG-7d": {
-    "price": 55.78,
+    "price": 55.12,
     "out_date": "2026-08-27",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-DBV-3d": {
-    "price": 81.87,
+    "price": 80.04,
     "out_date": "2026-07-04",
     "in_date": "2026-07-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-DBV-7d": {
     "price": 47.33,
     "out_date": "2026-06-23",
     "in_date": "2026-06-30",
     "alerted_price": 47.33,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-BGY-3d": {
-    "price": 37.98,
-    "out_date": "2026-09-05",
-    "in_date": "2026-09-08",
-    "alerted_price": 37.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "price": 37.97,
+    "out_date": "2026-07-12",
+    "in_date": "2026-07-15",
+    "alerted_price": 37.97,
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-BGY-5d": {
     "price": 64.98,
     "out_date": "2026-09-01",
     "in_date": "2026-09-06",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-BGY-7d": {
     "price": 37.98,
     "out_date": "2026-08-26",
     "in_date": "2026-09-02",
     "alerted_price": 37.98,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ZAD-3d": {
-    "price": 58.98,
-    "out_date": "2026-06-30",
-    "in_date": "2026-07-03",
+    "price": 55.98,
+    "out_date": "2026-07-12",
+    "in_date": "2026-07-15",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ZAD-5d": {
-    "price": 65.23,
-    "out_date": "2026-07-09",
-    "in_date": "2026-07-14",
+    "price": 70.42,
+    "out_date": "2026-06-30",
+    "in_date": "2026-07-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ZAD-7d": {
-    "price": 36.98,
+    "price": 37.98,
     "out_date": "2026-06-30",
     "in_date": "2026-07-07",
     "alerted_price": 36.18,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PSR-3d": {
-    "price": 82.98,
+    "price": 76.98,
     "out_date": "2026-07-09",
     "in_date": "2026-07-12",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PSR-5d": {
-    "price": 68.98,
+    "price": 65.98,
     "out_date": "2026-07-07",
     "in_date": "2026-07-12",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PSR-7d": {
-    "price": 58.98,
+    "price": 61.98,
     "out_date": "2026-06-30",
     "in_date": "2026-07-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CRV-3d": {
     "price": 76.66,
     "out_date": "2026-09-12",
     "in_date": "2026-09-15",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CRV-7d": {
     "price": 82.66,
     "out_date": "2026-09-08",
     "in_date": "2026-09-15",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-NDR-3d": {
-    "price": 157.98,
+    "price": 160.98,
     "out_date": "2026-09-12",
     "in_date": "2026-09-15",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-NDR-5d": {
     "price": 139.98,
     "out_date": "2026-09-15",
     "in_date": "2026-09-20",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-NDR-7d": {
     "price": 118.98,
     "out_date": "2026-09-14",
     "in_date": "2026-09-21",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-SJJ-3d": {
-    "price": 141.6,
+    "price": 144.18,
     "out_date": "2026-07-11",
     "in_date": "2026-07-14",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-SJJ-7d": {
-    "price": 122.8,
-    "out_date": "2026-09-15",
-    "in_date": "2026-09-22",
+    "price": 117.66,
+    "out_date": "2026-07-07",
+    "in_date": "2026-07-14",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TIA-3d": {
-    "price": 151.51,
+    "price": 143.98,
     "out_date": "2026-07-02",
     "in_date": "2026-07-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TIA-5d": {
-    "price": 134.88,
+    "price": 134.22,
     "out_date": "2026-08-30",
     "in_date": "2026-09-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TIA-7d": {
-    "price": 94.36,
+    "price": 93.93,
     "out_date": "2026-09-10",
     "in_date": "2026-09-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-GRO-3d": {
     "price": 59.98,
     "out_date": "2026-08-30",
     "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-GRO-5d": {
-    "price": 61.98,
+    "price": 62.98,
     "out_date": "2026-09-06",
     "in_date": "2026-09-11",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-GRO-7d": {
-    "price": 54.98,
+    "price": 53.41,
     "out_date": "2026-06-24",
     "in_date": "2026-07-01",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TNG-3d": {
     "price": 114.48,
     "out_date": "2026-09-15",
     "in_date": "2026-09-18",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TNG-5d": {
-    "price": 119.71,
-    "out_date": "2026-09-10",
-    "in_date": "2026-09-15",
+    "price": 120.48,
+    "out_date": "2026-09-13",
+    "in_date": "2026-09-18",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TNG-7d": {
     "price": 100.98,
     "out_date": "2026-09-16",
     "in_date": "2026-09-23",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TPS-3d": {
-    "price": 115.09,
-    "out_date": "2026-07-10",
-    "in_date": "2026-07-13",
+    "price": 114.98,
+    "out_date": "2026-07-03",
+    "in_date": "2026-07-06",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TPS-5d": {
     "price": 83.73,
     "out_date": "2026-08-31",
     "in_date": "2026-09-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TPS-7d": {
     "price": 70.98,
     "out_date": "2026-08-28",
     "in_date": "2026-09-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-BRI-3d": {
-    "price": 138.64,
+    "price": 135.52,
     "out_date": "2026-07-14",
     "in_date": "2026-07-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-BRI-5d": {
-    "price": 93.66,
+    "price": 97.39,
     "out_date": "2026-07-08",
     "in_date": "2026-07-13",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-BRI-7d": {
-    "price": 102.58,
+    "price": 109.28,
     "out_date": "2026-06-28",
     "in_date": "2026-07-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-BZR-3d": {
-    "price": 89.98,
-    "out_date": "2026-06-25",
-    "in_date": "2026-06-28",
+    "price": 80.98,
+    "out_date": "2026-07-09",
+    "in_date": "2026-07-12",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-BZR-7d": {
     "price": 41.97,
     "out_date": "2026-06-25",
     "in_date": "2026-07-02",
     "alerted_price": 41.97,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CDT-3d": {
     "price": 64.98,
     "out_date": "2026-09-05",
     "in_date": "2026-09-08",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CDT-7d": {
     "price": 50.98,
     "out_date": "2026-09-01",
     "in_date": "2026-09-08",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-IBZ-3d": {
-    "price": 117.85,
+    "price": 106.55,
     "out_date": "2026-08-13",
     "in_date": "2026-08-16",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-IBZ-7d": {
-    "price": 55.9,
+    "price": 56.57,
     "out_date": "2026-06-25",
     "in_date": "2026-07-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PMI-3d": {
     "price": 69.98,
     "out_date": "2026-08-30",
     "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PMI-5d": {
     "price": 62.98,
     "out_date": "2026-08-30",
     "in_date": "2026-09-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PMI-7d": {
-    "price": 52.97,
+    "price": 52.16,
     "out_date": "2026-07-14",
     "in_date": "2026-07-21",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CAG-3d": {
-    "price": 83.98,
-    "out_date": "2026-06-30",
-    "in_date": "2026-07-03",
+    "price": 84.98,
+    "out_date": "2026-07-14",
+    "in_date": "2026-07-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CAG-5d": {
     "price": 77.98,
     "out_date": "2026-08-28",
     "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CAG-7d": {
-    "price": 69.08,
-    "out_date": "2026-06-24",
-    "in_date": "2026-07-01",
+    "price": 70.98,
+    "out_date": "2026-07-10",
+    "in_date": "2026-07-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-FEZ-3d": {
     "price": 118.98,
     "out_date": "2026-09-15",
     "in_date": "2026-09-18",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-FEZ-7d": {
     "price": 109.98,
     "out_date": "2026-09-15",
     "in_date": "2026-09-22",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ESU-3d": {
-    "price": 76.98,
+    "price": 94.18,
     "out_date": "2026-06-24",
     "in_date": "2026-06-27",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ESU-7d": {
     "price": 74.97,
     "out_date": "2026-06-24",
     "in_date": "2026-07-01",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CFU-5d": {
-    "price": 121.2,
-    "out_date": "2026-07-05",
-    "in_date": "2026-07-10",
+    "price": 124.35,
+    "out_date": "2026-06-28",
+    "in_date": "2026-07-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CFU-7d": {
-    "price": 107.82,
+    "price": 98.85,
     "out_date": "2026-06-26",
     "in_date": "2026-07-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-SKG-3d": {
-    "price": 142.35,
-    "out_date": "2026-07-03",
-    "in_date": "2026-07-06",
+    "price": 133.78,
+    "out_date": "2026-06-26",
+    "in_date": "2026-06-29",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-SKG-5d": {
-    "price": 130.58,
+    "price": 116.97,
     "out_date": "2026-06-26",
     "in_date": "2026-07-01",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-SKG-7d": {
-    "price": 123.37,
-    "out_date": "2026-06-25",
-    "in_date": "2026-07-02",
+    "price": 120.12,
+    "out_date": "2026-06-26",
+    "in_date": "2026-07-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-OPO-3d": {
-    "price": 123.48,
-    "out_date": "2026-07-06",
-    "in_date": "2026-07-09",
+    "price": 126.98,
+    "out_date": "2026-09-10",
+    "in_date": "2026-09-13",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-OPO-5d": {
-    "price": 123.47,
+    "price": 115.47,
     "out_date": "2026-09-10",
     "in_date": "2026-09-15",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-OPO-7d": {
-    "price": 111.53,
-    "out_date": "2026-09-15",
-    "in_date": "2026-09-22",
+    "price": 112.23,
+    "out_date": "2026-09-01",
+    "in_date": "2026-09-08",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-KGS-7d": {
-    "price": 83.87,
+    "price": 75.62,
     "out_date": "2026-07-01",
     "in_date": "2026-07-08",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-FAO-3d": {
-    "price": 110.03,
+    "price": 100.13,
     "out_date": "2026-08-31",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-FAO-5d": {
-    "price": 115.64,
+    "price": 97.97,
     "out_date": "2026-08-28",
     "in_date": "2026-09-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-FAO-7d": {
-    "price": 92.43,
+    "price": 81.9,
     "out_date": "2026-08-27",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-AGP-3d": {
-    "price": 77.98,
+    "price": 71.98,
     "out_date": "2026-09-03",
     "in_date": "2026-09-06",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-AGP-5d": {
-    "price": 67.31,
+    "price": 66.31,
     "out_date": "2026-08-29",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-AGP-7d": {
     "price": 65.98,
     "out_date": "2026-08-27",
     "in_date": "2026-09-03",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-AGA-3d": {
-    "price": 191.23,
+    "price": 191.16,
     "out_date": "2026-09-14",
     "in_date": "2026-09-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-AGA-7d": {
-    "price": 140.85,
+    "price": 128.1,
     "out_date": "2026-06-25",
     "in_date": "2026-07-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ALC-3d": {
-    "price": 108.98,
+    "price": 107.98,
     "out_date": "2026-09-01",
     "in_date": "2026-09-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ALC-5d": {
-    "price": 91.98,
+    "price": 90.98,
     "out_date": "2026-09-02",
     "in_date": "2026-09-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-ALC-7d": {
     "price": 77.98,
     "out_date": "2026-09-01",
     "in_date": "2026-09-08",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-RAK-3d": {
-    "price": 136.98,
+    "price": 141.54,
     "out_date": "2026-09-03",
     "in_date": "2026-09-06",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-RAK-5d": {
     "price": 129.78,
     "out_date": "2026-09-13",
     "in_date": "2026-09-18",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-RAK-7d": {
     "price": 111.78,
     "out_date": "2026-09-11",
     "in_date": "2026-09-18",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-RHO-3d": {
     "price": 103.72,
     "out_date": "2026-06-29",
     "in_date": "2026-07-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-RHO-7d": {
-    "price": 76.67,
+    "price": 70.65,
     "out_date": "2026-06-25",
     "in_date": "2026-07-02",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-FUE-7d": {
-    "price": 125.46,
+    "price": 113.98,
     "out_date": "2026-08-28",
     "in_date": "2026-09-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-RBA-3d": {
     "price": 125.98,
     "out_date": "2026-09-14",
     "in_date": "2026-09-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-RBA-5d": {
     "price": 140.95,
     "out_date": "2026-09-14",
     "in_date": "2026-09-19",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-RBA-7d": {
-    "price": 118.98,
-    "out_date": "2026-09-15",
-    "in_date": "2026-09-22",
+    "price": 120.98,
+    "out_date": "2026-09-07",
+    "in_date": "2026-09-14",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-OUD-3d": {
     "price": 163.02,
     "out_date": "2026-09-14",
     "in_date": "2026-09-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-OUD-7d": {
     "price": 143.02,
     "out_date": "2026-09-10",
     "in_date": "2026-09-17",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TFS-3d": {
     "price": 155.98,
     "out_date": "2026-09-02",
     "in_date": "2026-09-05",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-TFS-7d": {
-    "price": 133.98,
+    "price": 124.98,
     "out_date": "2026-09-09",
     "in_date": "2026-09-16",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PFO-3d": {
     "price": 126.98,
     "out_date": "2026-09-04",
     "in_date": "2026-09-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-PFO-7d": {
     "price": 125.98,
     "out_date": "2026-08-31",
     "in_date": "2026-09-07",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CHQ-5d": {
-    "price": 167.33,
+    "price": 183.62,
     "out_date": "2026-06-22",
     "in_date": "2026-06-27",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   },
   "NRN-CHQ-7d": {
-    "price": 138.0,
+    "price": 127.98,
     "out_date": "2026-06-27",
     "in_date": "2026-07-04",
     "alerted_price": null,
-    "last_seen": "2026-06-17T04:13:25"
+    "last_seen": "2026-06-17T12:17:34"
   }
 }
