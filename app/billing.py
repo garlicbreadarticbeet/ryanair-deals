@@ -49,7 +49,7 @@ def start_subscription_checkout(session: Session, user: User) -> str:
         amount=settings.premium_price,
         currency=settings.premium_currency,
         description=settings.premium_description,
-        redirect_url=f"{settings.app_base_url}/billing/return",
+        redirect_url=f"{settings.app_base_url}/account?paid=1",
         webhook_url=_webhook_url(),
     )
     return payment["_links"]["checkout"]["href"]

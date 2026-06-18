@@ -10,13 +10,14 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app import accounts
+from app import accounts, billing
+from app.billing import BillingError
 from app.channels.email import send_email
 from app.core import gating
 from app.core.combine import deal_row_to_return_deal
 from app.core.match import match_user
 from app.db import repo
-from app.db.models import Channel, UserOrigin
+from app.db.models import Channel, Subscription, UserOrigin
 from app.errors import PremiumRequired
 from app.settings import settings
 from app.web.auth import issue_token
@@ -221,3 +222,55 @@ def channels_whatsapp(
                        verified=True, opted_in_at=_utcnow(), enabled=True))
     db.flush()
     return RedirectResponse("/channels", status_code=303)
+
+
+# ---------- account + billing ----------
+
+def _render_account(db, user, *, flash=None, flash_kind=None):
+    sub = db.execute(
+        select(Subscription).where(Subscription.user_id == user.id)
+    ).scalar_one_or_none()
+    return render(
+        "account.html", user=user, settings=settings, subscription=sub,
+        is_premium=(user.tier == "premium"), flash=flash, flash_kind=flash_kind,
+    )
+
+
+@router.get("/account", response_class=HTMLResponse)
+def account_page(user=Depends(optional_web_user), db: Session = Depends(get_db), paid: str | None = None):
+    if user is None:
+        return RedirectResponse("/login", status_code=303)
+    if paid == "1":
+        return _render_account(
+            db, user, flash="Betaling ontvangen — je account wordt zo bijgewerkt.", flash_kind="ok"
+        )
+    return _render_account(db, user)
+
+
+@router.post("/upgrade")
+def upgrade(user=Depends(optional_web_user), db: Session = Depends(get_db)):
+    if user is None:
+        return RedirectResponse("/login", status_code=303)
+    try:
+        url = billing.start_subscription_checkout(db, user)
+    except BillingError as exc:
+        return _render_account(db, user, flash=str(exc), flash_kind="err")
+    return RedirectResponse(url, status_code=303)
+
+
+@router.post("/billing/cancel")
+def billing_cancel_web(user=Depends(optional_web_user), db: Session = Depends(get_db)):
+    if user is None:
+        return RedirectResponse("/login", status_code=303)
+    billing.cancel_subscription(db, user)
+    return RedirectResponse("/account", status_code=303)
+
+
+@router.post("/account/delete")
+def account_delete(user=Depends(optional_web_user), db: Session = Depends(get_db)):
+    if user is None:
+        return RedirectResponse("/login", status_code=303)
+    accounts.delete_account(db, user)
+    response = RedirectResponse("/", status_code=303)
+    clear_session_cookie(response)
+    return response

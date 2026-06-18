@@ -8,8 +8,10 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
+import app.mollie as mollie
 from app import accounts
-from app.db.models import Deal, UserOrigin
+from app.db.models import Deal, Subscription, User, UserOrigin
+from app.settings import settings
 from app.web import auth as webauth
 from app.web.main import app, get_db
 
@@ -140,3 +142,60 @@ def test_channels_whatsapp_gated_for_free(db, client, make_user):
     user = make_user(origins=["EIN"], tier="free")
     _login(client, db, user)
     assert "Upgrade" in client.get("/channels").text
+
+
+# ---------- account + billing (W4) ----------
+
+def test_account_free_shows_upgrade(db, client, make_user):
+    _login(client, db, make_user(origins=["EIN"], tier="free"))
+    resp = client.get("/account")
+    assert resp.status_code == 200
+    assert "Upgrade nu" in resp.text
+
+
+def test_account_premium_shows_cancel(db, client, make_user):
+    _login(client, db, make_user(origins=["EIN"], tier="premium"))
+    assert "opzeggen" in client.get("/account").text.lower()
+
+
+def test_upgrade_redirects_to_mollie(db, client, make_user, monkeypatch):
+    monkeypatch.setattr(settings, "premium_price", "2.99")
+    monkeypatch.setattr(mollie, "create_customer", lambda email=None, name=None: {"id": "cst_w"})
+    monkeypatch.setattr(
+        mollie, "create_first_payment",
+        lambda **kw: {"_links": {"checkout": {"href": "https://pay.mollie/web"}}},
+    )
+    _login(client, db, make_user(origins=["EIN"], tier="free"))
+    resp = client.post("/upgrade", follow_redirects=False)
+    assert resp.status_code == 303
+    assert resp.headers["location"] == "https://pay.mollie/web"
+
+
+def test_upgrade_without_price_shows_error(db, client, make_user, monkeypatch):
+    monkeypatch.setattr(settings, "premium_price", "")
+    _login(client, db, make_user(origins=["EIN"], tier="free"))
+    resp = client.post("/upgrade")
+    assert "prijs" in resp.text.lower()
+
+
+def test_cancel_downgrades_to_free(db, client, make_user, monkeypatch):
+    user = make_user(origins=["EIN"], tier="premium")
+    db.add(Subscription(user_id=user.id, mollie_customer_id="cst_x",
+                        mollie_subscription_id="sub_x", status="active"))
+    db.flush()
+    monkeypatch.setattr(mollie, "cancel_subscription", lambda cid, sid: {})
+    _login(client, db, user)
+
+    resp = client.post("/billing/cancel", follow_redirects=False)
+    assert resp.status_code == 303 and resp.headers["location"] == "/account"
+    assert user.tier == "free"
+
+
+def test_account_delete_removes_user(db, client, make_user):
+    user = make_user(origins=["EIN"])
+    uid = user.id
+    _login(client, db, user)
+
+    resp = client.post("/account/delete", follow_redirects=False)
+    assert resp.status_code == 303 and resp.headers["location"] == "/"
+    assert db.get(User, uid) is None
