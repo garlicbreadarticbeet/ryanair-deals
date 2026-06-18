@@ -75,7 +75,8 @@ De single-user CLI hierboven blijft ongewijzigd werken. Daarnaast staat onder `a
 de multi-user kern: PostgreSQL i.p.v. `state.json`, een uitbreidbare provider-/kanaal-
 architectuur, accounts + voorkeuren, een ontkoppelde **scan → match → notify**-lus, kanalen
 Telegram + e-mail (WhatsApp achter een feature-flag), en een **premium-abonnement via Mollie**
-met instant-vs-digest-alerts.
+met instant-vs-digest-alerts. De primaire interface is een **server-rendered website**
+(FastAPI + Jinja2); de Telegram-bot en de JSON-API zijn aanvullende kanalen op dezelfde kern.
 
 ### Architectuur
 
@@ -93,7 +94,9 @@ app/
   channels/          # Notifier-interface + registry
                      #   telegram.py, email.py (Resend), whatsapp.py (stub)
   db/                # SQLAlchemy-modellen, sessie, repo (queries), seed (airports.json)
-  web/               # FastAPI (main.py) + magic-link/sessietokens (auth.py)
+  web/               # FastAPI: JSON-API (main.py) + website (views.py, templates/, static/),
+                     #   deps.py (DB + cookie/Bearer-auth), auth.py (magic-link/sessietokens)
+  billing.py, mollie.py  # Mollie-abonnement (checkout + webhook)
   accounts.py        # onboarding-service (Telegram + e-mail) + voorkeuren
   dispatch.py        # stuurt gematchte deals naar de kanalen van een gebruiker
   telegram_handlers.py  # multi-user botcommando's
@@ -129,8 +132,18 @@ Nooit in git.
 .venv/bin/python -m app.worker run           # blijven draaien: instant elke 4u + dagelijkse digest
 .venv/bin/python bot.py --forever            # Telegram-bot (onboarding + commando's)
 .venv/bin/python bot.py --register           # /-commandomenu (her)instellen
-.venv/bin/uvicorn app.web.main:app           # web-API (health, magic-link, /prefs, /billing)
+.venv/bin/uvicorn app.web.main:app           # website + JSON-API
 ```
+
+### Website
+
+De website (server-rendered, `app/web/`) is de hoofdinterface:
+`/` landing · `/login` + `/verify` (magic-link, cookie-sessie) · `/dashboard` (je deals) ·
+`/preferences` (vertrekvelden, drempel, reisduren, filters) · `/channels` (Telegram koppelen,
+e-mail, WhatsApp) · `/account` (upgrade/opzeggen via Mollie, account verwijderen).
+
+Voor de Telegram-koppelknop: zet `TELEGRAM_BOT_USERNAME` in `.env`. De JSON-API blijft
+beschikbaar (o.a. `/health`, `/billing/webhook` voor Mollie).
 
 Botcommando's: `/start` (account aanmaken/koppelen), `/origins EIN NRN`, `/drempel 50`,
 `/reisduren 3 5 7`, `/mij`, `/deals` (uit de DB), `/stop` (account + data wissen).
