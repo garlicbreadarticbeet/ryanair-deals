@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Check je inbox — Goedkoop Vliegen{% endblock %}
+{% block content %}
+<section class="section" style="max-width:480px;margin:0 auto">
+  <div class="card center stack">
+    <h2>📬 Check je inbox</h2>
+    <p class="muted">We hebben een inloglink gestuurd naar <strong>{{ email }}</strong>.
+      De link is 30 minuten geldig.</p>
+    {% if dev_link %}
+      <div class="flash info">Dev-modus (geen e-mail ingesteld):
+        <a href="{{ dev_link }}">klik hier om in te loggen</a>.</div>
+    {% endif %}
+    <a class="btn secondary" href="/">Terug naar home</a>
+  </div>
+</section>
+{% endblock %}

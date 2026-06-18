@@ -16,6 +16,7 @@ pydantic-settings
 fastapi
 uvicorn[standard]
 jinja2              # server-rendered website (Fase 3)
+python-multipart    # HTML-formulieren (FastAPI Form)
 APScheduler
 
 # Tests
