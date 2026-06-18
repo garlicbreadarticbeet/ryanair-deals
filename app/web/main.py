@@ -1,15 +1,15 @@
-"""Minimale FastAPI-app: health, e-mail magic-link, voorkeuren en account-verwijdering.
+"""FastAPI-app: server-rendered website (app/web/views.py) + JSON-API (hieronder).
 
-Klein gehouden (regel: "houd 'm klein"). Voorkeuren worden primair via de bot beheerd;
-deze API biedt magic-link-onboarding + een voorkeuren-endpoint achter een sessietoken,
-plus een GDPR-verwijderpad. Mollie-webhooks komen in Fase 2.
+De website is de primaire interface; de JSON-API blijft bestaan voor programmatic gebruik
+(magic-link, voorkeuren, billing-webhook). DB-sessie en auth-dependencies staan in deps.py.
 """
 from __future__ import annotations
 
-from collections.abc import Iterator
+from pathlib import Path
 from urllib.parse import parse_qs
 
-from fastapi import Depends, FastAPI, Header, HTTPException, Request, Response
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -18,41 +18,15 @@ from app import accounts, billing
 from app.billing import BillingError
 from app.channels.email import send_email
 from app.db.models import User, UserOrigin
-from app.db.session import SessionLocal
 from app.errors import PremiumRequired
 from app.settings import settings
-from app.web import auth
+from app.web.deps import current_user, get_db
 
-app = FastAPI(title="Goedkoop Vliegen API", version="0.1.0")
+app = FastAPI(title="Goedkoop Vliegen", version="0.2.0")
 
-
-def get_db() -> Iterator[Session]:
-    """Sessie per request: commit bij succes, rollback bij fout."""
-    session = SessionLocal()
-    try:
-        yield session
-        session.commit()
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
-
-
-def current_user(
-    authorization: str | None = Header(default=None),
-    db: Session = Depends(get_db),
-) -> User:
-    """Haal de gebruiker uit een 'Authorization: Bearer <sessietoken>'-header."""
-    if not authorization or not authorization.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="ontbrekend sessietoken")
-    user_id = auth.verify_session(db, authorization.split(" ", 1)[1])
-    if user_id is None:
-        raise HTTPException(status_code=401, detail="ongeldig of verlopen token")
-    user = db.get(User, user_id)
-    if user is None or user.status != "active":
-        raise HTTPException(status_code=401, detail="geen actief account")
-    return user
+# Static + server-rendered website.
+_WEB_DIR = Path(__file__).resolve().parent
+app.mount("/static", StaticFiles(directory=str(_WEB_DIR / "static")), name="static")
 
 
 # ---------- schema's ----------
@@ -205,3 +179,10 @@ def billing_return() -> dict:
 def billing_cancel(user: User = Depends(current_user), db: Session = Depends(get_db)) -> Response:
     billing.cancel_subscription(db, user)
     return Response(status_code=204)
+
+
+# ---------- server-rendered website ----------
+# Onderaan ingehaakt zodat app + static al klaarstaan.
+from app.web.views import router as web_router  # noqa: E402
+
+app.include_router(web_router)

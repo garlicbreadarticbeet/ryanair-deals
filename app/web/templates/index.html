@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Goedkoop Vliegen — de goedkoopste retourvluchten, automatisch{% endblock %}
+
+{% block content %}
+<section class="hero">
+  <h1>De goedkoopste retourvluchten,<br>automatisch in de gaten gehouden.</h1>
+  <p class="lead">Kies je vertrekvelden en je prijsdrempel. Wij scannen de prijzen per dag
+    en sturen je een seintje zodra er een retour onder jouw drempel opduikt — via Telegram,
+    e-mail of WhatsApp.</p>
+  <div class="cta-row">
+    {% if user %}
+      <a class="btn" href="/dashboard">Naar je deals</a>
+    {% else %}
+      <a class="btn" href="/login">Gratis aanmelden</a>
+      <a class="btn secondary" href="#prijzen">Bekijk premium</a>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section">
+  <div class="grid cols-3">
+    <div class="card">
+      <h3>Jouw vertrekvelden</h3>
+      <p class="muted">Niets is vastgezet op één luchthaven — kies zelf één of meerdere
+        vertrekvelden uit heel het netwerk.</p>
+    </div>
+    <div class="card">
+      <h3>Heen + terug samen</h3>
+      <p class="muted">We zoeken per reisduur de goedkoopste combinatie van heen- en
+        terugvlucht, tot maanden vooruit.</p>
+    </div>
+    <div class="card">
+      <h3>Alleen echte koopjes</h3>
+      <p class="muted">Je krijgt alleen een melding bij iets nieuws of goedkopers — geen spam,
+        per kanaal precies één keer.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="prijzen">
+  <h2>Prijzen</h2>
+  <p class="sub">Begin gratis. Upgrade wanneer je meer wilt.</p>
+  <div class="grid cols-2">
+    <div class="card plan">
+      <span class="badge free">Gratis</span>
+      <div class="price" style="margin-top:10px">€0</div>
+      <ul class="ticks">
+        <li>Dagelijkse digest van je deals</li>
+        <li>1 vertrekveld</li>
+        <li>Telegram &amp; e-mail</li>
+      </ul>
+      {% if not user %}<a class="btn block" href="/login">Aanmelden</a>{% endif %}
+    </div>
+    <div class="card plan featured">
+      <span class="badge premium">Premium</span>
+      <div class="price" style="margin-top:10px">
+        {% if settings.premium_price %}€{{ settings.premium_price }} <small>/ maand</small>{% else %}<small>binnenkort</small>{% endif %}
+      </div>
+      <ul class="ticks">
+        <li><strong>Instant</strong> alerts (direct i.p.v. dagelijks)</li>
+        <li>Meerdere vertrekvelden</li>
+        <li>WhatsApp-meldingen</li>
+        <li>Alles uit gratis</li>
+      </ul>
+      {% if user %}
+        <a class="btn block" href="/account">Beheer abonnement</a>
+      {% else %}
+        <a class="btn block" href="/login">Begin gratis →</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

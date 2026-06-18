@@ -15,6 +15,7 @@ pydantic-settings
 # Web & scheduler (worker / Fase C-D)
 fastapi
 uvicorn[standard]
+jinja2              # server-rendered website (Fase 3)
 APScheduler
 
 # Tests

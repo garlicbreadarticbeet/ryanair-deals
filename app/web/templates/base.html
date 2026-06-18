@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Goedkoop Vliegen{% endblock %}</title>
+  <meta name="description" content="De goedkoopste retourvluchten vanaf jouw vertrekvelden, automatisch in de gaten gehouden. Alerts via Telegram, e-mail en WhatsApp.">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <nav class="nav">
+    <div class="container nav-inner">
+      <a class="brand" href="/">✈️ Goedkoop&nbsp;Vliegen</a>
+      <span class="nav-spacer"></span>
+      {% if user %}
+        <a class="navlink hide-sm" href="/dashboard">Deals</a>
+        <a class="navlink hide-sm" href="/preferences">Voorkeuren</a>
+        <a class="navlink hide-sm" href="/channels">Kanalen</a>
+        <a class="navlink" href="/account">Account</a>
+        <a class="navlink" href="/logout">Uitloggen</a>
+      {% else %}
+        <a class="navlink" href="/login">Inloggen</a>
+        <a class="btn" href="/login">Aanmelden</a>
+      {% endif %}
+    </div>
+  </nav>
+
+  <main class="container">
+    {% if flash %}<div class="flash {{ flash_kind or 'info' }}">{{ flash }}</div>{% endif %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site">
+    <div class="container">
+      Goedkoop Vliegen · de goedkoopste retourvluchten vanaf jouw vertrekvelden ·
+      <a href="/">home</a> · <a href="/login">inloggen</a>
+    </div>
+  </footer>
+</body>
+</html>
