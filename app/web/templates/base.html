@@ -3,37 +3,142 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}Goedkoop Vliegen{% endblock %}</title>
-  <meta name="description" content="De goedkoopste retourvluchten vanaf jouw vertrekvelden, automatisch in de gaten gehouden. Alerts via Telegram, e-mail en WhatsApp.">
+  <title>{% block title %}{{ settings.brand_name }} — {{ settings.brand_tagline }}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ settings.brand_name }} scant elke dag de prijsvechters en geeft je een seintje zodra er een retour onder jouw drempel duikt — via Telegram, e-mail of WhatsApp.{% endblock %}">
+  {% block canonical %}{% if canonical %}<link rel="canonical" href="{{ canonical }}">{% endif %}{% endblock %}
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ settings.brand_name }}">
+  <meta property="og:title" content="{{ self.title() }}">
+  <meta property="og:description" content="{{ self.meta_description() }}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="preload" as="font" type="font/woff2" href="/static/fonts/inter-400.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/static/fonts/poppins-700.woff2" crossorigin>
   <link rel="stylesheet" href="/static/style.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ settings.brand_name }}",
+    "url": "{{ settings.app_base_url }}",
+    "slogan": "{{ settings.brand_tagline }}",
+    "description": "Vluchtprijs-waakhond die dagelijks de prijsvechters scant en een seintje stuurt zodra een retour onder jouw drempel duikt."
+  }
+  </script>
+  {% if settings.plausible_domain %}
+  <script defer data-domain="{{ settings.plausible_domain }}" src="https://plausible.io/js/script.js"></script>
+  {% endif %}
+  {% block head_extra %}{% endblock %}
 </head>
 <body>
-  <nav class="nav">
-    <div class="container nav-inner">
-      <a class="brand" href="/">✈️ Goedkoop&nbsp;Vliegen</a>
-      <span class="nav-spacer"></span>
-      {% if user %}
-        <a class="navlink hide-sm" href="/dashboard">Deals</a>
-        <a class="navlink hide-sm" href="/preferences">Voorkeuren</a>
-        <a class="navlink hide-sm" href="/channels">Kanalen</a>
-        <a class="navlink" href="/account">Account</a>
-        <a class="navlink" href="/logout">Uitloggen</a>
-      {% else %}
-        <a class="navlink" href="/login">Inloggen</a>
-        <a class="btn" href="/login">Aanmelden</a>
-      {% endif %}
-    </div>
-  </nav>
+  <a class="skip-link" href="#main">Naar de inhoud</a>
 
-  <main class="container">
-    {% if flash %}<div class="flash {{ flash_kind or 'info' }}">{{ flash }}</div>{% endif %}
+  <header class="nav">
+    <div class="container nav__inner">
+      <a class="brand" href="{{ '/dashboard' if user else '/' }}" aria-label="{{ settings.brand_name }} — home">
+        {% include "_logo.html" %}
+        <span>{{ settings.brand_name }}</span>
+      </a>
+
+      {% if user %}
+        <span class="nav__spacer"></span>
+        <div class="nav__actions">
+          <span class="badge {{ 'premium' if user.tier == 'premium' else 'free' }}">{{ 'Premium' if user.tier == 'premium' else 'Gratis' }}</span>
+          <a class="navlink" href="/account">Account</a>
+          <a class="btn ghost sm" href="/logout">Uitloggen</a>
+        </div>
+      {% else %}
+        <span class="nav__spacer"></span>
+        <nav class="nav__links" aria-label="Hoofdmenu">
+          <a class="navlink" href="/hoe-het-werkt">Hoe het werkt</a>
+          <a class="navlink" href="/premium">Premium</a>
+          <a class="navlink" href="/bestemmingen">Bestemmingen</a>
+          <a class="navlink" href="/blog">Blog</a>
+        </nav>
+        <div class="nav__actions">
+          <a class="navlink" href="/login">Inloggen</a>
+          <a class="btn" href="/login">Account aanmaken</a>
+        </div>
+      {% endif %}
+
+      <input type="checkbox" id="navtoggle" class="hp">
+      <label class="nav__toggle" for="navtoggle" aria-label="Menu openen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </label>
+      <div class="nav__panel">
+        <nav class="nav__links" aria-label="Mobiel menu">
+          {% if user %}
+            <a class="navlink" href="/dashboard">Deals</a>
+            <a class="navlink" href="/preferences">Voorkeuren</a>
+            <a class="navlink" href="/channels">Kanalen</a>
+            <a class="navlink" href="/account">Account</a>
+          {% else %}
+            <a class="navlink" href="/hoe-het-werkt">Hoe het werkt</a>
+            <a class="navlink" href="/premium">Premium</a>
+            <a class="navlink" href="/bestemmingen">Bestemmingen</a>
+            <a class="navlink" href="/blog">Blog</a>
+          {% endif %}
+        </nav>
+        <div class="nav__actions">
+          {% if user %}
+            <a class="btn ghost block" href="/logout">Uitloggen</a>
+          {% else %}
+            <a class="btn ghost block" href="/login">Inloggen</a>
+            <a class="btn block" href="/login">Account aanmaken</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    {% block flash %}
+      {% if flash %}<div class="container"><div class="flash {{ flash_kind or 'info' }}">{{ flash }}</div></div>{% endif %}
+    {% endblock %}
     {% block content %}{% endblock %}
   </main>
 
-  <footer class="site">
+  <footer class="site-footer">
     <div class="container">
-      Goedkoop Vliegen · de goedkoopste retourvluchten vanaf jouw vertrekvelden ·
-      <a href="/">home</a> · <a href="/login">inloggen</a>
+      <div class="footer__cols">
+        <div class="footer__brand">
+          <a class="brand" href="/">{% include "_logo.html" %}<span>{{ settings.brand_name }}</span></a>
+          <p class="muted" style="margin-top:12px;max-width:30ch">{{ settings.brand_tagline }} Wij scannen elke dag de prijsvechters; jij krijgt een seintje.</p>
+        </div>
+        <div class="footer">
+          <h5>Product</h5>
+          <ul>
+            <li><a href="/hoe-het-werkt">Hoe het werkt</a></li>
+            <li><a href="/premium">Premium</a></li>
+            <li><a href="/bestemmingen">Bestemmingen</a></li>
+          </ul>
+        </div>
+        <div class="footer">
+          <h5>Bedrijf</h5>
+          <ul>
+            <li><a href="/over-ons">Over ons</a></li>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/faq">Veelgestelde vragen</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+        <div class="footer">
+          <h5>Juridisch</h5>
+          <ul>
+            <li><a href="/privacy">Privacy</a></li>
+            <li><a href="/voorwaarden">Voorwaarden</a></li>
+            <li><a href="/cookies">Cookies</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2026 {{ settings.brand_name }} · Prijzen onder voorbehoud; vluchten worden geboekt bij derden.</span>
+        <span class="footer">
+          {% if settings.social_instagram %}<a href="https://instagram.com/{{ settings.social_instagram }}" rel="noopener">Instagram</a>{% endif %}
+          {% if settings.social_tiktok %} · <a href="https://tiktok.com/@{{ settings.social_tiktok }}" rel="noopener">TikTok</a>{% endif %}
+          {% if settings.social_x %} · <a href="https://x.com/{{ settings.social_x }}" rel="noopener">X</a>{% endif %}
+        </span>
+      </div>
     </div>
   </footer>
 </body>

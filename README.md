@@ -137,13 +137,35 @@ Nooit in git.
 
 ### Website
 
-De website (server-rendered, `app/web/`) is de hoofdinterface:
-`/` landing · `/login` + `/verify` (magic-link, cookie-sessie) · `/dashboard` (je deals) ·
+De website (server-rendered, `app/web/`) is de hoofdinterface en is gebouwd volgens
+`Website-Plan-Vliegseintje.md` + `Merkidentiteit-Vliegseintje.md` (merk **Vliegseintje**,
+tagline "Goedkoop vliegen, zonder zoeken."). Zie `DECISIONS.md` voor de stack-keuze
+(Python/Jinja i.p.v. de in het plan genoemde Next.js) en aannames.
+
+**Designsysteem** — `app/web/static/style.css` implementeert de tokens uit het plan §4
+(kleuren, type-schaal, spacing, radii, schaduw, motion) als CSS custom properties.
+Fonts (Poppins + Inter) zijn **self-hosted** onder `static/fonts/` (AVG, geen externe call).
+Logo/favicon: `templates/_logo.html` + `static/favicon.svg` (vliegtuigje + amber "ping").
+
+**Publieke marketingpagina's** (`app/web/marketing.py`):
+`/` homepage · `/hoe-het-werkt` · `/premium` · `/bestemmingen` (voorbeelddata) · `/over-ons` ·
+`/faq` (FAQPage-schema) · `/contact` (honeypot + rate-limit → `contact_messages`) ·
+`/blog` + `/blog/<slug>` · `/privacy` `/voorwaarden` `/cookies` (placeholder-concepten) ·
+`/robots.txt` · `/sitemap.xml` · nette `404`.
+
+**Content** staat los van de code onder `app/web/content/` en wordt geladen via
+`content_store.py`: blog + legal als Markdown (met `markdown` gerenderd), FAQ + voorbeeld-
+bestemmingen als JSON. SEO-basis (per-pagina title/description/canonical/OG, JSON-LD
+Organization/Article/FAQPage) zit in `templates/base.html`.
+
+**Ingelogde app** (app-shell met zijbalk, `templates/app_base.html`):
+`/login` + `/verify` (magic-link, cookie-sessie) · `/dashboard` (je deals) ·
 `/preferences` (vertrekvelden, drempel, reisduren, filters) · `/channels` (Telegram koppelen,
 e-mail, WhatsApp) · `/account` (upgrade/opzeggen via Mollie, account verwijderen).
 
-Voor de Telegram-koppelknop: zet `TELEGRAM_BOT_USERNAME` in `.env`. De JSON-API blijft
-beschikbaar (o.a. `/health`, `/billing/webhook` voor Mollie).
+Voor de Telegram-koppelknop: zet `TELEGRAM_BOT_USERNAME` in `.env`. Merk/social/analytics zijn
+optioneel te overschrijven via env (zie `.env.example`). De JSON-API blijft beschikbaar
+(o.a. `/health`, `/billing/webhook` voor Mollie).
 
 Botcommando's: `/start` (account aanmaken/koppelen), `/origins EIN NRN`, `/drempel 50`,
 `/reisduren 3 5 7`, `/mij`, `/deals` (uit de DB), `/stop` (account + data wissen).

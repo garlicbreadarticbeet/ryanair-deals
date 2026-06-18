@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Blog — reistips &amp; dealuitleg · {{ settings.brand_name }}{% endblock %}
+{% block meta_description %}Reistips en uitleg over goedkoop vliegen: wanneer tickets het goedkoopst zijn, citytrips onder de €50 en slim inpakken bij prijsvechters.{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Blog</p>
+    <h1>Reistips &amp; dealuitleg</h1>
+    <p class="lead">Nuchtere stukken over goedkoop vliegen — zodat je de seintjes nog beter benut.</p>
+
+    <div class="grid cols-3" style="margin-top:32px">
+      {% for post in posts %}
+      <article class="card blog-card">
+        <div class="tag-row">
+          {% for t in post.tags[:2] %}<span class="tag">{{ t }}</span>{% endfor %}
+        </div>
+        <h3><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h3>
+        <p class="muted">{{ post.excerpt }}</p>
+        <p class="meta">{{ post.date_label }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% include "_cta_band.html" %}
+{% endblock %}

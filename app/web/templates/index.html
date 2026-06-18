@@ -1,73 +1,229 @@
 {% extends "base.html" %}
-{% block title %}Goedkoop Vliegen — de goedkoopste retourvluchten, automatisch{% endblock %}
+{% block title %}{{ settings.brand_name }} — {{ settings.brand_tagline }}{% endblock %}
+{% block meta_description %}Stel je vertrekvelden en je maximumprijs in. {{ settings.brand_name }} scant elke dag de prijsvechters en geeft je een seintje zodra er een retour onder jouw drempel duikt — via Telegram, e-mail of WhatsApp.{% endblock %}
 
 {% block content %}
+<!-- Hero -->
 <section class="hero">
-  <h1>De goedkoopste retourvluchten,<br>automatisch in de gaten gehouden.</h1>
-  <p class="lead">Kies je vertrekvelden en je prijsdrempel. Wij scannen de prijzen per dag
-    en sturen je een seintje zodra er een retour onder jouw drempel opduikt — via Telegram,
-    e-mail of WhatsApp.</p>
-  <div class="cta-row">
-    {% if user %}
-      <a class="btn" href="/dashboard">Naar je deals</a>
-    {% else %}
-      <a class="btn" href="/login">Gratis aanmelden</a>
-      <a class="btn secondary" href="#prijzen">Bekijk premium</a>
+  <div class="container hero__grid">
+    <div class="reveal">
+      <h1>Goedkoop vliegen,<br>zonder zoeken.</h1>
+      <p class="lead">Stel je vertrekvelden en je maximumprijs in. Wij scannen dagelijks de
+        prijsvechters en sturen een seintje zodra een retour onder jouw drempel duikt.</p>
+      <div class="cta-row">
+        {% if user %}
+          <a class="btn lg" href="/dashboard">Naar je deals</a>
+        {% else %}
+          <a class="btn lg" href="/login">Zet mijn eerste seintje aan</a>
+        {% endif %}
+        <a class="btn ghost lg" href="/hoe-het-werkt">Bekijk hoe het werkt</a>
+      </div>
+      <p class="hero__trust">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+        Gratis te proberen · geen creditcard · stop wanneer je wilt.
+      </p>
+    </div>
+
+    <!-- Visual: voorbeeld-seintje als gelaagde kaartstapel -->
+    <div class="reveal">
+      <div class="hero__stack">
+        <div class="deal-card signature">
+          <div class="chat-line">
+            <span class="ping"><span class="ping__ring"></span><span class="ping__dot"></span></span>
+            Nieuw seintje · vandaag 07:00
+          </div>
+          <div class="deal-card__top">
+            <span class="deal-card__route">Amsterdam → Lissabon</span>
+            <span class="deal-card__price">€38</span>
+          </div>
+          <p class="deal-card__meta">Heen 14 sep · terug 18 sep (4 nachten) · Ryanair</p>
+          <div class="deal-card__foot">
+            <span class="badge success">Onder jouw drempel van €60</span>
+            <a class="navlink" href="/login">Bekijk →</a>
+          </div>
+        </div>
+      </div>
+      <p class="muted" style="font-size:13px;margin:18px 4px 0">Voorbeeld. Prijzen kunnen wijzigen; je boekt bij de airline.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Social proof -->
+<section class="section--tight">
+  <div class="container center reveal">
+    <p class="muted">Werkt met de vertrekvelden die jij kiest — Eindhoven, Weeze, Charleroi, Brussel, Schiphol en meer.</p>
+  </div>
+</section>
+
+<!-- Hoe het werkt — genummerde flow -->
+<section class="section section--surface" id="hoe">
+  <div class="container">
+    <div class="section__head reveal">
+      <h2>Zo werkt het</h2>
+      <p class="sub">In drie stappen ingesteld, daarna doe jij niets meer.</p>
+    </div>
+    <div class="steps-flow reveal-group">
+      <div class="step">
+        <h3>Kies je vertrekvelden</h3>
+        <p class="muted">Vanaf welke luchthavens wil je vertrekken? Eén (gratis) of meerdere (Premium).</p>
+      </div>
+      <div class="step">
+        <h3>Stel je drempel &amp; reisduur in</h3>
+        <p class="muted">Bijvoorbeeld: max €60 retour, 3–5 nachten. Jouw maximum, jouw regels.</p>
+      </div>
+      <div class="step is-amber">
+        <h3>Wij geven je een seintje</h3>
+        <p class="muted">Zodra er een retour onder je drempel duikt, krijg je bericht via Telegram, e-mail of WhatsApp.</p>
+      </div>
+    </div>
+    {% if not user %}
+    <div class="center" style="margin-top:40px">
+      <a class="btn" href="/login">Zet mijn eerste seintje aan</a>
+    </div>
     {% endif %}
   </div>
 </section>
 
+<!-- Voorbeeld-deals — signatuurkaarten -->
 <section class="section">
-  <div class="grid cols-3">
-    <div class="card">
-      <h3>Jouw vertrekvelden</h3>
-      <p class="muted">Niets is vastgezet op één luchthaven — kies zelf één of meerdere
-        vertrekvelden uit heel het netwerk.</p>
+  <div class="container">
+    <div class="section__head reveal">
+      <h2>Zulke retours komen voorbij</h2>
+      <p class="sub">Voorbeelden van citytrips vanaf NL/BE-velden. Prijzen kunnen wijzigen — wij houden ze voor je in de gaten.</p>
     </div>
-    <div class="card">
-      <h3>Heen + terug samen</h3>
-      <p class="muted">We zoeken per reisduur de goedkoopste combinatie van heen- en
-        terugvlucht, tot maanden vooruit.</p>
+    <div class="grid cols-3 reveal-group">
+      {% for d in deals %}
+      <div class="deal-card signature">
+        <div class="deal-card__top">
+          <span class="deal-card__route">{{ origin_names.get(d.origin, d.origin) }} → {{ d.city }}</span>
+          <span class="deal-card__price">€{{ d.price }}</span>
+        </div>
+        <p class="deal-card__meta">{{ d.nights }} nachten · {{ d.airline }} · retour</p>
+        <div class="deal-card__foot">
+          <span class="tag">voorbeeld</span>
+          <span class="muted" style="font-size:13px">{{ d.country }}</span>
+        </div>
+      </div>
+      {% endfor %}
     </div>
-    <div class="card">
-      <h3>Alleen echte koopjes</h3>
-      <p class="muted">Je krijgt alleen een melding bij iets nieuws of goedkopers — geen spam,
-        per kanaal precies één keer.</p>
+    <div class="center" style="margin-top:32px">
+      <a class="btn ghost" href="/bestemmingen">Bekijk meer bestemmingen</a>
     </div>
   </div>
 </section>
 
-<section class="section" id="prijzen">
-  <h2>Prijzen</h2>
-  <p class="sub">Begin gratis. Upgrade wanneer je meer wilt.</p>
-  <div class="grid cols-2">
-    <div class="card plan">
-      <span class="badge free">Gratis</span>
-      <div class="price" style="margin-top:10px">€0</div>
-      <ul class="ticks">
-        <li>Dagelijkse digest van je deals</li>
-        <li>1 vertrekveld</li>
-        <li>Telegram &amp; e-mail</li>
-      </ul>
-      {% if not user %}<a class="btn block" href="/login">Aanmelden</a>{% endif %}
+<!-- Waarom Vliegseintje — verdeeld paneel -->
+<section class="section section--surface">
+  <div class="container">
+    <div class="section__head center reveal">
+      <h2>Waarom {{ settings.brand_name }}</h2>
     </div>
-    <div class="card plan featured">
-      <span class="badge premium">Premium</span>
-      <div class="price" style="margin-top:10px">
-        {% if settings.premium_price %}€{{ settings.premium_price }} <small>/ maand</small>{% else %}<small>binnenkort</small>{% endif %}
+    <div class="vprops reveal">
+      <div class="vprop">
+        <span class="feature__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></span>
+        <h3>Jij hoeft niet te zoeken</h3>
+        <p class="muted">Wij scannen elke dag automatisch de prijsvechters.</p>
       </div>
-      <ul class="ticks">
-        <li><strong>Instant</strong> alerts (direct i.p.v. dagelijks)</li>
-        <li>Meerdere vertrekvelden</li>
-        <li>WhatsApp-meldingen</li>
-        <li>Alles uit gratis</li>
-      </ul>
-      {% if user %}
-        <a class="btn block" href="/account">Beheer abonnement</a>
-      {% else %}
-        <a class="btn block" href="/login">Begin gratis →</a>
-      {% endif %}
+      <div class="vprop">
+        <span class="feature__icon accent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></span>
+        <h3>Jouw drempel, jouw regels</h3>
+        <p class="muted">Alleen een seintje als het écht onder je maximum zit.</p>
+      </div>
+      <div class="vprop">
+        <span class="feature__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>
+        <h3>Waar je al bent</h3>
+        <p class="muted">Telegram, e-mail of WhatsApp — jij kiest het kanaal.</p>
+      </div>
+      <div class="vprop">
+        <span class="feature__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg></span>
+        <h3>Nuchter &amp; transparant</h3>
+        <p class="muted">Altijd de retour-totaalprijs, geen verborgen sterretjes.</p>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- Free vs Premium teaser -->
+<section class="section">
+  <div class="container">
+    <div class="section__head center reveal">
+      <h2>Begin gratis, upgrade wanneer je wilt</h2>
+      <p class="sub">Geen creditcard nodig om te starten.</p>
+    </div>
+    <div class="plans reveal">
+      <div class="plan-card card-lift">
+        <span class="badge free">Gratis</span>
+        <div class="price">€0</div>
+        <ul class="ticks">
+          <li>Dagelijkse digest van je deals</li>
+          <li>1 vertrekveld</li>
+          <li>Telegram &amp; e-mail</li>
+        </ul>
+        {% if not user %}<a class="btn secondary block" href="/login">Gratis aanmelden</a>{% endif %}
+      </div>
+      <div class="plan-card featured card-lift">
+        <span class="badge premium plan-card__flag">Aanrader</span>
+        <span class="badge premium">Premium</span>
+        <div class="price">
+          {% if settings.premium_price %}€{{ settings.premium_price }} <small>/ maand</small>{% else %}<small>binnenkort</small>{% endif %}
+        </div>
+        <ul class="ticks">
+          <li><strong>Instant</strong> alerts i.p.v. dagelijks</li>
+          <li>Meerdere vertrekvelden</li>
+          <li>WhatsApp-meldingen</li>
+          <li>Alles uit gratis</li>
+        </ul>
+        <a class="btn block" href="/premium">Vergelijk plannen</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Telegram-bot -->
+<section class="section section--surface">
+  <div class="container">
+    <div class="card card--pad-lg reveal">
+      <div class="hero__grid" style="gap:32px;align-items:center">
+        <div>
+          <p class="eyebrow">Telegram</p>
+          <h2>Liever alles in Telegram?</h2>
+          <p class="muted">Koppel je account aan onze bot en ontvang je seintjes direct in je chat.
+            Stel je voorkeuren in met simpele commando's en vraag op elk moment je actuele deals op.</p>
+          {% if not user %}<a class="btn" href="/login">Begin gratis</a>{% endif %}
+        </div>
+        <div class="deal-card signature">
+          <div class="chat-line"><span class="ping"><span class="ping__ring"></span><span class="ping__dot"></span></span> {{ settings.brand_name }}-bot</div>
+          <div class="deal-card__top">
+            <span class="deal-card__route" style="font-size:16px">Eindhoven → Praag</span>
+            <span class="deal-card__price" style="font-size:18px">€29</span>
+          </div>
+          <p class="deal-card__meta">Heen 3 okt · terug 6 okt (3 nachten) · Ryanair<br>Onder jouw drempel van €50. Prijzen kunnen snel wijzigen.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ-preview -->
+<section class="section">
+  <div class="container reveal" style="max-width:760px">
+    <div class="section__head center">
+      <h2>Veelgestelde vragen</h2>
+    </div>
+    <div class="accordion">
+      {% for item in faq_preview %}
+      <details {{ 'open' if loop.first else '' }}>
+        <summary>{{ item.q }}</summary>
+        <div class="acc__body"><p>{{ item.a }}</p></div>
+      </details>
+      {% endfor %}
+    </div>
+    <div class="center" style="margin-top:24px">
+      <a class="btn ghost" href="/faq">Alle vragen</a>
+    </div>
+  </div>
+</section>
+
+<!-- Slot-CTA -->
+{% include "_cta_band.html" %}
 {% endblock %}

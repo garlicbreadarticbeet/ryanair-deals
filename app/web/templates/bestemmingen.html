@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Bestemmingen — {{ settings.brand_name }}{% endblock %}
+{% block meta_description %}Voorbeelden van goedkope citytrips vanaf Nederlandse en Belgische velden. Filter op vertrekveld en zie wat een retour zoal kost. Prijzen kunnen wijzigen.{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container">
+    <p class="eyebrow">Bestemmingen</p>
+    <h1>Goedkoop vliegen naar Europa, vanaf jouw veld</h1>
+    <p class="lead">Een greep uit de citytrips die vanaf NL/BE-velden voor weinig te doen zijn. Dit zijn
+      <strong>voorbeelden</strong> van retour-totaalprijzen — prijzen kunnen wijzigen. Stel een seintje in en
+      wij laten je weten zodra zo'n retour echt onder jouw drempel duikt.</p>
+
+    <div class="filters">
+      <a class="tag {{ 'badge free' if not active_origin else '' }}" href="/bestemmingen">Alle velden</a>
+      {% for o in origins %}
+        <a class="tag {{ 'badge free' if active_origin == o else '' }}" href="/bestemmingen?origin={{ o }}">{{ origin_names.get(o, o) }}</a>
+      {% endfor %}
+    </div>
+
+    {% if deals %}
+    <div class="dest-grid">
+      {% for d in deals %}
+      <div class="card dest-card">
+        <div class="deal-card__top">
+          <div>
+            <div class="city">{{ d.city }}</div>
+            <div class="country">{{ d.country }}</div>
+          </div>
+          <div style="text-align:right">
+            <div class="pricelabel">€{{ d.price }}</div>
+            <div class="muted" style="font-size:13px">retour</div>
+          </div>
+        </div>
+        <p class="muted" style="font-size:14px;margin:10px 0 14px">{{ d.blurb }}</p>
+        <div class="deal-card__foot">
+          <span class="tag">{{ origin_names.get(d.origin, d.origin) }} → {{ d.iata_to }}</span>
+          <span class="muted" style="font-size:13px">{{ d.nights }} nachten · {{ d.airline }}</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty"><p class="muted">Geen voorbeelden voor dit veld. <a href="/bestemmingen">Bekijk alle bestemmingen →</a></p></div>
+    {% endif %}
+
+    <p class="muted center" style="margin-top:28px;font-size:14px">Voorbeelddata ter illustratie. We boeken zelf geen tickets; je rekent af bij de airline.</p>
+  </div>
+</section>
+
+{% include "_cta_band.html" %}
+{% endblock %}

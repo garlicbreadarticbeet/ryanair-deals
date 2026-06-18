@@ -1,0 +1,108 @@
+{
+  "groups": [
+    {
+      "name": "Algemeen",
+      "items": [
+        {
+          "q": "Is het gratis?",
+          "a": "Ja, je kunt Vliegseintje gratis gebruiken. Met een gratis account stel je één vertrekveld, je prijsdrempel en je reisduur in, en krijg je je seintjes via Telegram of e-mail. Wil je instant alerts, meerdere vertrekvelden of WhatsApp, dan kies je Premium."
+        },
+        {
+          "q": "Wat doet Vliegseintje precies?",
+          "a": "Je stelt in vanaf welk vertrekveld je wilt vliegen en wat je maximaal wilt betalen voor een retour. Wij scannen dagelijks de prijzen en sturen je een seintje zodra er een retour onder jouw drempel duikt. Zo hoef je niet zelf te blijven zoeken."
+        },
+        {
+          "q": "Boeken jullie de tickets?",
+          "a": "Nee, wij verkopen en boeken geen tickets. We sturen je een seintje met de route, de retour-totaalprijs en een link, en je boekt zelf bij de luchtvaartmaatschappij of een aggregator. Prijzen kunnen wijzigen, dus check het bedrag altijd nog even voor je boekt."
+        },
+        {
+          "q": "Welke luchtvaartmaatschappijen?",
+          "a": "We starten met Ryanair. Daarna breiden we uit naar andere prijsvechters zoals Wizz Air. Het gaat ons om de scherpe retours van budgetmaatschappijen, niet om elke airline ter wereld."
+        },
+        {
+          "q": "Vinden jullie altijd de laagste prijs?",
+          "a": "Nee, dat beloven we niet. We claimen niet de allerlaagste prijs ter wereld te vinden. Wat we wél doen: dagelijks scannen en je een seintje sturen zodra een retour onder jóuw ingestelde drempel zakt."
+        },
+        {
+          "q": "Voor wie is dit handig?",
+          "a": "Voor prijsbewuste vakantievliegers die flexibel zijn in datum en bestemming. Hoe flexibeler je bent met je reisduur en periode, hoe groter de kans dat er een retour onder je drempel langskomt."
+        }
+      ]
+    },
+    {
+      "name": "Alerts & kanalen",
+      "items": [
+        {
+          "q": "Hoe snel krijg ik een seintje?",
+          "a": "Met een gratis account krijg je één keer per dag een gebundelde digest met de retours die onder je drempel zaten. Met Premium krijg je een instant seintje, zo snel mogelijk nadat we de deal vinden."
+        },
+        {
+          "q": "Via welke kanalen krijg ik mijn seintjes?",
+          "a": "Gratis ontvang je je seintjes via Telegram en e-mail. WhatsApp komt er bij Premium bovenop. Je koppelt je kanaal in een paar klikken en kiest zelf waar je bericht wilt krijgen."
+        },
+        {
+          "q": "Hoe koppel ik de Telegram-bot?",
+          "a": "In je account genereer je een koppelcode, je opent onze Telegram-bot en stuurt die code. Daarna staat je Telegram gekoppeld en komen je seintjes in je chat binnen. Loskoppelen kan op elk moment."
+        },
+        {
+          "q": "Wat staat er in een seintje?",
+          "a": "De route, de retour-totaalprijs, de data en reisduur, het vertrekveld en een link om verder te kijken. We tonen altijd de totaalprijs voor de retour, geen los enkeltje met verborgen sterretjes. Prijzen kunnen wijzigen."
+        },
+        {
+          "q": "Kan ik mijn drempel of alerts aanpassen?",
+          "a": "Ja. In je dashboard pas je je prijsdrempel, reisduur en vertrekveld aan, of zet je een alert tijdelijk uit. Te veel berichten? Verlaag je drempel of pauzeer de alert."
+        }
+      ]
+    },
+    {
+      "name": "Premium & betalen",
+      "items": [
+        {
+          "q": "Wat krijg ik extra met Premium?",
+          "a": "Premium geeft je instant alerts in plaats van de dagelijkse digest, meerdere vertrekvelden en WhatsApp als extra kanaal. Handig als je snel wilt zijn en vanaf meerdere luchthavens wilt kunnen vertrekken."
+        },
+        {
+          "q": "Wat kost Premium?",
+          "a": "De exacte prijs staat op de Premium-pagina, in euro's en inclusief btw. We houden het bewust eerlijk en zonder verborgen kosten. Op het moment van schrijven leggen we de definitieve prijs nog vast, dus check de Premium-pagina voor het actuele bedrag."
+        },
+        {
+          "q": "Hoe kan ik betalen?",
+          "a": "Je betaalt met iDEAL of Bancontact via Mollie. Voor een doorlopend abonnement loopt de verlenging daarna via SEP-incasso. Je ziet je facturen en de volgende incassodatum terug in je account."
+        },
+        {
+          "q": "Hoe zeg ik Premium op?",
+          "a": "In je account klik je bij Abonnement op opzeggen. Je Premium loopt dan door tot het einde van de betaalde periode en daarna val je automatisch terug naar het gratis plan. Geen opzegtermijn met gedoe."
+        },
+        {
+          "q": "Krijg ik geld terug bij opzeggen?",
+          "a": "Bij opzeggen stopt de verlenging en behoud je Premium tot het einde van de lopende periode. De voorwaarden rond terugbetaling staan op de Premium-pagina. Twijfel je? Stel eerst een gratis alert in en kijk of het bij je past."
+        }
+      ]
+    },
+    {
+      "name": "Privacy",
+      "items": [
+        {
+          "q": "Welke gegevens bewaren jullie?",
+          "a": "Zo min mogelijk: je e-mailadres en je voorkeuren (vertrekveld, drempel, reisduur, kanaal). Je telefoonnummer bewaren we alleen als je zelf WhatsApp aanzet. We werken zonder wachtwoord, dus dat slaan we niet op."
+        },
+        {
+          "q": "Verkopen jullie mijn gegevens?",
+          "a": "Nee. We verkopen je gegevens niet en gebruiken ze om je seintjes te sturen en je account te laten werken. We verdienen aan Premium en aan affiliate-vergoeding op doorkliklinks, niet aan jouw data."
+        },
+        {
+          "q": "Kan ik mijn account verwijderen?",
+          "a": "Ja. In je account kun je je gegevens exporteren en je account verwijderen. Bij verwijderen wissen we je gegevens; dit is conform de AVG geregeld."
+        },
+        {
+          "q": "Gebruiken jullie cookies en tracking?",
+          "a": "We gebruiken privacyvriendelijke, cookieloze analytics. Daardoor hebben we in principe geen opdringerige cookiebanner of tracking-cookies nodig. Komt er ooit iets niet-essentieels bij, dan vragen we je daar eerst netjes toestemming voor."
+        },
+        {
+          "q": "Zijn mijn gegevens veilig?",
+          "a": "We gaan zorgvuldig met je gegevens om: verbinding via HTTPS, dataminimalisatie en geen wachtwoorden om te lekken (je logt in via magic link of Google). De volledige details lees je in onze privacyverklaring."
+        }
+      ]
+    }
+  ]
+}

@@ -22,6 +22,19 @@ class Settings(BaseSettings):
         case_sensitive=False,
     )
 
+    # --- Merk (UI; centraal zodat naam/tagline op één plek te wijzigen zijn) ---
+    brand_name: str = "Vliegseintje"
+    brand_tagline: str = "Goedkoop vliegen, zonder zoeken."
+    # Social handles (zonder @) — alleen getoond als gezet. Inschattingen uit het merkdoc.
+    social_instagram: str = "vliegseintje"
+    social_tiktok: str = "vliegseintje"
+    social_x: str = "vliegseintje"
+    support_email: str = ""             # ontvanger contactformulier; valt terug op resend_from
+
+    # --- Privacyvriendelijke analytics + foutmonitoring (opt-in via env) ---
+    plausible_domain: str = ""          # bv. "vliegseintje.nl"; script alleen geladen als gezet
+    sentry_dsn: str = ""
+
     # --- Database ---
     # Lokaal/Docker default; in productie (Hetzner) via env gezet. psycopg 3-driver.
     database_url: str = "postgresql+psycopg://ryanair:ryanair@localhost:5433/ryanair"

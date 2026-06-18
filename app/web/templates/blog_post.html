@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{{ post.title }} — {{ settings.brand_name }}{% endblock %}
+{% block meta_description %}{{ post.excerpt }}{% endblock %}
+{% block head_extra %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ post.title | tojson }},
+  "description": {{ post.excerpt | tojson }},
+  "datePublished": "{{ post.date.isoformat() }}",
+  "author": { "@type": "Organization", "name": "{{ settings.brand_name }}" },
+  "publisher": { "@type": "Organization", "name": "{{ settings.brand_name }}" }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container prose">
+    <p class="meta muted"><a href="/blog">Blog</a> · {{ post.date_label }}</p>
+    <h1>{{ post.title }}</h1>
+    <div class="tag-row" style="margin-bottom:24px">
+      {% for t in post.tags %}<span class="tag">{{ t }}</span>{% endfor %}
+    </div>
+    {{ post.html | safe }}
+    <hr class="soft">
+    <div class="cta-row">
+      {% if user %}<a class="btn" href="/dashboard">Naar je deals</a>{% else %}<a class="btn" href="/login">Zet mijn eerste seintje aan</a>{% endif %}
+      <a class="btn ghost" href="/blog">Meer artikelen</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

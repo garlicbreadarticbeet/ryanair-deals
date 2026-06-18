@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — {{ settings.brand_name }}{% endblock %}
+{% block meta_description %}{{ title }} van {{ settings.brand_name }}.{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container prose">
+    {{ body | safe }}
+  </div>
+</section>
+{% endblock %}

@@ -1,36 +1,53 @@
-{% extends "base.html" %}
-{% block title %}Je deals — Goedkoop Vliegen{% endblock %}
-{% block content %}
-<section class="section">
-  <h2>Je deals</h2>
+{% extends "app_base.html" %}
+{% block title %}Je deals — {{ settings.brand_name }}{% endblock %}
+{% block app %}
+<div class="section__head" style="margin-bottom:24px">
+  <h1>Je deals</h1>
   <p class="sub">
     Retours onder €{{ '%.0f'|format(prefs.threshold) }} vanaf
     {{ origins|join(', ') if origins else '—' }} ·
     {{ 'instant' if effective_mode == 'instant' else 'dagelijkse digest' }}
   </p>
+</div>
 
-  {% if not has_origins %}
-    <div class="flash info">Je hebt nog geen vertrekvelden ingesteld.
-      <a href="/preferences">Stel je voorkeuren in →</a></div>
-  {% elif not deal_groups %}
-    <div class="card center">
-      <p class="muted">Nog geen deals onder je drempel. We blijven scannen — je krijgt vanzelf bericht.</p>
+{% if not has_origins %}
+  <div class="empty">
+    <div class="empty__icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
     </div>
-  {% else %}
-    {% for g in deal_groups %}
-      <div class="deal-group">
-        <h4>{{ g.nights }} dagen</h4>
-        {% for d in g.deals %}
-          <div class="deal">
-            <span class="price-tag">€{{ '%.2f'|format(d.total) }}</span>
-            <span class="route">{{ d.origin }} ⇄ {{ d.destination }}</span>
-            <span class="when">{{ d.out_date.strftime('%d-%m') }} → {{ d.in_date.strftime('%d-%m') }}</span>
-          </div>
-        {% endfor %}
-      </div>
-    {% endfor %}
-  {% endif %}
+    <h3>Nog geen seintjes</h3>
+    <p class="muted">Je hebt nog geen vertrekvelden ingesteld. Stel je voorkeuren in en je eerste alert staat live.</p>
+    <a class="btn" href="/preferences">Stel je voorkeuren in</a>
+  </div>
+{% elif not deal_groups %}
+  <div class="empty">
+    <h3>Nog geen deals onder je drempel</h3>
+    <p class="muted">We blijven scannen — je krijgt vanzelf bericht zodra er een retour onder €{{ '%.0f'|format(prefs.threshold) }} duikt.</p>
+    <a class="btn ghost" href="/preferences">Drempel aanpassen</a>
+  </div>
+{% else %}
+  {% for g in deal_groups %}
+    <div class="deal-group">
+      <h4>{{ g.nights }} nachten</h4>
+      {% for d in g.deals %}
+        <div class="deal">
+          <span class="price-tag">€{{ '%.2f'|format(d.total) }}</span>
+          <span class="route">{{ d.origin }} ⇄ {{ d.destination }}</span>
+          <span class="when">{{ d.out_date.strftime('%d-%m') }} → {{ d.in_date.strftime('%d-%m') }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% endfor %}
+  <p class="muted" style="font-size:14px;margin-top:8px">Prijzen kunnen wijzigen; je boekt bij de airline.</p>
+{% endif %}
 
-  <p class="muted"><a href="/preferences">Voorkeuren aanpassen</a> · <a href="/channels">Kanalen beheren</a></p>
-</section>
+{% if user.tier != 'premium' %}
+  <div class="card" style="margin-top:28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap">
+    <div style="flex:1;min-width:220px">
+      <strong>Sneller zijn dan de rest?</strong>
+      <p class="muted" style="margin:4px 0 0">Met Premium krijg je instant alerts, meerdere vertrekvelden en WhatsApp.</p>
+    </div>
+    <a class="btn secondary" href="/premium">Bekijk Premium</a>
+  </div>
+{% endif %}
 {% endblock %}

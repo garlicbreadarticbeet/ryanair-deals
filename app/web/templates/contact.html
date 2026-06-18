@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Contact — {{ settings.brand_name }}{% endblock %}
+{% block meta_description %}Een vraag of idee over {{ settings.brand_name }}? Stuur ons een bericht. We reageren meestal binnen een paar werkdagen.{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:600px">
+    <p class="eyebrow">Contact</p>
+    <h1>Stuur ons een bericht</h1>
+    <p class="lead">Een vraag, idee of probleem? Laat het weten. Check eerst even de
+      <a href="/faq">veelgestelde vragen</a> — misschien staat je antwoord er al.</p>
+
+    {% if sent %}
+      <div class="flash ok">Bedankt — je bericht is binnen. We reageren meestal binnen een paar werkdagen.</div>
+      <a class="btn ghost" href="/">Terug naar home</a>
+    {% else %}
+      {% if error %}<div class="flash err">{{ error }}</div>{% endif %}
+      <form method="post" action="/contact" class="card stack">
+        <div class="field">
+          <label for="name">Je naam</label>
+          <input type="text" id="name" name="name" required value="{{ form.name if form else '' }}">
+        </div>
+        <div class="field">
+          <label for="email">E-mailadres</label>
+          <input type="email" id="email" name="email" required value="{{ form.email if form else '' }}" placeholder="jij@voorbeeld.nl">
+        </div>
+        <div class="field">
+          <label for="message">Bericht</label>
+          <textarea id="message" name="message" required>{{ form.message if form else '' }}</textarea>
+        </div>
+        <!-- honeypot: voor mensen verborgen, bots vullen 'm vaak wel in -->
+        <div class="hp" aria-hidden="true">
+          <label for="company">Bedrijf (niet invullen)</label>
+          <input type="text" id="company" name="company" tabindex="-1" autocomplete="off">
+        </div>
+        <button class="btn block" type="submit">Verstuur bericht</button>
+        <p class="help">We gebruiken je gegevens alleen om je vraag te beantwoorden. Zie onze <a href="/privacy">privacyverklaring</a>.</p>
+      </form>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

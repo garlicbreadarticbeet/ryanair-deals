@@ -4,3 +4,11 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Lokale Claude Code / dev-tooling (skills zijn herinstalleerbaar via npx/marketplace)
+.claude/
+.github/skills/
+.impeccable/
+
+# Binaire werkdocumenten
+*.docx

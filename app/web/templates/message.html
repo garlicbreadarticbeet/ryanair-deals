@@ -1,11 +1,13 @@
 {% extends "base.html" %}
-{% block title %}{{ heading }} — Goedkoop Vliegen{% endblock %}
+{% block title %}{{ heading }} — {{ settings.brand_name }}{% endblock %}
 {% block content %}
-<section class="section" style="max-width:480px;margin:0 auto">
-  <div class="card center stack">
-    <h2>{{ heading }}</h2>
-    <p class="muted">{{ message }}</p>
-    <a class="btn" href="{{ link or '/' }}">{{ link_label or 'Naar home' }}</a>
+<section class="section">
+  <div class="container" style="max-width:480px">
+    <div class="card center stack">
+      <h1 style="font-size:26px">{{ heading }}</h1>
+      <p class="muted">{{ message }}</p>
+      <a class="btn" href="{{ link or '/' }}">{{ link_label or 'Naar home' }}</a>
+    </div>
   </div>
 </section>
 {% endblock %}

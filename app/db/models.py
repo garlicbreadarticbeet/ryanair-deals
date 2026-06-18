@@ -305,6 +305,21 @@ class AuthToken(Base):
     )
 
 
+class ContactMessage(Base):
+    """Bericht uit het publieke contactformulier (/contact). Niet aan een user gekoppeld."""
+
+    __tablename__ = "contact_messages"
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    name: Mapped[str] = mapped_column(String(128), nullable=False)
+    email: Mapped[str] = mapped_column(String(254), nullable=False)
+    message: Mapped[str] = mapped_column(String(4000), nullable=False)
+    handled: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("false"))
+    created_at: Mapped[datetime.datetime] = _now()
+
+    __table_args__ = (Index("ix_contact_messages_created", "created_at"),)
+
+
 class Subscription(Base):
     """Mollie-abonnementsstatus per gebruiker (Fase 2). Eén rij per gebruiker.
 

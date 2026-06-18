@@ -1,19 +1,21 @@
 {% extends "base.html" %}
-{% block title %}Inloggen — Goedkoop Vliegen{% endblock %}
+{% block title %}Inloggen of aanmelden — {{ settings.brand_name }}{% endblock %}
 {% block content %}
-<section class="section" style="max-width:440px;margin:0 auto">
-  <div class="card stack">
-    <h2>Inloggen of aanmelden</h2>
-    <p class="muted">Vul je e-mail in; je ontvangt een inloglink. Geen wachtwoord nodig.</p>
-    <form method="post" action="/login" class="stack">
-      <div class="field">
-        <label for="email">E-mailadres</label>
-        <input type="email" id="email" name="email" required placeholder="jij@voorbeeld.nl" autofocus>
-      </div>
-      <button class="btn block" type="submit">Stuur inloglink</button>
-    </form>
-    <hr class="soft">
-    <p class="muted center">Liever via Telegram? Start de bot met <code>/start</code> — je kunt later je e-mail koppelen.</p>
+<section class="section">
+  <div class="container" style="max-width:440px">
+    <div class="card stack">
+      <h1 style="font-size:28px">Inloggen of aanmelden</h1>
+      <p class="muted">Vul je e-mail in; je ontvangt een inloglink. Geen wachtwoord nodig — nieuw account of bestaand, het werkt hetzelfde.</p>
+      <form method="post" action="/login" class="stack">
+        <div class="field">
+          <label for="email">E-mailadres</label>
+          <input type="email" id="email" name="email" required placeholder="jij@voorbeeld.nl" autofocus>
+        </div>
+        <button class="btn block" type="submit">Stuur inloglink</button>
+      </form>
+      <hr class="soft">
+      <p class="muted center" style="font-size:14px">Liever via Telegram? Start de bot met <code>/start</code> — je kunt later je e-mail koppelen.</p>
+    </div>
   </div>
 </section>
 {% endblock %}

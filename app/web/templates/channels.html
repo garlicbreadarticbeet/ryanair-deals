@@ -1,16 +1,18 @@
-{% extends "base.html" %}
-{% block title %}Kanalen — Goedkoop Vliegen{% endblock %}
-{% block content %}
-<section class="section" style="max-width:620px;margin:0 auto">
-  <h2>Kanalen</h2>
-  <p class="sub">Waar wil je je alerts ontvangen?</p>
+{% extends "app_base.html" %}
+{% block title %}Kanalen — {{ settings.brand_name }}{% endblock %}
+{% block app %}
+<div class="section__head" style="margin-bottom:24px">
+  <h1>Kanalen</h1>
+  <p class="sub">Waar wil je je seintjes ontvangen?</p>
+</div>
 
-  <div class="card stack">
+<div class="stack" style="max-width:640px">
+  <div class="card">
     <h3>Telegram</h3>
     {% if telegram_connected %}
       <p class="flash ok">Gekoppeld ✓</p>
     {% elif telegram_link %}
-      <p>Klik om de bot te openen en je account te koppelen:</p>
+      <p class="muted">Klik om de bot te openen en je account te koppelen:</p>
       <a class="btn" href="{{ telegram_link }}" target="_blank" rel="noopener">Koppel Telegram</a>
     {% else %}
       <p class="muted">Open de bot in Telegram en stuur dit bericht:</p>
@@ -18,28 +20,29 @@
     {% endif %}
   </div>
 
-  <div class="card stack">
+  <div class="card">
     <h3>E-mail</h3>
     <p>{{ email or '—' }}
-      {% if email_verified %}<span class="badge free">geverifieerd</span>{% endif %}</p>
+      {% if email_verified %}<span class="badge success">geverifieerd</span>{% endif %}</p>
+    <p class="muted" style="font-size:14px;margin:0">Je dagelijkse digest en transactionele mails gaan hierheen.</p>
   </div>
 
-  <div class="card stack">
+  <div class="card">
     <h3>WhatsApp <span class="badge premium">premium</span></h3>
     {% if not is_premium %}
-      <p class="muted">WhatsApp-alerts horen bij premium. <a href="/account">Upgrade →</a></p>
+      <p class="muted">WhatsApp-alerts horen bij Premium. <a href="/premium">Upgrade →</a></p>
     {% elif whatsapp_number %}
       <p class="flash ok">Ingesteld: {{ whatsapp_number }}</p>
     {% else %}
       <form method="post" action="/channels/whatsapp" class="stack">
         <div class="field">
           <label for="wa">WhatsApp-nummer</label>
-          <input type="text" id="wa" name="number" placeholder="+316...">
+          <input type="tel" id="wa" name="number" placeholder="+316...">
         </div>
         <button class="btn secondary" type="submit">Opslaan</button>
         <p class="help">Verzending wordt geactiveerd zodra de WhatsApp-koppeling live is.</p>
       </form>
     {% endif %}
   </div>
-</section>
+</div>
 {% endblock %}

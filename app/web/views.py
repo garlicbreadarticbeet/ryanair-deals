@@ -20,6 +20,7 @@ from app.db import repo
 from app.db.models import Channel, Subscription, UserOrigin
 from app.errors import PremiumRequired
 from app.settings import settings
+from app.web import content_store as content
 from app.web.auth import issue_token
 from app.web.deps import (
     clear_session_cookie,
@@ -42,7 +43,13 @@ def _utcnow() -> datetime.datetime:
 
 @router.get("/", response_class=HTMLResponse)
 def landing(user=Depends(optional_web_user)):
-    return render("index.html", user=user, settings=settings)
+    faq_groups = content.faq_groups()
+    faq_preview = faq_groups[0]["items"][:4] if faq_groups else []
+    return render(
+        "index.html", user=user, settings=settings,
+        deals=content.destinations()[:6], origin_names=content.ORIGIN_NAMES,
+        faq_preview=faq_preview,
+    )
 
 
 # ---------- auth ----------
@@ -110,7 +117,7 @@ def dashboard(user=Depends(optional_web_user), db: Session = Depends(get_db)):
     return render(
         "dashboard.html", user=user, settings=settings, prefs=user.preferences,
         origins=origins, has_origins=bool(origins), deal_groups=deal_groups,
-        effective_mode=gating.effective_alert_mode(user),
+        effective_mode=gating.effective_alert_mode(user), active="dashboard",
     )
 
 
@@ -127,7 +134,7 @@ def _render_preferences(db, user, *, flash=None, flash_kind=None, status_code=20
         dest_countries=" ".join(prefs.dest_countries), dest_whitelist=" ".join(prefs.dest_whitelist),
         dest_blacklist=" ".join(prefs.dest_blacklist),
         is_premium=(user.tier == "premium"), max_origins=gating.max_origins(user),
-        flash=flash, flash_kind=flash_kind,
+        flash=flash, flash_kind=flash_kind, active="preferences",
     )
 
 
@@ -198,6 +205,7 @@ def channels_page(user=Depends(optional_web_user), db: Session = Depends(get_db)
         telegram_connected="telegram" in chans, telegram_link=telegram_link, telegram_token=telegram_token,
         email=user.email, email_verified=user.email_verified,
         is_premium=(user.tier == "premium"), whatsapp_number=(wa.address if wa else None),
+        active="channels",
     )
 
 
@@ -233,6 +241,7 @@ def _render_account(db, user, *, flash=None, flash_kind=None):
     return render(
         "account.html", user=user, settings=settings, subscription=sub,
         is_premium=(user.tier == "premium"), flash=flash, flash_kind=flash_kind,
+        active="account",
     )
 
 

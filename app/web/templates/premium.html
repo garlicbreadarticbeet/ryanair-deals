@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Premium &amp; prijzen — {{ settings.brand_name }}{% endblock %}
+{% block meta_description %}Vergelijk Gratis en Premium. Premium geeft instant alerts, meerdere vertrekvelden en WhatsApp. Betaal met iDEAL of Bancontact. Geen verborgen kosten.{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:880px">
+    <p class="eyebrow">Prijzen</p>
+    <h1>Begin gratis. Upgrade als je sneller wilt zijn.</h1>
+    <p class="lead">Geen verborgen kosten, geen verplichtingen. Premium-prijs in euro's, inclusief btw.
+      Stop wanneer je wilt; je houdt je toegang tot het einde van de periode.</p>
+  </div>
+</section>
+
+<section class="section--tight">
+  <div class="container">
+    <div class="plans">
+      <div class="plan-card">
+        <span class="badge free">Gratis</span>
+        <div class="price">€0 <small>/ altijd</small></div>
+        <p class="muted">Voor wie rustig wil meekijken.</p>
+        <ul class="ticks">
+          <li>Dagelijkse digest van je deals</li>
+          <li>{{ free_max_origins }} vertrekveld</li>
+          <li>Telegram &amp; e-mail</li>
+          <li>Prijsdrempel &amp; reisduur instellen</li>
+          <li>Basis prijsgeschiedenis</li>
+        </ul>
+        {% if user %}
+          <a class="btn secondary block" href="/dashboard">Naar je deals</a>
+        {% else %}
+          <a class="btn secondary block" href="/login">Gratis aanmelden</a>
+        {% endif %}
+      </div>
+      <div class="plan-card featured">
+        <span class="badge premium plan-card__flag">Aanrader</span>
+        <span class="badge premium">Premium</span>
+        <div class="price">
+          {% if settings.premium_price %}€{{ settings.premium_price }} <small>/ maand</small>
+          {% else %}<small>prijs binnenkort</small>{% endif %}
+        </div>
+        <p class="muted">Voor wie de scherpste deals als eerste wil.</p>
+        <ul class="ticks">
+          <li><strong>Instant</strong> alerts i.p.v. dagelijks</li>
+          <li>Meerdere vertrekvelden</li>
+          <li>WhatsApp-meldingen</li>
+          <li>Uitgebreide prijsgeschiedenis</li>
+          <li>Alles uit gratis</li>
+        </ul>
+        {% if user %}
+          <a class="btn block" href="/account">Upgrade naar Premium</a>
+        {% else %}
+          <a class="btn block" href="/login">Begin gratis →</a>
+        {% endif %}
+      </div>
+    </div>
+    <p class="muted center" style="margin-top:20px;font-size:14px">
+      Betalen met iDEAL of Bancontact · veilig via Mollie · daarna automatische verlenging via SEPA, opzegbaar op elk moment.
+    </p>
+  </div>
+</section>
+
+<section class="section section--surface">
+  <div class="container" style="max-width:880px">
+    <div class="section__head"><h2>Functies vergeleken</h2></div>
+    <table class="compare">
+      <thead>
+        <tr><th>Functie</th><th class="col">Gratis</th><th class="col">Premium</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Aantal vertrekvelden</td><td class="col">{{ free_max_origins }}</td><td class="col">Meerdere</td></tr>
+        <tr><td>Levering</td><td class="col">Dagelijkse digest</td><td class="col">{{ 'Instant' if instant_premium else 'Instant of digest' }}</td></tr>
+        <tr><td>Telegram &amp; e-mail</td><td class="col">✓</td><td class="col">✓</td></tr>
+        <tr><td>WhatsApp</td><td class="col">{{ '—' if whatsapp_premium else '✓' }}</td><td class="col">✓</td></tr>
+        <tr><td>Prijsdrempel &amp; reisduur</td><td class="col">✓</td><td class="col">✓</td></tr>
+        <tr><td>Prijsgeschiedenis per alert</td><td class="col">Basis</td><td class="col">Uitgebreid</td></tr>
+        <tr><td>Extra airlines (later)</td><td class="col">—</td><td class="col">✓</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:12px;font-size:14px">Exacte limieten kunnen we aanpassen; ze staan los in de instellingen, niet vastgemetseld.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container" style="max-width:760px">
+    <div class="section__head center"><h2>Over opzeggen en terugbetalen</h2></div>
+    <div class="accordion">
+      <details open>
+        <summary>Kan ik op elk moment opzeggen?</summary>
+        <div class="acc__body"><p>Ja. Je zegt op in je account; je Premium loopt door tot het einde van de
+          betaalde periode en daarna val je automatisch terug naar gratis. Geen opzegtermijn met gedoe.</p></div>
+      </details>
+      <details>
+        <summary>Zijn er verborgen kosten?</summary>
+        <div class="acc__body"><p>Nee. De prijs die je ziet is inclusief btw. We boeken zelf geen tickets en
+          rekenen geen boekingskosten; je betaalt alleen je abonnement.</p></div>
+      </details>
+      <details>
+        <summary>Hoe verdienen jullie geld?</summary>
+        <div class="acc__body"><p>Aan Premium-abonnementen en, waar mogelijk, aan een affiliate-vergoeding
+          als je via onze link doorklikt naar de airline. Dat kost jou niets extra en we tonen altijd de
+          eerlijke totaalprijs.</p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+{% include "_cta_band.html" %}
+{% endblock %}

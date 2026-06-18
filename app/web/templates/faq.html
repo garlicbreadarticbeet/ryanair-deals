@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Veelgestelde vragen — {{ settings.brand_name }}{% endblock %}
+{% block meta_description %}Antwoorden over {{ settings.brand_name }}: is het gratis, hoe snel krijg ik een seintje, welke airlines, hoe werkt Premium en wat doen jullie met mijn gegevens?{% endblock %}
+{% block head_extra %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {% for g in groups %}{% for item in g['items'] %}
+    {
+      "@type": "Question",
+      "name": {{ item.q | tojson }},
+      "acceptedAnswer": { "@type": "Answer", "text": {{ item.a | tojson }} }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}{% if not loop.last %},{% endif %}{% endfor %}
+  ]
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container" style="max-width:780px">
+    <p class="eyebrow">Support</p>
+    <h1>Veelgestelde vragen</h1>
+    <p class="lead">Staat je vraag er niet bij? <a href="/contact">Stuur ons een bericht</a> — we helpen je graag.</p>
+
+    {% for g in groups %}
+    <h2 style="margin-top:40px">{{ g.name }}</h2>
+    <div class="accordion">
+      {% for item in g['items'] %}
+      <details>
+        <summary>{{ item.q }}</summary>
+        <div class="acc__body"><p>{{ item.a }}</p></div>
+      </details>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+{% include "_cta_band.html" %}
+{% endblock %}

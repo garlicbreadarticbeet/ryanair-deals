@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{# Ingelogde app-pagina's: linker zijbalk + content (websiteplan §12). Stel `active` in de view in. #}
+{% block content %}
+<div class="container">
+  <div class="app-shell">
+    <aside class="app-side" aria-label="App-navigatie">
+      <a class="side-link {{ 'active' if active == 'dashboard' else '' }}" href="/dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Deals
+      </a>
+      <a class="side-link {{ 'active' if active == 'preferences' else '' }}" href="/preferences">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+        Voorkeuren
+      </a>
+      <a class="side-link {{ 'active' if active == 'channels' else '' }}" href="/channels">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        Kanalen
+      </a>
+      <a class="side-link {{ 'active' if active == 'account' else '' }}" href="/account">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Account
+      </a>
+    </aside>
+    <div>
+      {% block app %}{% endblock %}
+    </div>
+  </div>
+</div>
+{% endblock %}

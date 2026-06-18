@@ -1,12 +1,15 @@
-{% extends "base.html" %}
-{% block title %}Account — Goedkoop Vliegen{% endblock %}
-{% block content %}
-<section class="section" style="max-width:560px;margin:0 auto">
-  <h2>Account</h2>
+{% extends "app_base.html" %}
+{% block title %}Account — {{ settings.brand_name }}{% endblock %}
+{% block app %}
+<div class="section__head" style="margin-bottom:24px">
+  <h1>Account</h1>
+  <p class="sub">Je gegevens, je abonnement en je privacy — op één plek.</p>
+</div>
 
-  <div class="card stack">
+<div class="stack" style="max-width:640px">
+  <div class="card">
     <p>E-mail: <strong>{{ user.email or '—' }}</strong></p>
-    <p>Abonnement:
+    <p style="margin:0">Abonnement:
       {% if is_premium %}<span class="badge premium">Premium</span>
       {% else %}<span class="badge free">Gratis</span>{% endif %}
       {% if subscription and subscription.status %}<span class="muted">({{ subscription.status }})</span>{% endif %}
@@ -14,16 +17,16 @@
   </div>
 
   {% if is_premium %}
-    <div class="card stack">
+    <div class="card">
       <h3>Premium opzeggen</h3>
-      <p class="muted">Je toegang stopt en je wordt daarna niet meer geïncasseerd.</p>
+      <p class="muted">Je toegang stopt aan het einde van de periode en je wordt daarna niet meer geïncasseerd.</p>
       <form method="post" action="/billing/cancel">
         <button class="btn secondary" type="submit">Abonnement opzeggen</button>
       </form>
     </div>
   {% else %}
-    <div class="card stack plan featured">
-      <h3>Upgrade naar Premium</h3>
+    <div class="plan-card featured">
+      <span class="badge premium">Upgrade naar Premium</span>
       <div class="price">
         {% if settings.premium_price %}€{{ settings.premium_price }} <small>/ maand</small>
         {% else %}<small>prijs nog niet ingesteld</small>{% endif %}
@@ -34,16 +37,17 @@
       <form method="post" action="/upgrade">
         <button class="btn block" type="submit">Upgrade nu</button>
       </form>
+      <p class="help">Betalen met iDEAL of Bancontact via Mollie. Opzegbaar wanneer je wilt.</p>
     </div>
   {% endif %}
 
-  <div class="card stack">
+  <div class="card">
     <h3>Account verwijderen</h3>
-    <p class="muted">Verwijdert je account, voorkeuren en alle gegevens. Onomkeerbaar.</p>
+    <p class="muted">Verwijdert je account, voorkeuren en alle gegevens. Onomkeerbaar (AVG).</p>
     <form method="post" action="/account/delete"
           onsubmit="return confirm('Weet je het zeker? Dit kan niet ongedaan worden gemaakt.');">
       <button class="btn danger" type="submit">Verwijder mijn account</button>
     </form>
   </div>
-</section>
+</div>
 {% endblock %}

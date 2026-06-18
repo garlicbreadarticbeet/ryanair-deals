@@ -1,0 +1,144 @@
+{
+  "destinations": [
+    {
+      "city": "Lissabon",
+      "country": "Portugal",
+      "iata_to": "LIS",
+      "origin": "EIN",
+      "price": 39,
+      "nights": 5,
+      "airline": "Ryanair",
+      "blurb": "Tramlijn 28, pastel de nata en uitzicht over de Taag — een zonzekere klassieker voor een lang weekend."
+    },
+    {
+      "city": "Barcelona",
+      "country": "Spanje",
+      "iata_to": "BCN",
+      "origin": "CRL",
+      "price": 34,
+      "nights": 3,
+      "airline": "Ryanair",
+      "blurb": "Gaudí, tapas en strand binnen handbereik; ideaal voor een korte stedentrip met zon erbij."
+    },
+    {
+      "city": "Porto",
+      "country": "Portugal",
+      "iata_to": "OPO",
+      "origin": "EIN",
+      "price": 32,
+      "nights": 3,
+      "airline": "Ryanair",
+      "blurb": "Port proeven aan de Douro en dwalen door de Ribeira — compact, goedkoop en sfeervol."
+    },
+    {
+      "city": "Praag",
+      "country": "Tsjechië",
+      "iata_to": "PRG",
+      "origin": "BRU",
+      "price": 29,
+      "nights": 3,
+      "airline": "Ryanair",
+      "blurb": "Goedkoop bier, gotische torens en de Karelsbrug bij zonsopkomst; prima voor een eerste citytrip."
+    },
+    {
+      "city": "Boedapest",
+      "country": "Hongarije",
+      "iata_to": "BUD",
+      "origin": "EIN",
+      "price": 37,
+      "nights": 5,
+      "airline": "Wizz Air",
+      "blurb": "Thermale baden, ruïnebars en uitzicht vanaf de burcht — veel stad voor weinig geld."
+    },
+    {
+      "city": "Wenen",
+      "country": "Oostenrijk",
+      "iata_to": "VIE",
+      "origin": "CRL",
+      "price": 41,
+      "nights": 3,
+      "airline": "Wizz Air",
+      "blurb": "Koffiehuizen, Sachertorte en keizerlijke paleizen; klassiek en goed te belopen in drie dagen."
+    },
+    {
+      "city": "Krakau",
+      "country": "Polen",
+      "iata_to": "KRK",
+      "origin": "NRN",
+      "price": 28,
+      "nights": 5,
+      "airline": "Wizz Air",
+      "blurb": "Een van de goedkoopste citytrips van Europa: middeleeuws marktplein, joods erfgoed en stevige zlotykoersen."
+    },
+    {
+      "city": "Malaga",
+      "country": "Spanje",
+      "iata_to": "AGP",
+      "origin": "AMS",
+      "price": 45,
+      "nights": 5,
+      "airline": "Ryanair",
+      "blurb": "Poort naar de Costa del Sol: tapas, Picasso en bijna altijd zon — fijn voor wie strand en stad wil combineren."
+    },
+    {
+      "city": "Alicante",
+      "country": "Spanje",
+      "iata_to": "ALC",
+      "origin": "EIN",
+      "price": 36,
+      "nights": 7,
+      "airline": "Ryanair",
+      "blurb": "Boulevard, kasteel op de heuvel en zon tot in het najaar; geschikt voor een wat langere ontspanweek."
+    },
+    {
+      "city": "Faro",
+      "country": "Portugal",
+      "iata_to": "FAO",
+      "origin": "BRU",
+      "price": 42,
+      "nights": 7,
+      "airline": "Ryanair",
+      "blurb": "Uitvalsbasis voor de Algarve-stranden, met een rustige oude stad als thuishaven; prettig voor een week zon."
+    },
+    {
+      "city": "Bologna",
+      "country": "Italië",
+      "iata_to": "BLQ",
+      "origin": "CRL",
+      "price": 35,
+      "nights": 3,
+      "airline": "Ryanair",
+      "blurb": "Pasta aan de bron, porticos en een centrum dat je lopend afdoet — een culinaire stedentrip zonder toeristendrukte."
+    },
+    {
+      "city": "Sevilla",
+      "country": "Spanje",
+      "iata_to": "SVQ",
+      "origin": "CRL",
+      "price": 38,
+      "nights": 5,
+      "airline": "Ryanair",
+      "blurb": "Flamenco, sinaasappelbomen en het Alcázar-paleis; warm en fotogeniek, ideaal in lente of najaar."
+    },
+    {
+      "city": "Boekarest",
+      "country": "Roemenië",
+      "iata_to": "OTP",
+      "origin": "EIN",
+      "price": 31,
+      "nights": 5,
+      "airline": "Wizz Air",
+      "blurb": "Onderschatte hoofdstad met brede boulevards, lage prijzen en een levendig oud centrum."
+    },
+    {
+      "city": "Rome",
+      "country": "Italië",
+      "iata_to": "CIA",
+      "origin": "BRU",
+      "price": 44,
+      "nights": 3,
+      "airline": "Ryanair",
+      "blurb": "Colosseum, gelato en eindeloos slenteren door de eeuwige stad; perfect voor een vol en kort weekend."
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+<section class="section">
+  <div class="container">
+    <div class="cta-band">
+      <h2>{% block cta_title %}Klaar voor je volgende citytrip onder de €60?{% endblock %}</h2>
+      <p>Stel je vertrekveld en je drempel in. Wij doen het zoeken.</p>
+      <div class="cta-row" style="justify-content:center;margin-top:8px">
+        {% if user %}
+          <a class="btn accent lg" href="/dashboard">Naar je deals</a>
+        {% else %}
+          <a class="btn accent lg" href="/login">Zet mijn eerste seintje aan</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Over ons — {{ settings.brand_name }}{% endblock %}
+{% block meta_description %}Gemaakt door en voor prijsbewuste reizigers. We houden de prijzen in de gaten zodat jij niet hoeft te zoeken — nuchter, transparant en privacyvriendelijk.{% endblock %}
+
+{% block content %}
+<section class="section">
+  <div class="container prose">
+    <p class="eyebrow">Over ons</p>
+    <h1>Gemaakt voor wie graag goedkoop vliegt, maar niet graag zoekt.</h1>
+    <p class="lead">{{ settings.brand_name }} is ontstaan uit ergernis: elke keer weer datzelfde gepuzzel met
+      data, vertrekvelden en vergelijkingssites om een betaalbare retour te vinden. Dat moest makkelijker.</p>
+
+    <h2>Waarom we dit bouwen</h2>
+    <p>We zijn zelf van die reizigers die voor een paar tientjes naar een Europese stad willen, mits de prijs
+      klopt. Het probleem is niet dat goedkope retours niet bestaan — ze zijn er volop bij prijsvechters. Het
+      probleem is dat je er elke dag voor moet zoeken, en dat de scherpste prijzen het eerst weg zijn. Dat
+      werk wilden we automatiseren: stel één keer je drempel in, en laat de deal naar jou toe komen.</p>
+
+    <h2>Hoe we geld verdienen</h2>
+    <p>Daar zijn we open over. We verdienen aan <strong>Premium</strong>-abonnementen en, waar mogelijk, aan
+      een <strong>affiliate-vergoeding</strong> als je via onze link doorklikt naar de airline. Dat kost jou
+      niets extra. We verkopen je gegevens niet en we leven niet van advertenties of tracking. Onze prikkel is
+      simpel: jij blijft alleen betalen als de seintjes je echt iets opleveren.</p>
+
+    <h2>Waar we voor staan</h2>
+    <ul>
+      <li><strong>Nuchter.</strong> Geen schreeuwerige clickbait, geen nepschaarste. Gewoon de route, de
+        retour-totaalprijs en de data.</li>
+      <li><strong>Transparant.</strong> We tonen altijd de totaalprijs en zeggen er eerlijk bij dat prijzen
+        kunnen wijzigen. We boeken zelf geen tickets.</li>
+      <li><strong>Privacyvriendelijk.</strong> We bewaren zo min mogelijk: je e-mail en je voorkeuren. Een
+        telefoonnummer alleen als je zelf WhatsApp aanzet. Inloggen kan zonder wachtwoord.</li>
+    </ul>
+
+    <h2>Wat er nog komt</h2>
+    <p>We beginnen met de retours van Ryanair en breiden uit naar andere prijsvechters zoals Wizz Air. Stap
+      voor stap, zodat de seintjes betrouwbaar blijven. Heb je een idee of een vraag? We horen het graag.</p>
+    <p><a class="btn" href="/contact">Neem contact op</a></p>
+  </div>
+</section>
+
+{% include "_cta_band.html" %}
+{% endblock %}

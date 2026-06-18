@@ -13,6 +13,7 @@ from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app import accounts, billing
 from app.billing import BillingError
@@ -21,12 +22,30 @@ from app.db.models import User, UserOrigin
 from app.errors import PremiumRequired
 from app.settings import settings
 from app.web.deps import current_user, get_db
+from app.web.templating import render
 
-app = FastAPI(title="Goedkoop Vliegen", version="0.2.0")
+app = FastAPI(title=settings.brand_name, version="0.3.0")
 
 # Static + server-rendered website.
 _WEB_DIR = Path(__file__).resolve().parent
 app.mount("/static", StaticFiles(directory=str(_WEB_DIR / "static")), name="static")
+
+
+# ---------- nette foutpagina's (HTML voor de website) ----------
+
+@app.exception_handler(404)
+def not_found(request: Request, exc) -> Response:
+    return render("404.html", status_code=404, user=None, settings=settings,
+                  canonical=None)
+
+
+@app.exception_handler(StarletteHTTPException)
+def http_exception(request: Request, exc: StarletteHTTPException) -> Response:
+    # Behoud het standaardgedrag (JSON) voor alles behalve een 'kale' 404.
+    if exc.status_code == 404:
+        return not_found(request, exc)
+    from fastapi.responses import JSONResponse
+    return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
 
 
 # ---------- schema's ----------
@@ -183,6 +202,8 @@ def billing_cancel(user: User = Depends(current_user), db: Session = Depends(get
 
 # ---------- server-rendered website ----------
 # Onderaan ingehaakt zodat app + static al klaarstaan.
+from app.web.marketing import router as marketing_router  # noqa: E402
 from app.web.views import router as web_router  # noqa: E402
 
+app.include_router(marketing_router)
 app.include_router(web_router)
