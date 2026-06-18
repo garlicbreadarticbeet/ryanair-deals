@@ -29,6 +29,7 @@ class Settings(BaseSettings):
     # --- Telegram (bestaand kanaal; namen NIET wijzigen i.v.m. CLI/Actions-compat) ---
     telegram_bot_token: str = ""
     telegram_chat_id: str = ""          # CLI-eigenaar (single-user fallback bij `watch`)
+    telegram_bot_username: str = ""     # voor de /start-deeplink op de website (zonder @)
 
     # --- E-mail (transactionele API: Resend) ---
     resend_api_key: str = ""

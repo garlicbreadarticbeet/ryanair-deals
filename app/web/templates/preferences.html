@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Voorkeuren — Goedkoop Vliegen{% endblock %}
+{% block content %}
+<section class="section" style="max-width:620px;margin:0 auto">
+  <h2>Voorkeuren</h2>
+  <form method="post" action="/preferences" class="card stack">
+    <div class="field">
+      <label for="origins">Vertrekvelden (IATA, spatie-gescheiden)</label>
+      <input type="text" id="origins" name="origins" value="{{ origins }}" placeholder="EIN NRN">
+      <div class="help">Gratis: max {{ max_origins }} veld{{ '' if max_origins == 1 else 'en' }}.
+        {% if not is_premium %}<a href="/account">Upgrade</a> voor meer.{% endif %}</div>
+    </div>
+
+    <div class="field">
+      <label for="threshold">Maximale retourprijs (€, heen + terug)</label>
+      <input type="number" step="1" min="1" id="threshold" name="threshold"
+             value="{{ '%.0f'|format(prefs.threshold) }}">
+    </div>
+
+    <div class="field">
+      <label for="trip_lengths">Reisduren (nachten, spatie-gescheiden)</label>
+      <input type="text" id="trip_lengths" name="trip_lengths" value="{{ trip_lengths }}" placeholder="3 5 7">
+    </div>
+
+    <div class="field">
+      <label for="alert_mode">Alert-modus</label>
+      <select id="alert_mode" name="alert_mode">
+        <option value="digest" {{ 'selected' if prefs.alert_mode == 'digest' else '' }}>Dagelijkse digest (gratis)</option>
+        <option value="instant" {{ 'selected' if prefs.alert_mode == 'instant' else '' }}>Instant (premium)</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="dest_filter_mode">Bestemmingsfilter</label>
+      <select id="dest_filter_mode" name="dest_filter_mode">
+        <option value="all" {{ 'selected' if prefs.dest_filter_mode == 'all' else '' }}>Alle bestemmingen</option>
+        <option value="country" {{ 'selected' if prefs.dest_filter_mode == 'country' else '' }}>Alleen bepaalde landen</option>
+        <option value="whitelist" {{ 'selected' if prefs.dest_filter_mode == 'whitelist' else '' }}>Alleen deze luchthavens</option>
+        <option value="blacklist" {{ 'selected' if prefs.dest_filter_mode == 'blacklist' else '' }}>Alles behalve deze</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="dest_countries">Landen (ISO, bv. <code>es it</code>) — bij 'landen'</label>
+      <input type="text" id="dest_countries" name="dest_countries" value="{{ dest_countries }}" placeholder="es it">
+    </div>
+    <div class="field">
+      <label for="dest_whitelist">Alleen deze luchthavens (IATA) — bij 'whitelist'</label>
+      <input type="text" id="dest_whitelist" name="dest_whitelist" value="{{ dest_whitelist }}" placeholder="BCN FAO">
+    </div>
+    <div class="field">
+      <label for="dest_blacklist">Uitsluiten (IATA) — bij 'blacklist'</label>
+      <input type="text" id="dest_blacklist" name="dest_blacklist" value="{{ dest_blacklist }}" placeholder="STN">
+    </div>
+
+    <button class="btn block" type="submit">Opslaan</button>
+  </form>
+</section>
+{% endblock %}

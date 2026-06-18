@@ -1,11 +1,24 @@
 """Server-rendered website (HTML). DB-dependency naar de transactionele test-sessie."""
 from __future__ import annotations
 
+import datetime
+from decimal import Decimal
+
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy import select
 
 from app import accounts
+from app.db.models import Deal, UserOrigin
+from app.web import auth as webauth
 from app.web.main import app, get_db
+
+
+def _login(client, db, user):
+    """Zet een geldige session-cookie voor deze gebruiker."""
+    token = webauth.issue_token(db, "session", user_id=user.id)
+    client.cookies.set("gv_session", token)
+    return client
 
 
 @pytest.fixture
@@ -59,3 +72,71 @@ def test_verify_invalid_token_shows_error(client):
     resp = client.get("/verify", params={"token": "bestaat-niet"})
     assert resp.status_code == 400
     assert "Ongeldige" in resp.text
+
+
+# ---------- dashboard / voorkeuren / kanalen (W3) ----------
+
+def test_dashboard_requires_login(client):
+    resp = client.get("/dashboard", follow_redirects=False)
+    assert resp.status_code == 303
+    assert resp.headers["location"] == "/login"
+
+
+def test_dashboard_prompts_without_origins(db, client, make_user):
+    user = make_user(origins=[])
+    _login(client, db, user)
+    resp = client.get("/dashboard")
+    assert resp.status_code == 200
+    assert "geen vertrekvelden" in resp.text.lower()
+
+
+def test_dashboard_lists_matching_deals(db, client, make_user):
+    user = make_user(origins=["EIN"], threshold=50)
+    _login(client, db, user)
+    db.add(Deal(provider="ryanair", origin="EIN", destination="BCN", nights=3,
+                out_date=datetime.date(2026, 8, 1), in_date=datetime.date(2026, 8, 4),
+                out_price=Decimal("20"), in_price=Decimal("15"),
+                total_price=Decimal("35"), currency="EUR"))
+    db.flush()
+    resp = client.get("/dashboard")
+    assert "EIN ⇄ BCN" in resp.text
+    assert "35.00" in resp.text
+
+
+def test_preferences_get_and_save_premium(db, client, make_user):
+    user = make_user(origins=["EIN"], tier="premium")
+    _login(client, db, user)
+    assert "EIN" in client.get("/preferences").text
+
+    resp = client.post("/preferences", data={
+        "origins": "EIN NRN", "threshold": "40", "trip_lengths": "3 5",
+        "alert_mode": "instant", "dest_filter_mode": "all",
+    })
+    assert resp.status_code == 200
+    assert "opgeslagen" in resp.text.lower()
+    origins = set(db.execute(select(UserOrigin.origin_iata).where(UserOrigin.user_id == user.id)).scalars())
+    assert origins == {"EIN", "NRN"}
+
+
+def test_preferences_free_origin_limit_message(db, client, make_user):
+    user = make_user(origins=["EIN"], tier="free")
+    _login(client, db, user)
+    resp = client.post("/preferences", data={
+        "origins": "EIN NRN", "threshold": "50", "trip_lengths": "3 5 7",
+        "alert_mode": "digest", "dest_filter_mode": "all",
+    })
+    assert "premium" in resp.text.lower()
+
+
+def test_channels_shows_telegram_connect(db, client, make_user):
+    user = make_user(origins=["EIN"])
+    _login(client, db, user)
+    resp = client.get("/channels")
+    assert resp.status_code == 200
+    assert "/start" in resp.text  # geen bot-username → handmatige koppelinstructie
+
+
+def test_channels_whatsapp_gated_for_free(db, client, make_user):
+    user = make_user(origins=["EIN"], tier="free")
+    _login(client, db, user)
+    assert "Upgrade" in client.get("/channels").text

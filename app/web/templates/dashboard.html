@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Je deals — Goedkoop Vliegen{% endblock %}
+{% block content %}
+<section class="section">
+  <h2>Je deals</h2>
+  <p class="sub">
+    Retours onder €{{ '%.0f'|format(prefs.threshold) }} vanaf
+    {{ origins|join(', ') if origins else '—' }} ·
+    {{ 'instant' if effective_mode == 'instant' else 'dagelijkse digest' }}
+  </p>
+
+  {% if not has_origins %}
+    <div class="flash info">Je hebt nog geen vertrekvelden ingesteld.
+      <a href="/preferences">Stel je voorkeuren in →</a></div>
+  {% elif not deal_groups %}
+    <div class="card center">
+      <p class="muted">Nog geen deals onder je drempel. We blijven scannen — je krijgt vanzelf bericht.</p>
+    </div>
+  {% else %}
+    {% for g in deal_groups %}
+      <div class="deal-group">
+        <h4>{{ g.nights }} dagen</h4>
+        {% for d in g.deals %}
+          <div class="deal">
+            <span class="price-tag">€{{ '%.2f'|format(d.total) }}</span>
+            <span class="route">{{ d.origin }} ⇄ {{ d.destination }}</span>
+            <span class="when">{{ d.out_date.strftime('%d-%m') }} → {{ d.in_date.strftime('%d-%m') }}</span>
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <p class="muted"><a href="/preferences">Voorkeuren aanpassen</a> · <a href="/channels">Kanalen beheren</a></p>
+</section>
+{% endblock %}
