@@ -8,7 +8,7 @@ from __future__ import annotations
 import datetime
 from decimal import Decimal
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session
 
@@ -98,6 +98,41 @@ def upsert_deal(
         },
     )
     session.execute(stmt)
+
+
+def search_airports(session: Session, query: str, limit: int = 20) -> list[dict]:
+    """Luchthavens die matchen op code, naam of stad — voor de zoek-en-kies UI.
+
+    Origin-seeds (de NL/grensvelden) eerst, daarna alfabetisch. Code-match (begint met)
+    weegt zwaar zodat 'EIN' meteen Eindhoven bovenaan zet.
+    """
+    q = query.strip().lower()
+    if not q:
+        return []
+    code_match = func.lower(Airport.iata).like(f"{q}%")
+    rows = session.execute(
+        select(Airport.iata, Airport.name, Airport.city, Airport.country_code)
+        .where(or_(code_match, func.lower(Airport.name).like(f"%{q}%"),
+                   func.lower(Airport.city).like(f"%{q}%")))
+        .order_by(code_match.desc(), Airport.is_origin_seed.desc(), Airport.name)
+        .limit(limit)
+    ).all()
+    return [
+        {"iata": i, "name": n, "city": c, "country": cc,
+         "label": f"{n} ({i})" if (c or n) == n else f"{c} – {n} ({i})"}
+        for i, n, c, cc in rows
+    ]
+
+
+def airport_labels(session: Session, iatas) -> dict[str, str]:
+    """Map IATA → 'Naam (IATA)' voor het tonen van al-gekozen luchthavens als chips."""
+    iatas = list(iatas)
+    if not iatas:
+        return {}
+    rows = session.execute(
+        select(Airport.iata, Airport.name).where(Airport.iata.in_(iatas))
+    ).all()
+    return {i: f"{n} ({i})" for i, n in rows}
 
 
 def destination_countries(session: Session, iatas: set[str]) -> dict[str, str]:

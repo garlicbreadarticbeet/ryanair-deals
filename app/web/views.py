@@ -6,7 +6,7 @@ from __future__ import annotations
 import datetime
 
 from fastapi import APIRouter, Depends, Form
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -39,6 +39,12 @@ def _tokens(raw: str) -> list[str]:
 
 def _utcnow() -> datetime.datetime:
     return datetime.datetime.now(datetime.timezone.utc)
+
+
+@router.get("/api/airports")
+def airports_search(q: str = "", db: Session = Depends(get_db)):
+    """Luchthaven-zoeksuggesties (JSON) voor het zoek-en-kies veld op /preferences."""
+    return JSONResponse(repo.search_airports(db, q))
 
 
 @router.get("/", response_class=HTMLResponse)
@@ -125,15 +131,29 @@ def dashboard(user=Depends(optional_web_user), db: Session = Depends(get_db)):
 
 def _render_preferences(db, user, *, flash=None, flash_kind=None, status_code=200):
     prefs = user.preferences
-    origins = " ".join(
-        sorted(db.execute(select(UserOrigin.origin_iata).where(UserOrigin.user_id == user.id)).scalars())
+    origin_iatas = sorted(
+        db.execute(select(UserOrigin.origin_iata).where(UserOrigin.user_id == user.id)).scalars()
     )
+    wl, bl = list(prefs.dest_whitelist or []), list(prefs.dest_blacklist or [])
+    labels = repo.airport_labels(db, set(origin_iatas) | set(wl) | set(bl))
+
+    def _chips(iatas):
+        return [{"iata": i, "label": labels.get(i, i)} for i in iatas]
+
+    prefs_data = {
+        "maxOrigins": gating.max_origins(user),
+        "isPremium": user.tier == "premium",
+        "origins": _chips(origin_iatas),
+        "tripLengths": [int(n) for n in (prefs.trip_lengths or [])],
+        "destMode": prefs.dest_filter_mode or "all",
+        "countries": [c.lower() for c in (prefs.dest_countries or [])],
+        "whitelist": _chips(wl),
+        "blacklist": _chips(bl),
+    }
     return render(
         "preferences.html", status_code=status_code, user=user, settings=settings, prefs=prefs,
-        origins=origins, trip_lengths=" ".join(map(str, prefs.trip_lengths)),
-        dest_countries=" ".join(prefs.dest_countries), dest_whitelist=" ".join(prefs.dest_whitelist),
-        dest_blacklist=" ".join(prefs.dest_blacklist),
         is_premium=(user.tier == "premium"), max_origins=gating.max_origins(user),
+        countries_options=content.DEST_COUNTRIES, prefs_data=prefs_data,
         flash=flash, flash_kind=flash_kind, active="preferences",
     )
 

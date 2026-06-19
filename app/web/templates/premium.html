@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Premium &amp; prijzen — {{ settings.brand_name }}{% endblock %}
-{% block meta_description %}Vergelijk Gratis en Premium. Premium geeft instant alerts, meerdere vertrekvelden en WhatsApp. Betaal met iDEAL of Bancontact. Geen verborgen kosten.{% endblock %}
+{% block meta_description %}Vergelijk Gratis en Premium. Premium stuurt je seintje meteen, geeft meerdere vertrekvelden en WhatsApp. Betaal met iDEAL of Bancontact. Geen verborgen kosten.{% endblock %}
 
 {% block content %}
 <section class="section">
@@ -20,7 +20,7 @@
         <div class="price">€0 <small>/ altijd</small></div>
         <p class="muted">Voor wie rustig wil meekijken.</p>
         <ul class="ticks">
-          <li>Dagelijkse digest van je deals</li>
+          <li>Eén bericht per dag met je deals</li>
           <li>{{ free_max_origins }} vertrekveld</li>
           <li>Telegram &amp; e-mail</li>
           <li>Prijsdrempel &amp; reisduur instellen</li>
@@ -41,7 +41,7 @@
         </div>
         <p class="muted">Voor wie de scherpste deals als eerste wil.</p>
         <ul class="ticks">
-          <li><strong>Instant</strong> alerts i.p.v. dagelijks</li>
+          <li><strong>Meteen</strong> een seintje i.p.v. één keer per dag</li>
           <li>Meerdere vertrekvelden</li>
           <li>WhatsApp-meldingen</li>
           <li>Uitgebreide prijsgeschiedenis</li>
@@ -69,7 +69,7 @@
       </thead>
       <tbody>
         <tr><td>Aantal vertrekvelden</td><td class="col">{{ free_max_origins }}</td><td class="col">Meerdere</td></tr>
-        <tr><td>Levering</td><td class="col">Dagelijkse digest</td><td class="col">{{ 'Instant' if instant_premium else 'Instant of digest' }}</td></tr>
+        <tr><td>Wanneer je bericht krijgt</td><td class="col">Eén keer per dag</td><td class="col">{{ 'Meteen' if instant_premium else 'Meteen of dagelijks' }}</td></tr>
         <tr><td>Telegram &amp; e-mail</td><td class="col">✓</td><td class="col">✓</td></tr>
         <tr><td>WhatsApp</td><td class="col">{{ '—' if whatsapp_premium else '✓' }}</td><td class="col">✓</td></tr>
         <tr><td>Prijsdrempel &amp; reisduur</td><td class="col">✓</td><td class="col">✓</td></tr>

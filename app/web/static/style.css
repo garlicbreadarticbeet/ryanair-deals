@@ -457,3 +457,73 @@ textarea { min-height: 120px; resize: vertical; }
 /* DealCard-signatuur: subtiele perforatie-hint (boarding pass) boven de metaregel. */
 .deal-card.signature .deal-card__meta { border-top: 1px dashed var(--color-border);
   margin-top: var(--s-3); padding-top: var(--s-3); }
+
+/* =====================================================================
+   /preferences — vriendelijke, klikbare invoer (zoek-en-kies, chips).
+   ===================================================================== */
+.field-block { margin-bottom: var(--s-7); }
+.field-label { display: block; font-family: var(--font-head); font-weight: 600; font-size: 17px;
+  color: var(--color-ink); margin-bottom: 4px; }
+.field-help { color: var(--color-muted); font-size: 14px; margin: 0 0 var(--s-3); }
+
+/* Gekozen-chips (luchthavens) */
+.chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.chips:not(:empty) { margin-bottom: var(--s-2); }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 6px 6px 12px;
+  border-radius: var(--r-pill); background: var(--color-primary-soft); color: var(--color-primary-hover);
+  font-size: 14px; font-weight: 500; }
+.chip-x { border: none; background: none; cursor: pointer; color: var(--color-primary-hover);
+  font-size: 17px; line-height: 1; padding: 0 4px; border-radius: 50%; }
+.chip-x:hover { background: rgba(37,99,235,.12); }
+
+/* Zoek-en-kies dropdown */
+.picker-input-wrap { position: relative; }
+.picker-list { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 30;
+  background: var(--color-bg); border: 1px solid var(--color-border); border-radius: var(--r-input);
+  box-shadow: var(--shadow-lift); max-height: 280px; overflow-y: auto; padding: 4px; }
+.picker-item { display: flex; align-items: baseline; gap: 8px; width: 100%; text-align: left;
+  padding: 10px 12px; border: none; background: none; cursor: pointer; border-radius: 8px;
+  font-size: 15px; color: var(--color-body); }
+.picker-item:hover, .picker-item.is-active { background: var(--color-primary-soft); }
+.picker-item strong { color: var(--color-ink); font-weight: 600; }
+.picker-item .picker-city { color: var(--color-muted); font-size: 13px; }
+.picker-item .picker-code { margin-left: auto; color: var(--color-muted); font-size: 12px;
+  font-weight: 600; letter-spacing: .03em; }
+.picker-note { color: var(--color-muted); font-size: 13px; margin: 8px 0 0; }
+
+/* Prijs-invoer met € ervoor */
+.euro-input { display: inline-flex; align-items: center; border: 1px solid var(--color-border);
+  border-radius: var(--r-input); padding-left: 14px; max-width: 220px; transition: border-color .15s var(--ease-out), box-shadow .15s var(--ease-out); }
+.euro-input:focus-within { border-color: var(--color-primary); box-shadow: 0 0 0 3px var(--color-primary-soft); }
+.euro-sign { color: var(--color-muted); font-weight: 600; }
+.euro-input input { border: none; box-shadow: none !important; padding: 11px 12px; width: 140px; }
+
+/* Nachten-chips + eigen aantal */
+.day-chips { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.day-chip, .country-chip { padding: 9px 14px; border: 1px solid var(--color-border); border-radius: var(--r-pill);
+  background: #fff; cursor: pointer; font-weight: 500; font-size: 14px; color: var(--color-body);
+  transition: border-color .12s var(--ease-out), background .12s var(--ease-out); }
+.day-chip:hover, .country-chip:hover { border-color: var(--color-muted); }
+.day-chip.is-on, .country-chip.is-on { background: var(--color-primary-soft);
+  border-color: var(--color-primary); color: var(--color-primary-hover); }
+.day-custom { display: flex; gap: var(--s-2); align-items: center; margin-top: var(--s-3); }
+.day-custom-input { max-width: 150px; }
+
+/* Keuze-kaarten (wanneer bericht) */
+.choice-cards { display: grid; gap: var(--s-3); }
+.choice-card { display: flex; gap: var(--s-3); align-items: flex-start; border: 1px solid var(--color-border);
+  border-radius: var(--r-card); padding: 14px 16px; cursor: pointer; transition: border-color .12s var(--ease-out), background .12s var(--ease-out); }
+.choice-card input { margin-top: 4px; flex: none; }
+.choice-card:has(input:checked) { border-color: var(--color-primary); background: var(--color-primary-soft); }
+.choice-body { display: flex; flex-direction: column; gap: 3px; }
+.choice-title { font-family: var(--font-head); font-weight: 600; color: var(--color-ink); }
+.choice-desc { color: var(--color-muted); font-size: 14px; }
+
+/* Segmented control (bestemmingsfilter) */
+.seg { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-bottom: var(--s-3); }
+.seg-item { border: 1px solid var(--color-border); border-radius: var(--r-pill); padding: 8px 14px;
+  cursor: pointer; font-size: 14px; font-weight: 500; color: var(--color-body); }
+.seg-item input { display: none; }
+.seg-item:has(input:checked) { border-color: var(--color-primary); background: var(--color-primary-soft);
+  color: var(--color-primary-hover); }
+.country-grid { display: flex; flex-wrap: wrap; gap: var(--s-2); }

@@ -130,7 +130,9 @@ def test_preferences_free_origin_limit_message(db, client, make_user):
     assert "premium" in resp.text.lower()
 
 
-def test_channels_shows_telegram_connect(db, client, make_user):
+def test_channels_shows_telegram_connect(db, client, make_user, monkeypatch):
+    # Onafhankelijk van de lokale .env: forceer 'geen bot-username' → handmatige instructie.
+    monkeypatch.setattr(settings, "telegram_bot_username", "")
     user = make_user(origins=["EIN"])
     _login(client, db, user)
     resp = client.get("/channels")
@@ -199,3 +201,14 @@ def test_account_delete_removes_user(db, client, make_user):
     resp = client.post("/account/delete", follow_redirects=False)
     assert resp.status_code == 303 and resp.headers["location"] == "/"
     assert db.get(User, uid) is None
+
+
+# ---------- luchthaven-zoeken (voor de vriendelijke /preferences) ----------
+
+def test_airport_search(client):
+    resp = client.get("/api/airports", params={"q": "eind"})
+    assert resp.status_code == 200
+    data = resp.json()
+    assert any(a["iata"] == "EIN" for a in data)
+    assert data and data[0]["label"]               # "Naam (CODE)" voor de chip
+    assert client.get("/api/airports", params={"q": ""}).json() == []  # lege query → niks

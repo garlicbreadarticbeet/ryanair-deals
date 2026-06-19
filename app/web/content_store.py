@@ -24,6 +24,26 @@ import markdown as _md
 _CONTENT_DIR = Path(__file__).resolve().parent / "content"
 _MD_EXTENSIONS = ["extra", "sane_lists"]
 
+# Populaire bestemmingslanden (NL-naam + ISO alpha-2, lowercase = zoals opgeslagen) voor de
+# vriendelijke landen-kiezer op /preferences. Volgorde ~ populariteit als citytrip-/zonland.
+DEST_COUNTRIES = [
+    {"code": "es", "name": "Spanje"}, {"code": "pt", "name": "Portugal"},
+    {"code": "it", "name": "Italië"}, {"code": "gr", "name": "Griekenland"},
+    {"code": "fr", "name": "Frankrijk"}, {"code": "hr", "name": "Kroatië"},
+    {"code": "de", "name": "Duitsland"}, {"code": "at", "name": "Oostenrijk"},
+    {"code": "hu", "name": "Hongarije"}, {"code": "pl", "name": "Polen"},
+    {"code": "cz", "name": "Tsjechië"}, {"code": "ie", "name": "Ierland"},
+    {"code": "gb", "name": "Verenigd Koninkrijk"}, {"code": "ro", "name": "Roemenië"},
+    {"code": "bg", "name": "Bulgarije"}, {"code": "mt", "name": "Malta"},
+    {"code": "ma", "name": "Marokko"}, {"code": "tr", "name": "Turkije"},
+    {"code": "cy", "name": "Cyprus"}, {"code": "se", "name": "Zweden"},
+    {"code": "dk", "name": "Denemarken"}, {"code": "no", "name": "Noorwegen"},
+    {"code": "fi", "name": "Finland"}, {"code": "lv", "name": "Letland"},
+    {"code": "lt", "name": "Litouwen"}, {"code": "ee", "name": "Estland"},
+    {"code": "si", "name": "Slovenië"}, {"code": "sk", "name": "Slowakije"},
+    {"code": "be", "name": "België"}, {"code": "nl", "name": "Nederland"},
+]
+
 # Vriendelijke namen voor de vertrekvelden (alleen UI; geen logica hangt eraan).
 ORIGIN_NAMES = {
     "EIN": "Eindhoven", "NRN": "Weeze", "AMS": "Amsterdam", "BRU": "Brussel",

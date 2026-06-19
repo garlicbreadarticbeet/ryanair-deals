@@ -2,60 +2,118 @@
 {% block title %}Voorkeuren — {{ settings.brand_name }}{% endblock %}
 {% block app %}
 <div class="section__head" style="margin-bottom:24px">
-  <h1>Voorkeuren</h1>
-  <p class="sub">Vertel ons waar en hoe goedkoop je wilt vliegen. Wij doen de rest.</p>
+  <h1>Jouw voorkeuren</h1>
+  <p class="sub">Vertel ons vanaf welke luchthaven je wilt vliegen en wat een retour maximaal mag kosten. Wij houden de prijzen voor je in de gaten.</p>
 </div>
 
-<form method="post" action="/preferences" class="card stack" style="max-width:640px">
-  <div class="field">
-    <label for="origins">Vertrekvelden (IATA, spatie-gescheiden)</label>
-    <input type="text" id="origins" name="origins" value="{{ origins }}" placeholder="EIN NRN">
-    <div class="help">Gratis: max {{ max_origins }} veld{{ '' if max_origins == 1 else 'en' }}.
-      {% if not is_premium %}<a href="/premium">Upgrade</a> voor meerdere.{% endif %}</div>
+<form method="post" action="/preferences" id="prefs-form" class="prefs-form" style="max-width:640px">
+
+  <!-- 1. Vertrekvelden -->
+  <div class="field-block">
+    <label class="field-label">Vanaf welke luchthaven wil je vertrekken?</label>
+    <p class="field-help">Typ een plaats of luchthaven en kies uit de lijst.
+      {% if not is_premium %} Met gratis kies je er één — <a href="/premium">Premium</a> voor meerdere.{% endif %}</p>
+    <div class="picker" data-picker="origins" data-max="{{ max_origins }}">
+      <div class="chips" data-chips></div>
+      <div class="picker-input-wrap">
+        <input type="text" class="picker-input" data-input placeholder="Bijv. Eindhoven, Weeze of Barcelona" autocomplete="off">
+        <div class="picker-list" data-list hidden></div>
+      </div>
+      <p class="picker-note" data-note hidden></p>
+    </div>
+    <input type="hidden" name="origins" data-hidden>
   </div>
 
-  <div class="field">
-    <label for="threshold">Maximale retourprijs (€, heen + terug)</label>
-    <input type="number" step="1" min="1" id="threshold" name="threshold"
-           value="{{ '%.0f'|format(prefs.threshold) }}">
+  <!-- 2. Maximumprijs -->
+  <div class="field-block">
+    <label class="field-label" for="threshold">Wat mag een retour maximaal kosten?</label>
+    <p class="field-help">De totale prijs voor de heen- én terugvlucht samen. Je krijgt alleen een seintje als het hieronder zit.</p>
+    <div class="euro-input">
+      <span class="euro-sign">€</span>
+      <input type="number" id="threshold" name="threshold" min="1" step="5" inputmode="numeric"
+             value="{{ '%.0f'|format(prefs.threshold) }}">
+    </div>
   </div>
 
-  <div class="field">
-    <label for="trip_lengths">Reisduren (nachten, spatie-gescheiden)</label>
-    <input type="text" id="trip_lengths" name="trip_lengths" value="{{ trip_lengths }}" placeholder="3 5 7">
+  <!-- 3. Reisduur -->
+  <div class="field-block">
+    <label class="field-label">Hoeveel nachten wil je weg?</label>
+    <p class="field-help">Kies één of meer. Je krijgt alleen deals die precies zo lang duren.</p>
+    <div class="day-chips" data-daychips></div>
+    <div class="day-custom">
+      <input type="number" min="1" max="60" class="day-custom-input" data-daycustom placeholder="Ander aantal" inputmode="numeric">
+      <button type="button" class="btn ghost sm" data-dayadd>Toevoegen</button>
+    </div>
+    <input type="hidden" name="trip_lengths" data-triphidden>
   </div>
 
-  <div class="field">
-    <label for="alert_mode">Alert-modus</label>
-    <select id="alert_mode" name="alert_mode">
-      <option value="digest" {{ 'selected' if prefs.alert_mode == 'digest' else '' }}>Dagelijkse digest (gratis)</option>
-      <option value="instant" {{ 'selected' if prefs.alert_mode == 'instant' else '' }}>Instant (premium)</option>
-    </select>
+  <!-- 4. Wanneer bericht -->
+  <div class="field-block">
+    <label class="field-label">Wanneer wil je bericht?</label>
+    <div class="choice-cards">
+      <label class="choice-card">
+        <input type="radio" name="alert_mode" value="digest" {{ 'checked' if prefs.alert_mode != 'instant' else '' }}>
+        <span class="choice-body">
+          <span class="choice-title">Eén keer per dag</span>
+          <span class="choice-desc">'s Ochtends één bericht met alle deals onder jouw prijs. Rustig en compleet. <span class="badge free">Gratis</span></span>
+        </span>
+      </label>
+      <label class="choice-card">
+        <input type="radio" name="alert_mode" value="instant" {{ 'checked' if prefs.alert_mode == 'instant' else '' }}>
+        <span class="choice-body">
+          <span class="choice-title">Meteen</span>
+          <span class="choice-desc">Direct een seintje zodra er een deal is. De scherpste prijzen zijn vaak het eerst weg. <span class="badge premium">Premium</span></span>
+        </span>
+      </label>
+    </div>
   </div>
 
-  <div class="field">
-    <label for="dest_filter_mode">Bestemmingsfilter</label>
-    <select id="dest_filter_mode" name="dest_filter_mode">
-      <option value="all" {{ 'selected' if prefs.dest_filter_mode == 'all' else '' }}>Alle bestemmingen</option>
-      <option value="country" {{ 'selected' if prefs.dest_filter_mode == 'country' else '' }}>Alleen bepaalde landen</option>
-      <option value="whitelist" {{ 'selected' if prefs.dest_filter_mode == 'whitelist' else '' }}>Alleen deze luchthavens</option>
-      <option value="blacklist" {{ 'selected' if prefs.dest_filter_mode == 'blacklist' else '' }}>Alles behalve deze</option>
-    </select>
+  <!-- 5. Bestemmingen -->
+  <div class="field-block">
+    <label class="field-label">Naar welke bestemmingen?</label>
+    <div class="seg" data-destmode>
+      <label class="seg-item"><input type="radio" name="dest_filter_mode" value="all"><span>Overal naartoe</span></label>
+      <label class="seg-item"><input type="radio" name="dest_filter_mode" value="country"><span>Bepaalde landen</span></label>
+      <label class="seg-item"><input type="radio" name="dest_filter_mode" value="whitelist"><span>Bepaalde luchthavens</span></label>
+      <label class="seg-item"><input type="radio" name="dest_filter_mode" value="blacklist"><span>Overal behalve…</span></label>
+    </div>
+
+    <div class="dest-sub" data-destsub="country" hidden>
+      <p class="field-help">Klik de landen aan waar je naartoe wilt.</p>
+      <div class="country-grid" data-countries></div>
+      <input type="hidden" name="dest_countries" data-countryhidden>
+    </div>
+    <div class="dest-sub" data-destsub="whitelist" hidden>
+      <p class="field-help">Alleen seintjes naar deze luchthavens.</p>
+      <div class="picker" data-picker="whitelist" data-max="50">
+        <div class="chips" data-chips></div>
+        <div class="picker-input-wrap">
+          <input type="text" class="picker-input" data-input placeholder="Zoek een luchthaven" autocomplete="off">
+          <div class="picker-list" data-list hidden></div>
+        </div>
+      </div>
+      <input type="hidden" name="dest_whitelist" data-hidden>
+    </div>
+    <div class="dest-sub" data-destsub="blacklist" hidden>
+      <p class="field-help">Geen seintjes naar deze luchthavens.</p>
+      <div class="picker" data-picker="blacklist" data-max="50">
+        <div class="chips" data-chips></div>
+        <div class="picker-input-wrap">
+          <input type="text" class="picker-input" data-input placeholder="Zoek een luchthaven" autocomplete="off">
+          <div class="picker-list" data-list hidden></div>
+        </div>
+      </div>
+      <input type="hidden" name="dest_blacklist" data-hidden>
+    </div>
   </div>
 
-  <div class="field">
-    <label for="dest_countries">Landen (ISO, bv. <code>es it</code>) — bij 'landen'</label>
-    <input type="text" id="dest_countries" name="dest_countries" value="{{ dest_countries }}" placeholder="es it">
-  </div>
-  <div class="field">
-    <label for="dest_whitelist">Alleen deze luchthavens (IATA) — bij 'whitelist'</label>
-    <input type="text" id="dest_whitelist" name="dest_whitelist" value="{{ dest_whitelist }}" placeholder="BCN FAO">
-  </div>
-  <div class="field">
-    <label for="dest_blacklist">Uitsluiten (IATA) — bij 'blacklist'</label>
-    <input type="text" id="dest_blacklist" name="dest_blacklist" value="{{ dest_blacklist }}" placeholder="STN">
-  </div>
-
-  <button class="btn block" type="submit">Opslaan</button>
+  <button class="btn block lg" type="submit">Opslaan</button>
+  <noscript><p class="field-help">Voor het zoeken van luchthavens heb je JavaScript nodig.</p></noscript>
 </form>
+
+<script>
+  window.__PREFS__ = {{ prefs_data | tojson }};
+  window.__COUNTRIES__ = {{ countries_options | tojson }};
+</script>
+<script defer src="/static/preferences.js"></script>
 {% endblock %}
