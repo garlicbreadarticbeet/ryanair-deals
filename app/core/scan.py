@@ -49,7 +49,7 @@ def run_scan(session: Session, today: datetime.date | None = None) -> list[Retur
         if hasattr(provider, "return_deals"):
             for rf in provider.return_deals(origins, today, horizon_end, trip_lengths, settings.currency):
                 deal = _returnfare_to_deal(rf)
-                _persist(session, deal)
+                _persist(session, deal, today)
                 all_deals.append(deal)
             continue
 
@@ -66,7 +66,7 @@ def run_scan(session: Session, today: datetime.date | None = None) -> list[Retur
         with ThreadPoolExecutor(max_workers=settings.concurrency) as pool:
             for deals in pool.map(_fetch, routes):
                 for d in deals:
-                    _persist(session, d)
+                    _persist(session, d, today)
                     all_deals.append(d)
     return all_deals
 
@@ -84,11 +84,15 @@ def _returnfare_to_deal(rf) -> ReturnDeal:
     )
 
 
-def _persist(session: Session, d: ReturnDeal) -> None:
-    """Upsert één ReturnDeal naar de deals-tabel (incl. airline + deeplink indien aanwezig)."""
+def _persist(session: Session, d: ReturnDeal, today: datetime.date) -> None:
+    """Upsert één ReturnDeal naar de deals-tabel + leg de prijswaarneming van vandaag vast."""
     repo.upsert_deal(
         session, provider=d.provider, origin=d.origin, destination=d.destination,
         nights=d.nights, out_date=d.out_date, in_date=d.in_date,
         out_price=d.out_price, in_price=d.in_price, total_price=d.total,
         currency=settings.currency, airline=d.airline, deeplink=d.deeplink,
+    )
+    repo.record_price_point(
+        session, provider=d.provider, origin=d.origin, destination=d.destination,
+        nights=d.nights, total_price=d.total, observed_on=today,
     )

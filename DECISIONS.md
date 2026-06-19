@@ -109,3 +109,28 @@ rauwe body) en schaalt `users.tier` bij; opzeggen laat de toegang doorlopen tot 
 ~30% goedkoper — "ruim 3 maanden gratis"). Het jaarplan staat als aanrader uitgelicht. De
 besparing/maandprijs wordt **berekend** uit de config (`settings.premium_pricing`), niet hardcoded
 in de templates, zodat het klopt als de prijs ooit wijzigt.
+
+## D11 — Betere alerts: dealscore (prijsgeschiedenis) + gebrande presentatie
+De alerts (Telegram + e-mail) zijn het product; daarom drie samenhangende verbeteringen.
+
+**1. Dealscore uit prijsgeschiedenis.** Nieuwe tabel `deal_price_points` (migratie 0006) houdt
+per route per dag de **laagste** retour-totaalprijs bij (gehaakt in de scan). Daaruit berekent
+`app/core/scoring.py` (puur) hoe goed een prijs is t.o.v. normaal: het kortingspercentage t.o.v.
+de **mediaan** over een venster en of het de **laagste in N dagen** is. Alerts ranken nu op
+**dealsterkte** (spannendste eerst) i.p.v. alleen absolute prijs. Dit voedt meteen de
+premium-feature "uitgebreide prijsgeschiedenis". De score **warmt op** over enkele dagen
+historie; tot die tijd valt de badge terug op de per-gebruiker "was €X".
+
+**2. Eén presentatielaag.** `app/alerts/` (verrijking + gedeelde render-helpers) zorgt dat
+Telegram, e-mail én de dealkaart hetzelfde tonen: **stadsnamen + vlag** i.p.v. IATA-codes, de
+**dealscore-badge** ("🔥 38% onder normaal" / "laagste in 42 dagen" / "was €X") en een nette
+boekknop. De e-mail is een **gebrande, responsive HTML-mail** (tabellen + inline CSS in de
+merkkleuren). Bewust buiten `core/` (UI/merk) en buiten `channels/` (kanaal-agnostisch).
+
+**3. Merk-dealkaart (PNG).** `app/alerts/card.py` tekent met **Pillow** een gebrande kaart
+(self-hosted merk-TTF's, gebundeld onder `app/alerts/assets/fonts/`) als **Telegram-foto** en
+**mail-hero**. De mail-hero laadt via een **ondertekende** `/cards/deal.png`-endpoint
+(`ALERT_CARD_SECRET`); zonder secret of zonder Pillow valt alles **schoon terug** op de
+HTML/tekst zonder beeld (nooit een harde fout op een alert). Geen emoji in het beeld (Latijnse
+fonts) — de punch komt van kleur, de grote prijs en de amber pill. Per run capt de dispatcher
+op **12** deals zodat het een gerichte "top-deals"-melding blijft; de rest volgt een volgende run.

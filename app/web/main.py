@@ -219,6 +219,28 @@ def billing_return() -> dict:
     return {"status": "Betaling ontvangen — je account wordt zo bijgewerkt."}
 
 
+# ---------- gebrande deal-kaart (PNG) voor de mail-hero ----------
+
+@app.get("/cards/deal.png")
+def deal_card(
+    price: str = "", city_to: str = "", city_from: str = "", subtitle: str = "",
+    dates: str = "", badge_text: str = "", badge_tone: str = "", sig: str = "",
+) -> Response:
+    from app.alerts.card import render_card_from_params
+
+    params = {
+        "price": price, "city_to": city_to, "city_from": city_from, "subtitle": subtitle,
+        "dates": dates, "badge_text": badge_text, "badge_tone": badge_tone,
+    }
+    png = render_card_from_params(params, sig)
+    if png is None:
+        raise HTTPException(status_code=404, detail="kaart niet beschikbaar")
+    return Response(
+        content=png, media_type="image/png",
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
+
+
 @app.delete("/billing/subscription", status_code=204)
 def billing_cancel(user: User = Depends(current_user), db: Session = Depends(get_db)) -> Response:
     billing.cancel_subscription(db, user)

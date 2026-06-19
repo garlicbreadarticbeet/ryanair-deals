@@ -9,14 +9,24 @@ from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
 from app.core.combine import ReturnDeal
+from app.core.scoring import DealScore
 
 
 @dataclass(frozen=True)
 class AlertItem:
-    """Eén te melden deal + (optioneel) de vorige gemelde prijs voor "was €X"."""
+    """Eén te melden deal + verrijking voor de opmaak (stadsnamen, vlag, dealscore).
+
+    ``previous_price`` is de vorige aan deze gebruiker gemelde prijs ("was €X"). De overige
+    velden worden door de verrijking (app/alerts/enrich.py) ingevuld; ze zijn optioneel zodat
+    een kale ``AlertItem(deal)`` blijft werken (de opmaak valt dan terug op de IATA-codes).
+    """
 
     deal: ReturnDeal
     previous_price: float | None = None
+    city_from: str | None = None
+    city_to: str | None = None
+    country_to: str | None = None       # ISO alpha-2 van de bestemming (voor de vlag)
+    score: DealScore | None = None
 
 
 @runtime_checkable

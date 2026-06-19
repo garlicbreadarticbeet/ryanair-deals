@@ -12,7 +12,15 @@ from sqlalchemy import delete, func, or_, select
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.orm import Session
 
-from app.db.models import Airport, Deal, Preference, Provider, User, UserOrigin
+from app.db.models import (
+    Airport,
+    Deal,
+    DealPricePoint,
+    Preference,
+    Provider,
+    User,
+    UserOrigin,
+)
 
 
 def deduped_origin_targets(session: Session) -> list[tuple[str, str]]:
@@ -168,3 +176,105 @@ def delete_user(session: Session, user_id: int) -> None:
     """GDPR: verwijder de gebruiker; ON DELETE CASCADE ruimt prefs/channels/origins/
     sent_alerts/auth_tokens mee op."""
     session.execute(delete(User).where(User.id == user_id))
+
+
+# ---------- prijsgeschiedenis (dealscore) ----------
+
+def record_price_point(
+    session: Session,
+    *,
+    provider: str,
+    origin: str,
+    destination: str,
+    nights: int,
+    total_price: float,
+    observed_on: datetime.date,
+) -> None:
+    """Leg de waargenomen retour-totaalprijs van vandaag vast (laagste per dag per route).
+
+    Eén rij per (route, dag): bij meerdere scans op één dag houden we de **laagste** prijs.
+    """
+    stmt = pg_insert(DealPricePoint).values(
+        provider=provider, origin=origin, destination=destination, nights=nights,
+        total_price=Decimal(str(total_price)), observed_on=observed_on,
+    )
+    stmt = stmt.on_conflict_do_update(
+        constraint="uq_price_points_day",
+        set_={
+            "total_price": func.least(DealPricePoint.total_price, stmt.excluded.total_price),
+            "observed_at": func.now(),
+        },
+    )
+    session.execute(stmt)
+
+
+def price_baselines(
+    session: Session,
+    fingerprints,
+    *,
+    today: datetime.date,
+    window_days: int = 90,
+) -> dict[tuple[str, str, str, int], dict]:
+    """Per route-fingerprint de baseline-stats over de **eerdere** dagen (excl. vandaag).
+
+    Geeft per (provider, origin, destination, nights): mediaan, minimum, aantal waarnemingen
+    en het aantal dagen historie. Eén GROUP BY-query (geen N+1). **Vandaag wordt uitgesloten**
+    (``observed_on < today``) zodat een net-gescande prijs niet tegen zichzelf wordt afgezet —
+    anders zou de mediaan naar de huidige prijs trekken en het aantal waarnemingen +1 zijn.
+    Routes zonder eerdere historie ontbreken (de scoring valt terug op de absolute prijs).
+    """
+    fps = {tuple(fp) for fp in fingerprints}
+    if not fps:
+        return {}
+    since = today - datetime.timedelta(days=window_days)
+    origins = {o for _, o, _, _ in fps}
+    dests = {d for _, _, d, _ in fps}
+    rows = session.execute(
+        select(
+            DealPricePoint.provider,
+            DealPricePoint.origin,
+            DealPricePoint.destination,
+            DealPricePoint.nights,
+            func.min(DealPricePoint.total_price).label("min_total"),
+            func.percentile_cont(0.5)
+            .within_group(DealPricePoint.total_price.asc())
+            .label("median_total"),
+            func.count().label("samples"),
+            func.min(DealPricePoint.observed_on).label("first_day"),
+        )
+        .where(
+            DealPricePoint.observed_on >= since,
+            DealPricePoint.observed_on < today,
+            DealPricePoint.origin.in_(origins),
+            DealPricePoint.destination.in_(dests),
+        )
+        .group_by(
+            DealPricePoint.provider,
+            DealPricePoint.origin,
+            DealPricePoint.destination,
+            DealPricePoint.nights,
+        )
+    ).all()
+    out: dict[tuple[str, str, str, int], dict] = {}
+    for r in rows:
+        key = (r.provider, r.origin, r.destination, r.nights)
+        if key in fps:
+            out[key] = {
+                "min_total": float(r.min_total),
+                "median_total": float(r.median_total),
+                "samples": int(r.samples),
+                "days_span": (today - r.first_day).days,
+            }
+    return out
+
+
+def airport_display(session: Session, iatas) -> dict[str, dict]:
+    """IATA → {city, country} voor leesbare alerts (stad valt terug op luchthavennaam)."""
+    iatas = list(iatas)
+    if not iatas:
+        return {}
+    rows = session.execute(
+        select(Airport.iata, Airport.city, Airport.name, Airport.country_code)
+        .where(Airport.iata.in_(iatas))
+    ).all()
+    return {i: {"city": (c or n), "country": cc} for i, c, n, cc in rows}

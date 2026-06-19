@@ -13,11 +13,18 @@ from collections.abc import Iterable
 
 from sqlalchemy.orm import Session
 
+from app.alerts.enrich import enrich_deals
+from app.alerts.render import sort_key
 from app.channels.base import AlertItem, get_notifier
 from app.core import dedup
 from app.core.combine import ReturnDeal
 from app.core.gating import can_use
 from app.db.models import User
+
+# Bovengrens per kanaal per run: een gerichte "top-deals"-melding i.p.v. een muur. De
+# spannendste (sterkste dealscore) gaan eerst; de rest komt een volgende run aan bod
+# (ze worden niet als verzonden gemarkeerd, dus blijven kandidaat).
+_MAX_ALERTS_PER_RUN = 12
 
 
 def notify_user(session: Session, user: User, matched_deals: Iterable[ReturnDeal]) -> int:
@@ -28,6 +35,9 @@ def notify_user(session: Session, user: User, matched_deals: Iterable[ReturnDeal
     deals = list(matched_deals)
     if not deals:
         return 0
+
+    # Verrijk één keer (stadsnamen, bestemmingsland, dealscore) — gedeeld over alle kanalen.
+    enrichment = enrich_deals(session, deals)
 
     sent = 0
     for channel in user.channels:
@@ -44,12 +54,21 @@ def notify_user(session: Session, user: User, matched_deals: Iterable[ReturnDeal
         for deal in deals:
             prev = dedup.get_prev_alert(session, user.id, channel.type, deal)
             if dedup.is_new_or_cheaper(prev, deal.total):
-                items.append(
-                    AlertItem(deal=deal, previous_price=float(prev.alerted_price) if prev else None)
-                )
+                enr = enrichment.get((deal.provider, deal.origin, deal.destination, deal.nights))
+                items.append(AlertItem(
+                    deal=deal,
+                    previous_price=float(prev.alerted_price) if prev else None,
+                    city_from=enr.city_from if enr else None,
+                    city_to=enr.city_to if enr else None,
+                    country_to=enr.country_to if enr else None,
+                    score=enr.score if enr else None,
+                ))
         if not items:
             continue
 
+        # Spannendste deals bovenaan (sterkste dealscore, dan goedkoopste); capped per run.
+        items.sort(key=sort_key)
+        items = items[:_MAX_ALERTS_PER_RUN]
         if notifier.send(channel.address, items):
             for item in items:
                 dedup.record_sent_alert(session, user.id, channel.type, item.deal)

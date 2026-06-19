@@ -1,16 +1,35 @@
 """EmailNotifier — transactionele e-mail via de Resend-API (requests + certifi).
 
-Levert zowel de deal-alerts als (via send_email) de magic-link-mail voor onboarding.
+Levert de magic-link-mail (send_email) én de gebrande deal-alert: een responsive, email-veilige
+HTML-mail (tabellen + inline CSS) in de Vliegseintje-stijl, met per deal een kaart, de prijs,
+de dealscore-badge en een duidelijke boekknop. De content komt uit de gedeelde render-laag.
 """
 from __future__ import annotations
 
 import html
 
+from app.alerts import render as R
 from app.channels.base import AlertItem, register_notifier
 from app.net import get_session
 from app.settings import settings
 
 _RESEND_URL = "https://api.resend.com/emails"
+
+# Merk-tokens (uit static/style.css; e-mail kan geen CSS-variabelen, dus inline hexwaarden).
+_BLUE = "#2563EB"
+_INK = "#102A43"
+_BODY = "#334E68"
+_MUTED = "#5C748D"
+_SURFACE = "#F5F8FC"
+_BORDER = "#E3E9F2"
+_AMBER = "#FFB703"
+_BLUE_SOFT = "#BFD4FB"
+_FONT = "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif"
+_BADGE = {
+    "hot": ("#FFF4D6", "#8A5A00"),
+    "good": ("#E6F6EF", "#0B6B48"),
+    "info": ("#E8F0FE", "#1D4FD7"),
+}
 
 
 def send_email(to: str, subject: str, html_body: str) -> bool:
@@ -29,23 +48,114 @@ def send_email(to: str, subject: str, html_body: str) -> bool:
         return False
 
 
+def _badge_html(it: AlertItem) -> str:
+    b = R.badge(it)
+    if not b:
+        return ""
+    bg, fg = _BADGE.get(b.tone, _BADGE["info"])
+    return (
+        f'<span style="display:inline-block;background:{bg};color:{fg};font:700 13px {_FONT};'
+        f'padding:4px 11px;border-radius:999px;white-space:nowrap;">'
+        f"{b.emoji} {html.escape(b.text)}</span>"
+    )
+
+
+def _cta_html(it: AlertItem) -> str:
+    safe = R.safe_href(it.deal.deeplink)
+    if safe:
+        href, label = html.escape(safe, quote=True), "Bekijk de vlucht →"
+        bg, fg = _AMBER, _INK
+    else:
+        href, label = f"{settings.app_base_url}/dashboard", "Bekijk op je dashboard →"
+        bg, fg = _SURFACE, _BLUE
+    return (
+        f'<a href="{href}" style="display:block;margin-top:14px;background:{bg};color:{fg};'
+        f'text-decoration:none;font:700 15px {_FONT};text-align:center;padding:13px;'
+        f'border-radius:10px;">{label}</a>'
+    )
+
+
+def _card_html(it: AlertItem) -> str:
+    d = it.deal
+    airline = f" · {html.escape(d.airline)}" if d.airline else ""
+    badge = _badge_html(it)
+    badge_row = f'<div style="margin-top:8px;">{badge}</div>' if badge else ""
+    return (
+        f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0" '
+        f'style="background:#ffffff;border:1px solid {_BORDER};border-radius:14px;margin:0 0 14px;">'
+        f'<tr><td style="padding:18px 20px;">'
+        f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>'
+        f'<td valign="top" style="font:800 30px {_FONT};color:{_INK};white-space:nowrap;">'
+        f"{R.money(d.total)}</td>"
+        f'<td valign="top" align="right">'
+        f'<div style="font:700 18px {_FONT};color:{_INK};">'
+        f"{R.flag(it.country_to)} {html.escape(R.city_to(it))}</div>"
+        f'<div style="font:400 14px {_FONT};color:{_MUTED};margin-top:3px;">'
+        f"vanaf {html.escape(R.city_from(it))} · {R.nights_label(it)}{airline}</div>"
+        f'<div style="font:400 14px {_FONT};color:{_MUTED};">{R.dates_label(it)}</div>'
+        f"</td></tr></table>"
+        f"{badge_row}"
+        f"{_cta_html(it)}"
+        f"</td></tr></table>"
+    )
+
+
+def _subject(items: list[AlertItem]) -> str:
+    best = items[0]
+    price = R.money(best.deal.total)
+    if len(items) == 1:
+        return f"✈️ {R.city_to(best)} retour voor {price}"
+    return f"✈️ {R.city_to(best)} {price} + {len(items) - 1} andere deals onder je drempel"
+
+
+def _hero_html(it: AlertItem) -> str:
+    """Gebrande hero-afbeelding (gelinkt naar de boeking) voor de beste deal — als geconfigureerd."""
+    from app.alerts.card import signed_card_url
+
+    url = signed_card_url(it)
+    if not url:
+        return ""
+    href = html.escape(R.safe_href(it.deal.deeplink, f"{settings.app_base_url}/dashboard"), quote=True)
+    alt = f"{R.city_to(it)} {R.money(it.deal.total)}"
+    img = (
+        f'<a href="{href}"><img src="{html.escape(url, quote=True)}" width="600" '
+        f'alt="{html.escape(alt)}" style="display:block;width:100%;max-width:600px;'
+        f'border:0;border-radius:14px;"></a>'
+    )
+    return f'<tr><td style="padding:0 0 14px;">{img}{_cta_html(it)}</td></tr>'
+
+
 def _render(items: list[AlertItem]) -> tuple[str, str]:
-    subject = f"✈️ {len(items)} nieuwe retour-deal(s)"
-    rows = []
-    for it in sorted(items, key=lambda x: x.deal.total):
-        d = it.deal
-        drop = f" <small>(was €{it.previous_price:.2f})</small>" if it.previous_price else ""
-        airline = f" · {html.escape(d.airline)}" if d.airline else ""
-        link = (f' · <a href="{html.escape(d.deeplink, quote=True)}">Bekijk</a>'
-                if d.deeplink else "")
-        rows.append(
-            f"<li><b>€{d.total:.2f}</b>{drop} — {html.escape(d.origin)} ⇄ "
-            f"{html.escape(d.destination)} · {d.nights} dagen · "
-            f"heen {d.out_date:%d-%m} / terug {d.in_date:%d-%m}{airline}{link}</li>"
-        )
-    body = (f"<h2>{subject}</h2><ul>{''.join(rows)}</ul>"
-            "<p><small>Prijzen kunnen wijzigen; je boekt bij de airline.</small></p>")
-    return subject, body
+    n = len(items)
+    intro = f"Je seintje is binnen — {n} {'deal' if n == 1 else 'deals'} onder je drempel."
+    hero = _hero_html(items[0])
+    rest = items[1:] if hero else items   # hero vervangt de eerste kaart (geen dubbele beste deal)
+    cards = "".join(_card_html(it) for it in rest)
+    body = (
+        f'<div style="background:{_SURFACE};padding:24px 0;font-family:{_FONT};">'
+        f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>'
+        f'<td align="center">'
+        f'<table role="presentation" width="600" cellpadding="0" cellspacing="0" '
+        f'style="width:600px;max-width:92%;">'
+        # Header
+        f'<tr><td style="background:{_BLUE};border-radius:14px;padding:22px 24px;">'
+        f'<div style="font:800 22px {_FONT};color:#ffffff;">✈️ {html.escape(settings.brand_name)}</div>'
+        f'<div style="font:400 14px {_FONT};color:{_BLUE_SOFT};margin-top:4px;">{html.escape(intro)}</div>'
+        f"</td></tr>"
+        f'<tr><td style="height:18px;line-height:18px;">&nbsp;</td></tr>'
+        # Hero (beste deal als gebrande afbeelding, indien geconfigureerd) + de overige kaarten
+        f"{hero}"
+        f'<tr><td>{cards}</td></tr>'
+        # Footer
+        f'<tr><td style="padding:6px 8px 0;">'
+        f'<p style="font:400 12px {_FONT};color:{_MUTED};text-align:center;line-height:1.6;">'
+        f"Prijzen zijn indicatief en kunnen wijzigen; je boekt zelf bij de airline.<br>"
+        f'<a href="{settings.app_base_url}/preferences" style="color:{_MUTED};">Voorkeuren aanpassen</a> · '
+        f'<a href="{settings.app_base_url}/account" style="color:{_MUTED};">Afmelden</a>'
+        f"</p></td></tr>"
+        f"</table></td></tr></table></div>"
+    )
+    return _subject(items), body
 
 
 @register_notifier

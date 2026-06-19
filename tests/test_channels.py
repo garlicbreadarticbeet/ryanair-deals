@@ -24,13 +24,15 @@ def test_all_channels_registered_and_conform():
 
 def test_telegram_formatting():
     text = format_alerts([
-        AlertItem(_deal(30.0), previous_price=40.0),
+        AlertItem(_deal(30.0), previous_price=40.0, city_from="Eindhoven", city_to="Barcelona", country_to="es"),
         AlertItem(_deal(20.0, dest="AGP")),
     ])
-    assert "€30.00" in text
-    assert "was €40.00" in text
-    assert "EIN ⇄ BCN" in text
-    assert "━━━ 3 dagen ━━━" in text
+    assert "€30" in text
+    assert "was €40" in text                 # per-gebruiker 'was'-badge
+    assert "Barcelona" in text and "🇪🇸" in text
+    assert "vanaf Eindhoven" in text
+    assert "nieuwe" in text.lower()           # kop "N nieuwe deals"
+    assert "AGP" in text                       # zonder stadsnaam → IATA-fallback
 
 
 def test_unknown_channel_has_no_notifier():

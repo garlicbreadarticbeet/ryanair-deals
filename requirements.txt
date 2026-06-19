@@ -19,6 +19,7 @@ jinja2              # server-rendered website (Fase 3)
 markdown            # blog + legal content (Markdown -> HTML)
 python-multipart    # HTML-formulieren (FastAPI Form)
 APScheduler
+Pillow              # gebrande deal-kaarten (PNG): Telegram-foto's + mail-hero
 
 # Tests
 pytest

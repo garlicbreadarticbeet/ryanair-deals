@@ -251,6 +251,39 @@ class Deal(Base):
     )
 
 
+class DealPricePoint(Base):
+    """Dagelijkse prijswaarneming per route — de prijsgeschiedenis achter de dealscore.
+
+    Eén rij per (route-fingerprint, observatiedag); de scan houdt de **laagste** retour-
+    totaalprijs van die dag bij. Hieruit berekenen we hoe goed een actuele prijs is t.o.v.
+    normaal ("X% onder normaal", "laagste in N dagen") en voeden we de premium-feature
+    'uitgebreide prijsgeschiedenis'. Fingerprint = (provider, origin, destination, nights),
+    net als sent_alerts/dedup — datumloos, want het gaat om de route, niet de losse vlucht.
+    """
+
+    __tablename__ = "deal_price_points"
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    provider: Mapped[str] = mapped_column(String(32), nullable=False)
+    origin: Mapped[str] = mapped_column(String(3), nullable=False)
+    destination: Mapped[str] = mapped_column(String(3), nullable=False)
+    nights: Mapped[int] = mapped_column(SmallInteger, nullable=False)
+    total_price: Mapped[Decimal] = mapped_column(_PRICE, nullable=False)
+    observed_on: Mapped[datetime.date] = mapped_column(Date, nullable=False)
+    observed_at: Mapped[datetime.datetime] = _now()
+
+    __table_args__ = (
+        UniqueConstraint(
+            "provider", "origin", "destination", "nights", "observed_on",
+            name="uq_price_points_day",
+        ),
+        Index(
+            "ix_price_points_route",
+            "provider", "origin", "destination", "nights", "observed_on",
+        ),
+    )
+
+
 class SentAlert(Base):
     """Per-gebruiker dedup (vervangt het globale state.json).
 

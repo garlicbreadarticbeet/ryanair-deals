@@ -76,6 +76,11 @@ class Settings(BaseSettings):
     resend_from: str = "deals@goedkoopvliegen.example"
     app_base_url: str = "http://localhost:8000"   # basis voor magic-links
 
+    # --- Alert-dealkaarten (gebrande PNG). Secret ondertekent de /cards-URL voor de mail-hero;
+    #     leeg = geen hero-afbeelding in de mail (de HTML-kaarten blijven). Telegram-foto's
+    #     hebben dit niet nodig (bytes worden direct geüpload). ---
+    alert_card_secret: str = ""
+
     # --- Providers ---
     enabled_providers: str = "ryanair"  # CSV; wizzair staat als stub uit
     # Databron waaraan nieuwe vertrekvelden worden gekoppeld (drijft welke adapter de scan

@@ -93,6 +93,8 @@ app/
                      #   scan.py (orkestratie), match.py (per-user), dedup.py, gating.py
   channels/          # Notifier-interface + registry
                      #   telegram.py, email.py (Resend)
+  alerts/            # presentatielaag: verrijking (stad/vlag/dealscore), gedeelde opmaak,
+                     #   gebrande deal-kaart (card.py, Pillow) voor Telegram-foto + mail-hero
   db/                # SQLAlchemy-modellen, sessie, repo (queries), seed (airports.json)
   web/               # FastAPI: JSON-API (main.py) + website (views.py, templates/, static/),
                      #   deps.py (DB + cookie/Bearer-auth), auth.py (magic-link/sessietokens)
@@ -224,6 +226,18 @@ aanrader uitgelicht op `/premium` en `/account`). Prijzen komen volledig uit con
 Endpoints in `app/web/main.py`: `POST /billing/checkout` (sessietoken; neemt `plan` =
 `monthly`/`annual`) → checkout-URL van de actieve provider; `DELETE /billing/subscription` →
 opzeggen. De webhooks vereisen dat `APP_BASE_URL` publiek (HTTPS) bereikbaar is.
+
+### Alerts (Telegram + e-mail) + dealscore
+
+De alert-content zit in `app/alerts/`: de scan houdt prijsgeschiedenis bij
+(`deal_price_points`, migratie 0006) en daaruit berekent `app/core/scoring.py` een **dealscore**
+("X% onder normaal", "laagste in N dagen"). Alerts ranken op **dealsterkte** (spannendste eerst).
+De gedeelde render-laag geeft Telegram, e-mail én de **gebrande deal-kaart** (PNG, `card.py` met
+Pillow + gebundelde merk-TTF's) hetzelfde: stadsnaam + vlag, dealscore-badge, boekknop. De e-mail
+is een gebrande responsive HTML-mail; de Telegram-melding bevat een foto-kaart van de beste deal.
+De mail-hero laadt via de **ondertekende** `/cards/deal.png`-endpoint (`ALERT_CARD_SECRET`); zonder
+secret/Pillow valt alles schoon terug op tekst/HTML zonder beeld. De dealscore **warmt op** over
+enkele dagen historie.
 
 ### Nog open (toekomst)
 
