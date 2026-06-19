@@ -43,6 +43,28 @@ class Route:
     destination_country: str | None = None   # alpha-2, indien de provider het levert
 
 
+@dataclass(frozen=True)
+class ReturnFare:
+    """Een retour-native prijs: heen+terug als één geheel, zoals gecachte aggregators
+    (Travelpayouts) die leveren. Onderscheidt zich van DailyFare (één richting → waar
+    core/combine zelf retours van bouwt). Providers die dit leveren implementeren
+    ``return_deals`` (zie ReturnFareProvider); de scan slaat ze direct op als deal.
+
+    ``deeplink`` is de (affiliate-)boekingslink; ``airline`` een leesbare naam voor de alert.
+    """
+
+    provider: str
+    origin: str
+    destination: str
+    nights: int
+    out_date: datetime.date
+    in_date: datetime.date
+    total: float
+    currency: str
+    deeplink: str | None = None
+    airline: str | None = None
+
+
 @runtime_checkable
 class FlightProvider(Protocol):
     """Interface die elke maatschappij-adapter implementeert.
@@ -73,6 +95,27 @@ class FlightProvider(Protocol):
         ...
 
 
+@runtime_checkable
+class ReturnFareProvider(Protocol):
+    """Optionele capability voor providers die retours al gecombineerd leveren (de cache
+    ís een retour). De scan kiest dit pad als de adapter ``return_deals`` heeft; anders het
+    DailyFare-pad. core/match/notify blijven ongemoeid — ze werken op de opgeslagen deals.
+    """
+
+    code: str
+
+    def return_deals(
+        self,
+        origins: Sequence[str],
+        today: datetime.date,
+        horizon_end: datetime.date,
+        trip_lengths: Sequence[int],
+        currency: str,
+    ) -> Iterable[ReturnFare]:
+        """De goedkoopste retours per (origin, destination, reisduur) binnen de horizon."""
+        ...
+
+
 # get_session wordt hierboven uit app.net geïmporteerd en hier re-geëxporteerd, zodat
 # bestaande imports (`from app.providers.base import get_session`) blijven werken.
-__all__ = ["DailyFare", "Route", "FlightProvider", "get_session"]
+__all__ = ["DailyFare", "Route", "ReturnFare", "FlightProvider", "ReturnFareProvider", "get_session"]

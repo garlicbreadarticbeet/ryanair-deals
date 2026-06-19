@@ -151,7 +151,7 @@ def put_prefs(
         prefs.dest_countries = [c.lower() for c in body.dest_countries]
     if body.origins is not None:
         try:
-            accounts.set_origins(db, user, "ryanair", body.origins)
+            accounts.set_origins(db, user, settings.default_origin_provider, body.origins)
         except PremiumRequired as exc:
             raise HTTPException(status_code=403, detail=str(exc)) from exc
     db.flush()

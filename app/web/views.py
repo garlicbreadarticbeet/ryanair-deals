@@ -179,7 +179,7 @@ def preferences_save(
         prefs.alert_mode = alert_mode if alert_mode in ("instant", "digest") else "digest"
 
     try:
-        accounts.set_origins(db, user, "ryanair", [t.upper() for t in _tokens(origins)])
+        accounts.set_origins(db, user, settings.default_origin_provider, [t.upper() for t in _tokens(origins)])
     except PremiumRequired as exc:
         flash, kind = str(exc), "err"
     db.flush()

@@ -66,6 +66,8 @@ def upsert_deal(
     in_price: float,
     total_price: float,
     currency: str,
+    airline: str | None = None,
+    deeplink: str | None = None,
 ) -> None:
     """Upsert één markt-deal (ON CONFLICT op de unieke combinatie → prijs + last_seen bij)."""
     values = {
@@ -79,6 +81,8 @@ def upsert_deal(
         "in_price": Decimal(str(in_price)),
         "total_price": Decimal(str(total_price)),
         "currency": currency,
+        "airline": airline,
+        "deeplink": deeplink,
     }
     stmt = pg_insert(Deal).values(**values)
     stmt = stmt.on_conflict_do_update(
@@ -88,6 +92,8 @@ def upsert_deal(
             "in_price": stmt.excluded.in_price,
             "total_price": stmt.excluded.total_price,
             "currency": stmt.excluded.currency,
+            "airline": stmt.excluded.airline,
+            "deeplink": stmt.excluded.deeplink,
             "last_seen": func.now(),
         },
     )

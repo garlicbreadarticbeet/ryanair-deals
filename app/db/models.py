@@ -236,6 +236,9 @@ class Deal(Base):
     in_price: Mapped[Decimal] = mapped_column(_PRICE, nullable=False)
     total_price: Mapped[Decimal] = mapped_column(_PRICE, nullable=False)
     currency: Mapped[str] = mapped_column(String(3), nullable=False, server_default=text("'EUR'"))
+    # Retour-native bronnen (aggregators) leveren een boekingslink + maatschappij mee.
+    airline: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    deeplink: Mapped[str | None] = mapped_column(String(1024), nullable=True)
     found_at: Mapped[datetime.datetime] = _now()
     last_seen: Mapped[datetime.datetime] = _now()
 

@@ -24,11 +24,15 @@ def format_alerts(items: list[AlertItem]) -> str:
         for it in sorted(by_len[n], key=lambda x: x.deal.total):
             d = it.deal
             drop = f" (was €{it.previous_price:.2f})" if it.previous_price else ""
+            airline = f" · {html.escape(d.airline)}" if d.airline else ""
+            link = (f'\n   → <a href="{html.escape(d.deeplink, quote=True)}">Bekijk de vlucht</a>'
+                    if d.deeplink else "")
             parts.append(
                 f"\n<b>€{d.total:.2f}</b>{drop} — "
                 f"{html.escape(d.origin)} ⇄ {html.escape(d.destination)}\n"
-                f"   heen {fmt_full(d.out_date)} · terug {fmt_full(d.in_date)}"
+                f"   heen {fmt_full(d.out_date)} · terug {fmt_full(d.in_date)}{airline}{link}"
             )
+    parts.append("\n\n<i>Prijzen kunnen wijzigen; je boekt bij de airline.</i>")
     return "".join(parts)
 
 

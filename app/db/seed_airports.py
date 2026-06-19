@@ -25,6 +25,7 @@ _AIRPORTS_FILE = Path(__file__).resolve().parent / "data" / "airports.json"
 
 # Providers die het systeem kent. Een nieuwe maatschappij = rij hier + adapter.
 _PROVIDERS = [
+    {"code": "travelpayouts", "display_name": "Travelpayouts (Aviasales)", "enabled": True},
     {"code": "ryanair", "display_name": "Ryanair", "enabled": True},
     {"code": "wizzair", "display_name": "Wizz Air", "enabled": False},  # stub tot Fase 2
 ]

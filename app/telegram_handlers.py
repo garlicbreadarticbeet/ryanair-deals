@@ -86,7 +86,7 @@ def _set_origins(session: Session, user: User, args: list[str]) -> str:
     if unknown:
         return f"Onbekende luchthaven(s): {', '.join(unknown)}."
     try:
-        accounts.set_origins(session, user, "ryanair", iatas)
+        accounts.set_origins(session, user, settings.default_origin_provider, iatas)
     except PremiumRequired as exc:
         return str(exc)
     return f"Vertrekvelden bijgewerkt: {', '.join(iatas)}."

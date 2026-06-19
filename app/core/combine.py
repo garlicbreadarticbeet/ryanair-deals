@@ -41,6 +41,8 @@ class ReturnDeal:
     in_price: float
     out_departure: str | None = None
     in_departure: str | None = None
+    deeplink: str | None = None        # (affiliate-)boekingslink, indien de bron die levert
+    airline: str | None = None         # leesbare maatschappijnaam voor de alert
 
 
 def deal_row_to_return_deal(row) -> ReturnDeal:
@@ -54,6 +56,7 @@ def deal_row_to_return_deal(row) -> ReturnDeal:
         nights=row.nights, total=float(row.total_price),
         out_date=row.out_date, in_date=row.in_date,
         out_price=float(row.out_price), in_price=float(row.in_price),
+        deeplink=getattr(row, "deeplink", None), airline=getattr(row, "airline", None),
     )
 
 

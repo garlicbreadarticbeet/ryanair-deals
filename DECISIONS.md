@@ -58,10 +58,19 @@ de productiebron (plan §3 + onderzoek).
 **UX-gevolg:** prijzen zijn indicatief → tonen als "vanaf €X, prijzen kunnen wijzigen" (sluit aan op de
 bestaande transparantieregel); de gebruiker bevestigt op de airline/OTA via de affiliate-link.
 
-**Open voor Tim (uit de onderzoekschecklist, vóór we de adapter afbouwen):** route-test met gratis token
-(`scripts/probe_travelpayouts.py`) → dekken jouw EIN/NRN/BRU/CRL/AMS-routes?; EU-sanctiecheck van Go
-Travel Un Limited; en de merk-/PR-afweging rond de Russische oorsprong (Aviasales). Verdien breder dan
-vluchten (hotels/verzekering/eSIM via hetzelfde account) — flight-commissie is structureel laag.
+**Open voor Tim (uit de onderzoekschecklist):** EU-sanctiecheck van Go Travel Un Limited; en de
+merk-/PR-afweging rond de Russische oorsprong (Aviasales). Verdien breder dan vluchten
+(hotels/verzekering/eSIM via hetzelfde account) — flight-commissie is structureel laag.
+
+**Implementatie (gebouwd 19-06-2026):** route-test bevestigd (`scripts/probe_travelpayouts.py`,
+~100% dekking, Ryanair+Wizz aanwezig). De adapter `app/providers/travelpayouts.py` haalt retours
+op via het gecachte `prices_for_dates`-endpoint. Omdat de cache **retour-native** is, is er een
+optioneel `ReturnFareProvider`-pad toegevoegd (`base.ReturnFare` + `scan.run_scan`): zulke bronnen
+leveren direct retours i.p.v. enkele-richting `DailyFare`s; `combine`/`match`/`notify` blijven
+ongemoeid. De affiliate-deeplink (marker) + maatschappij worden opgeslagen op `deals`
+(migratie 0004) en getoond in de Telegram/e-mail-alert. Nieuwe origins koppelen aan
+`DEFAULT_ORIGIN_PROVIDER` (default `travelpayouts`); de Ryanair-adapter blijft als legacy/config-bron.
+Prijzen zijn indicatief → de "vanaf €X, prijzen kunnen wijzigen"-UX dekt dat af.
 
 ## D7 — Niet in deze ronde
 Geen native apps, geen echte WhatsApp-verzending (stub blijft), geen prijsvoorspelling — conform

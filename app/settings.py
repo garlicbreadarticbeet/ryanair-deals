@@ -51,6 +51,10 @@ class Settings(BaseSettings):
 
     # --- Providers ---
     enabled_providers: str = "ryanair"  # CSV; wizzair staat als stub uit
+    # Databron waaraan nieuwe vertrekvelden worden gekoppeld (drijft welke adapter de scan
+    # voor die origins gebruikt). 'travelpayouts' = de gecachte Data API (zie DECISIONS D8);
+    # 'ryanair' = de legacy directe cheapestPerDay-bron.
+    default_origin_provider: str = "travelpayouts"
 
     # --- Travelpayouts (databron + affiliate; cached Data API — zie DECISIONS D8) ---
     travelpayouts_token: str = ""        # API-token uit je Travelpayouts-account (Data API)

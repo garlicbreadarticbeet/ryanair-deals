@@ -35,12 +35,16 @@ def _render(items: list[AlertItem]) -> tuple[str, str]:
     for it in sorted(items, key=lambda x: x.deal.total):
         d = it.deal
         drop = f" <small>(was €{it.previous_price:.2f})</small>" if it.previous_price else ""
+        airline = f" · {html.escape(d.airline)}" if d.airline else ""
+        link = (f' · <a href="{html.escape(d.deeplink, quote=True)}">Bekijk</a>'
+                if d.deeplink else "")
         rows.append(
             f"<li><b>€{d.total:.2f}</b>{drop} — {html.escape(d.origin)} ⇄ "
             f"{html.escape(d.destination)} · {d.nights} dagen · "
-            f"heen {d.out_date:%d-%m} / terug {d.in_date:%d-%m}</li>"
+            f"heen {d.out_date:%d-%m} / terug {d.in_date:%d-%m}{airline}{link}</li>"
         )
-    body = f"<h2>{subject}</h2><ul>{''.join(rows)}</ul>"
+    body = (f"<h2>{subject}</h2><ul>{''.join(rows)}</ul>"
+            "<p><small>Prijzen kunnen wijzigen; je boekt bij de airline.</small></p>")
     return subject, body
 
 

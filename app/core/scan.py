@@ -43,10 +43,20 @@ def run_scan(session: Session, today: datetime.date | None = None) -> list[Retur
     all_deals: list[ReturnDeal] = []
     for code, origins in by_provider.items():
         provider = get_provider(code)
+
+        # Retour-native pad: bronnen die de retour al gecombineerd leveren (ReturnFareProvider).
+        # Geen discover_routes/combine nodig; de bron geeft direct ReturnFares.
+        if hasattr(provider, "return_deals"):
+            for rf in provider.return_deals(origins, today, horizon_end, trip_lengths, settings.currency):
+                deal = _returnfare_to_deal(rf)
+                _persist(session, deal)
+                all_deals.append(deal)
+            continue
+
+        # DailyFare-pad: ontdek routes, haal heen+terug op, combineer tot retours.
         routes = list(provider.discover_routes(origins, today, horizon_end))
 
         def _fetch(route) -> list[ReturnDeal]:
-            # Heen (origin->dest) én terug (dest->origin), zoals de oude scan().
             outbound = list(provider.daily_fares(route.origin, route.destination, months, settings.currency))
             inbound = list(provider.daily_fares(route.destination, route.origin, months, settings.currency))
             return best_returns(outbound, inbound, trip_lengths, today, horizon_end)
@@ -56,18 +66,29 @@ def run_scan(session: Session, today: datetime.date | None = None) -> list[Retur
         with ThreadPoolExecutor(max_workers=settings.concurrency) as pool:
             for deals in pool.map(_fetch, routes):
                 for d in deals:
-                    repo.upsert_deal(
-                        session,
-                        provider=d.provider,
-                        origin=d.origin,
-                        destination=d.destination,
-                        nights=d.nights,
-                        out_date=d.out_date,
-                        in_date=d.in_date,
-                        out_price=d.out_price,
-                        in_price=d.in_price,
-                        total_price=d.total,
-                        currency=settings.currency,
-                    )
+                    _persist(session, d)
                     all_deals.append(d)
     return all_deals
+
+
+def _returnfare_to_deal(rf) -> ReturnDeal:
+    """Zet een retour-native ReturnFare om naar een ReturnDeal. Gecachte retours splitsen
+    niet in heen/terug; we verdelen het totaal 50/50 voor opslag (match/notify gebruiken
+    alleen ``total``). Behoudt deeplink + airline voor de alert."""
+    out_p = round(rf.total / 2, 2)
+    return ReturnDeal(
+        provider=rf.provider, origin=rf.origin, destination=rf.destination, nights=rf.nights,
+        total=rf.total, out_date=rf.out_date, in_date=rf.in_date,
+        out_price=out_p, in_price=round(rf.total - out_p, 2),
+        deeplink=rf.deeplink, airline=rf.airline,
+    )
+
+
+def _persist(session: Session, d: ReturnDeal) -> None:
+    """Upsert één ReturnDeal naar de deals-tabel (incl. airline + deeplink indien aanwezig)."""
+    repo.upsert_deal(
+        session, provider=d.provider, origin=d.origin, destination=d.destination,
+        nights=d.nights, out_date=d.out_date, in_date=d.in_date,
+        out_price=d.out_price, in_price=d.in_price, total_price=d.total,
+        currency=settings.currency, airline=d.airline, deeplink=d.deeplink,
+    )

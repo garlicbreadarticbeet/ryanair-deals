@@ -36,4 +36,4 @@ def active_providers(enabled_codes: Iterable[str]) -> list[FlightProvider]:
 
 # Trigger registratie van de gebundelde adapters. Onderaan om circulaire import te vermijden
 # (de adapters importeren `register` hierboven).
-from app.providers import ryanair, wizzair  # noqa: E402,F401
+from app.providers import ryanair, travelpayouts, wizzair  # noqa: E402,F401
