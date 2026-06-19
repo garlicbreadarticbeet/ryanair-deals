@@ -515,6 +515,9 @@ textarea { min-height: 120px; resize: vertical; }
   border-radius: var(--r-card); padding: 14px 16px; cursor: pointer; transition: border-color .12s var(--ease-out), background .12s var(--ease-out); }
 .choice-card input { margin-top: 4px; flex: none; }
 .choice-card:has(input:checked) { border-color: var(--color-primary); background: var(--color-primary-soft); }
+.choice-card.is-locked { opacity: .65; cursor: not-allowed; background: var(--color-surface); }
+.choice-card.is-locked input { cursor: not-allowed; }
+.choice-card.is-locked a { pointer-events: auto; cursor: pointer; }
 .choice-body { display: flex; flex-direction: column; gap: 3px; }
 .choice-title { font-family: var(--font-head); font-weight: 600; color: var(--color-ink); }
 .choice-desc { color: var(--color-muted); font-size: 14px; }

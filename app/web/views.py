@@ -193,8 +193,9 @@ def preferences_save(
     prefs.dest_blacklist = [t.upper() for t in _tokens(dest_blacklist)]
 
     if alert_mode == "instant" and not gating.can_use(user, "mode:instant"):
-        prefs.alert_mode = "instant"
-        flash, kind = "Opgeslagen. Instant is premium — voorlopig krijg je de dagelijkse digest.", "info"
+        # Gratis kan geen 'meteen': forceer 'één keer per dag' (ook als de UI omzeild wordt).
+        prefs.alert_mode = "digest"
+        flash, kind = "Opgeslagen. 'Meteen' kan alleen met Premium — je krijgt één keer per dag bericht.", "info"
     else:
         prefs.alert_mode = alert_mode if alert_mode in ("instant", "digest") else "digest"
 

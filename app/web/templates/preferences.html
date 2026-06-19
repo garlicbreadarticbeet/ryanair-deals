@@ -52,17 +52,21 @@
     <label class="field-label">Wanneer wil je bericht?</label>
     <div class="choice-cards">
       <label class="choice-card">
-        <input type="radio" name="alert_mode" value="digest" {{ 'checked' if prefs.alert_mode != 'instant' else '' }}>
+        <input type="radio" name="alert_mode" value="digest"
+               {{ 'checked' if (not is_premium) or prefs.alert_mode != 'instant' else '' }}>
         <span class="choice-body">
           <span class="choice-title">Eén keer per dag</span>
           <span class="choice-desc">'s Ochtends één bericht met alle deals onder jouw prijs. Rustig en compleet. <span class="badge free">Gratis</span></span>
         </span>
       </label>
-      <label class="choice-card">
-        <input type="radio" name="alert_mode" value="instant" {{ 'checked' if prefs.alert_mode == 'instant' else '' }}>
+      <label class="choice-card{{ ' is-locked' if not is_premium else '' }}">
+        <input type="radio" name="alert_mode" value="instant"
+               {{ 'checked' if is_premium and prefs.alert_mode == 'instant' else '' }}
+               {{ 'disabled' if not is_premium else '' }}>
         <span class="choice-body">
           <span class="choice-title">Meteen</span>
-          <span class="choice-desc">Direct een seintje zodra er een deal is. De scherpste prijzen zijn vaak het eerst weg. <span class="badge premium">Premium</span></span>
+          <span class="choice-desc">Direct een seintje zodra er een deal is. De scherpste prijzen zijn vaak het eerst weg.
+            <span class="badge premium">Premium</span>{% if not is_premium %} · <a href="/premium">Upgrade</a>{% endif %}</span>
         </span>
       </label>
     </div>
