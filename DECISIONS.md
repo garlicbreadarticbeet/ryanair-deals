@@ -43,6 +43,26 @@ echte juridische teksten laat Tim opstellen/controleren (plan §10.8, §21.3).
 support (Resend, indien geconfigureerd). Spam-beperking: honeypot-veld + eenvoudige in-memory
 rate-limit per IP.
 
+## D8 — Databron: Travelpayouts cached Data API (start), Skyscanner als groeidoel
+Na onderzoek (`Vliegseintje_vluchtdata-bron_advies.md`, 19-06-2026): start met de
+**Travelpayouts/Aviasales cached Data API + affiliate-deeplinks** — gratis, self-serve, dekt Ryanair
+én Wizz, en levert direct affiliate-inkomsten op de doorklik. **Skyscanner** is het strategische
+groeidoel (betere data + affiliate, 30-dagen cookie) zodra we ~100k MAU halen.
+
+**Harde architectuurregel:** de dagelijkse scan draait UITSLUITEND op **cached/indicatieve** endpoints
+(Travelpayouts Data API). Live-search-API's (Skyscanner Live Pricing, Travelpayouts real-time Search)
+verbieden geautomatiseerd bevragen ("each search must be user-initiated") → verboden vanuit de cron.
+De bestaande `ryanair`-adapter (directe `cheapestPerDay`) blijft als legacy/dev-bron maar wordt **niet**
+de productiebron (plan §3 + onderzoek).
+
+**UX-gevolg:** prijzen zijn indicatief → tonen als "vanaf €X, prijzen kunnen wijzigen" (sluit aan op de
+bestaande transparantieregel); de gebruiker bevestigt op de airline/OTA via de affiliate-link.
+
+**Open voor Tim (uit de onderzoekschecklist, vóór we de adapter afbouwen):** route-test met gratis token
+(`scripts/probe_travelpayouts.py`) → dekken jouw EIN/NRN/BRU/CRL/AMS-routes?; EU-sanctiecheck van Go
+Travel Un Limited; en de merk-/PR-afweging rond de Russische oorsprong (Aviasales). Verdien breder dan
+vluchten (hotels/verzekering/eSIM via hetzelfde account) — flight-commissie is structureel laag.
+
 ## D7 — Niet in deze ronde
 Geen native apps, geen echte WhatsApp-verzending (stub blijft), geen prijsvoorspelling — conform
 de niet-doelen (§2). Analytics (Plausible) en Sentry zijn als **opt-in via env** voorzien (script

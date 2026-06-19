@@ -52,6 +52,11 @@ class Settings(BaseSettings):
     # --- Providers ---
     enabled_providers: str = "ryanair"  # CSV; wizzair staat als stub uit
 
+    # --- Travelpayouts (databron + affiliate; cached Data API — zie DECISIONS D8) ---
+    travelpayouts_token: str = ""        # API-token uit je Travelpayouts-account (Data API)
+    travelpayouts_marker: str = ""       # affiliate-marker (Partner ID) voor de deeplinks
+    travelpayouts_market: str = "nl"     # markt/locale voor de prijs-cache (nl/be)
+
     # --- Scan-instellingen (waren config.py) ---
     currency: str = "EUR"               # Fase 1: alles EUR
     concurrency: int = 8                # parallelle route-fetches (politeness)
