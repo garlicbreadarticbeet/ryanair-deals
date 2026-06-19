@@ -7,9 +7,36 @@ en de GitHub Actions-secrets ongewijzigd blijven werken.
 """
 from __future__ import annotations
 
+from dataclasses import dataclass
+from decimal import ROUND_FLOOR, ROUND_HALF_UP, Decimal
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _eur(value: Decimal) -> str:
+    """Decimal → NL-bedrag met twee decimalen en komma: 2.08 → '2,08'."""
+    q = value.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    return f"{q:.2f}".replace(".", ",")
+
+
+@dataclass(frozen=True)
+class PremiumPricing:
+    """Afgeleide prijs-/besparingsweergave voor de templates (uit de config berekend).
+
+    Zo hoeven de templates zelf niets te rekenen en klopt de korting automatisch als de
+    prijs ooit wijzigt. ``monthly``/``annual`` zijn de rauwe bedragen voor de betaal-API
+    (punt-decimaal); de ``*_display``-velden zijn de NL-weergave (komma).
+    """
+
+    currency: str
+    monthly: str                    # rauw, bv. "2.99" (voor de provider-API)
+    annual: str                     # rauw, bv. "24.99"
+    monthly_display: str            # "2,99"
+    annual_display: str             # "24,99"
+    annual_per_month_display: str   # "2,08" — jaarplan omgerekend naar per maand
+    saving_pct: int                 # 30 — hoeveel goedkoper jaar dan 12× maand
+    months_free: int                # 3 — "ruim N maanden gratis"
 
 
 class Settings(BaseSettings):
@@ -72,20 +99,65 @@ class Settings(BaseSettings):
 
     # --- Premium / gating (Fase 2) ---
     # Features die alleen premium mag (CSV). Hier staan de kanaal-/modusnamen, NIET in core/.
-    premium_only_features: str = "mode:instant,channel:whatsapp"
+    premium_only_features: str = "mode:instant"
     free_max_origins: int = 1           # max vertrekvelden voor een gratis account
 
-    # --- Mollie-abonnement (Fase 2) ---
-    mollie_api_key: str = ""            # test_... of live_...
-    premium_price: str = ""             # bv. "2.99" — verplicht in te vullen vóór checkout
+    # --- Prijzen (maand + jaar; incl. btw, in EUR). Komen volledig uit config. ---
+    premium_price_monthly: str = "2.99"   # € per maand
+    premium_price_annual: str = "24.99"   # € per jaar (≈ €2,08/maand, ~30% goedkoper)
     premium_currency: str = "EUR"
-    premium_interval: str = "1 month"   # Mollie-intervalformaat
-    premium_description: str = "Goedkoop Vliegen Premium"
+    premium_description: str = "Vliegseintje Premium"
 
-    # --- WhatsApp (Fase 2; uit tot credentials aanwezig zijn) ---
-    whatsapp_enabled: bool = False
-    whatsapp_token: str = ""
-    whatsapp_phone_id: str = ""
+    # --- Betaalprovider-keuze: "lemonsqueezy" (Merchant of Record, geen KvK nodig) of "mollie" ---
+    billing_provider: str = "lemonsqueezy"
+
+    # --- Lemon Squeezy (Merchant of Record; regelt EU-btw). Uit tot credentials gezet. ---
+    lemonsqueezy_api_key: str = ""
+    lemonsqueezy_store_id: str = ""
+    lemonsqueezy_variant_monthly: str = ""    # variant-ID van het maandplan
+    lemonsqueezy_variant_annual: str = ""     # variant-ID van het jaarplan
+    lemonsqueezy_webhook_secret: str = ""     # HMAC-secret voor X-Signature
+
+    # --- Mollie-abonnement (latere optie na KvK; interval per plan, Mollie-formaat) ---
+    mollie_api_key: str = ""               # test_... of live_...
+    mollie_interval_monthly: str = "1 month"
+    mollie_interval_annual: str = "12 months"
+
+    @property
+    def premium_pricing(self) -> PremiumPricing:
+        """Maand-/jaarprijs + besparing, berekend uit de config (voor de view-context)."""
+        monthly = Decimal(self.premium_price_monthly or "0")
+        annual = Decimal(self.premium_price_annual or "0")
+        yearly_if_monthly = monthly * 12
+        saving_pct = months_free = 0
+        if yearly_if_monthly > 0:
+            saving = yearly_if_monthly - annual
+            saving_pct = int((saving / yearly_if_monthly * 100).to_integral_value(ROUND_HALF_UP))
+            if monthly > 0:
+                months_free = int((saving / monthly).to_integral_value(ROUND_FLOOR))
+        per_month = annual / 12 if annual > 0 else Decimal("0")
+        return PremiumPricing(
+            currency=self.premium_currency,
+            monthly=self.premium_price_monthly,
+            annual=self.premium_price_annual,
+            monthly_display=_eur(monthly),
+            annual_display=_eur(annual),
+            annual_per_month_display=_eur(per_month),
+            saving_pct=saving_pct,
+            months_free=months_free,
+        )
+
+    def premium_price_for(self, plan: str) -> str:
+        """Rauw prijsbedrag voor het gekozen plan ('monthly'/'annual')."""
+        return self.premium_price_annual if plan == "annual" else self.premium_price_monthly
+
+    def mollie_interval_for(self, plan: str) -> str:
+        """Mollie-intervalstring voor het gekozen plan."""
+        return self.mollie_interval_annual if plan == "annual" else self.mollie_interval_monthly
+
+    def lemonsqueezy_variant_for(self, plan: str) -> str:
+        """Lemon Squeezy variant-ID voor het gekozen plan."""
+        return self.lemonsqueezy_variant_annual if plan == "annual" else self.lemonsqueezy_variant_monthly
 
     @property
     def premium_only_feature_set(self) -> set[str]:

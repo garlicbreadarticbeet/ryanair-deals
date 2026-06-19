@@ -3,8 +3,6 @@ en cookie-sessies voor auth. De JSON-API in main.py blijft daarnaast bestaan.
 """
 from __future__ import annotations
 
-import datetime
-
 from fastapi import APIRouter, Depends, Form
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from sqlalchemy import select
@@ -35,10 +33,6 @@ router = APIRouter()
 
 def _tokens(raw: str) -> list[str]:
     return [t for t in raw.replace(",", " ").split() if t]
-
-
-def _utcnow() -> datetime.datetime:
-    return datetime.datetime.now(datetime.timezone.utc)
 
 
 @router.get("/api/airports")
@@ -220,37 +214,12 @@ def channels_page(user=Depends(optional_web_user), db: Session = Depends(get_db)
         telegram_token = issue_token(db, "telegram_link", user_id=user.id)
         if settings.telegram_bot_username:
             telegram_link = f"https://t.me/{settings.telegram_bot_username}?start={telegram_token}"
-    wa = chans.get("whatsapp")
     return render(
         "channels.html", user=user, settings=settings,
         telegram_connected="telegram" in chans, telegram_link=telegram_link, telegram_token=telegram_token,
         email=user.email, email_verified=user.email_verified,
-        is_premium=(user.tier == "premium"), whatsapp_number=(wa.address if wa else None),
-        active="channels",
+        is_premium=(user.tier == "premium"), active="channels",
     )
-
-
-@router.post("/channels/whatsapp")
-def channels_whatsapp(
-    user=Depends(optional_web_user), db: Session = Depends(get_db), number: str = Form(...)
-):
-    if user is None:
-        return RedirectResponse("/login", status_code=303)
-    if not gating.can_use(user, "channel:whatsapp"):
-        return RedirectResponse("/account", status_code=303)
-    existing = db.execute(
-        select(Channel).where(Channel.type == "whatsapp", Channel.user_id == user.id)
-    ).scalar_one_or_none()
-    if existing is not None:
-        existing.address = number.strip()
-        existing.verified = True
-        existing.opted_in_at = _utcnow()
-        existing.enabled = True
-    else:
-        db.add(Channel(user_id=user.id, type="whatsapp", address=number.strip(),
-                       verified=True, opted_in_at=_utcnow(), enabled=True))
-    db.flush()
-    return RedirectResponse("/channels", status_code=303)
 
 
 # ---------- account + billing ----------
@@ -261,8 +230,8 @@ def _render_account(db, user, *, flash=None, flash_kind=None):
     ).scalar_one_or_none()
     return render(
         "account.html", user=user, settings=settings, subscription=sub,
-        is_premium=(user.tier == "premium"), flash=flash, flash_kind=flash_kind,
-        active="account",
+        is_premium=(user.tier == "premium"), pricing=settings.premium_pricing,
+        flash=flash, flash_kind=flash_kind, active="account",
     )
 
 
@@ -278,11 +247,11 @@ def account_page(user=Depends(optional_web_user), db: Session = Depends(get_db),
 
 
 @router.post("/upgrade")
-def upgrade(user=Depends(optional_web_user), db: Session = Depends(get_db)):
+def upgrade(user=Depends(optional_web_user), db: Session = Depends(get_db), plan: str = Form("annual")):
     if user is None:
         return RedirectResponse("/login", status_code=303)
     try:
-        url = billing.start_subscription_checkout(db, user)
+        url = billing.start_subscription_checkout(db, user, plan)
     except BillingError as exc:
         return _render_account(db, user, flash=str(exc), flash_kind="err")
     return RedirectResponse(url, status_code=303)

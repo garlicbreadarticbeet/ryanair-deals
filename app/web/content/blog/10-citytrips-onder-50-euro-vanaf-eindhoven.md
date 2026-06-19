@@ -41,7 +41,7 @@ Let op: niet elke stad vliegt vanaf beide luchthavens, en het aanbod wisselt per
 
 Het vervelende: zo'n lage prijs staat er zelden lang. De stoelen onder de 50 euro zijn meestal als eerste weg. Dat betekent dat je er vroeg bij moet zijn — en dus eigenlijk elke dag zou moeten kijken. Dat houdt niemand vol.
 
-Daar komt Vliegseintje om de hoek. Je stelt je vertrekvelden in (bijvoorbeeld Eindhoven én Weeze) en je eigen prijsdrempel — zeg 50 euro. Wij scannen dagelijks automatisch de prijsvechters en sturen je een seintje zodra een retour-totaalprijs onder jóuw drempel duikt, via Telegram, e-mail of (Premium) WhatsApp. Boeken doe je zelf bij de airline; wij linken je netjes door.
+Daar komt Vliegseintje om de hoek. Je stelt je vertrekvelden in (bijvoorbeeld Eindhoven én Weeze) en je eigen prijsdrempel — zeg 50 euro. Wij scannen dagelijks automatisch de prijsvechters en sturen je een seintje zodra een retour-totaalprijs onder jóuw drempel duikt, via Telegram of e-mail. Boeken doe je zelf bij de airline; wij linken je netjes door.
 
 Geen valse urgentie, geen schreeuwerige nepschaarste. Gewoon een rustig seintje als de prijs klopt.
 

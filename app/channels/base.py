@@ -23,7 +23,7 @@ class AlertItem:
 class Notifier(Protocol):
     """Interface die elk bezorgkanaal implementeert."""
 
-    channel_type: str  # 'telegram' / 'email' / 'whatsapp'
+    channel_type: str  # 'telegram' / 'email'
 
     def send(self, address: str, items: list[AlertItem]) -> bool:
         """Verstuur de alerts naar één adres; True bij bevestigde verzending."""
@@ -49,4 +49,4 @@ def registered_channels() -> list[str]:
 
 
 # Trigger registratie van de gebundelde kanalen (onderaan i.v.m. circulaire import).
-from app.channels import email, telegram, whatsapp  # noqa: E402,F401
+from app.channels import email, telegram  # noqa: E402,F401

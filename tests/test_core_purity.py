@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import pathlib
 
-FORBIDDEN = ("ryanair", "wizzair", "telegram", "whatsapp")
+FORBIDDEN = ("ryanair", "wizzair", "telegram", "whatsapp", "mollie", "lemonsqueezy")
 CORE_DIR = pathlib.Path(__file__).resolve().parent.parent / "app" / "core"
 
 

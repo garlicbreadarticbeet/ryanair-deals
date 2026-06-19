@@ -5,7 +5,7 @@
       "items": [
         {
           "q": "Is het gratis?",
-          "a": "Ja, je kunt Vliegseintje gratis gebruiken. Met een gratis account stel je één vertrekveld, je prijsdrempel en je reisduur in, en krijg je je seintjes via Telegram of e-mail. Wil je instant alerts, meerdere vertrekvelden of WhatsApp, dan kies je Premium."
+          "a": "Ja, je kunt Vliegseintje gratis gebruiken. Met een gratis account stel je één vertrekveld, je prijsdrempel en je reisduur in, en krijg je je seintjes via Telegram of e-mail. Wil je instant alerts of meerdere vertrekvelden, dan kies je Premium."
         },
         {
           "q": "Wat doet Vliegseintje precies?",
@@ -38,7 +38,7 @@
         },
         {
           "q": "Via welke kanalen krijg ik mijn seintjes?",
-          "a": "Gratis ontvang je je seintjes via Telegram en e-mail. WhatsApp komt er bij Premium bovenop. Je koppelt je kanaal in een paar klikken en kiest zelf waar je bericht wilt krijgen."
+          "a": "Je ontvangt je seintjes via Telegram en e-mail. Je koppelt je kanaal in een paar klikken en kiest zelf waar je bericht wilt krijgen."
         },
         {
           "q": "Hoe koppel ik de Telegram-bot?",
@@ -59,7 +59,7 @@
       "items": [
         {
           "q": "Wat krijg ik extra met Premium?",
-          "a": "Premium geeft je instant alerts in plaats van de dagelijkse digest, meerdere vertrekvelden en WhatsApp als extra kanaal. Handig als je snel wilt zijn en vanaf meerdere luchthavens wilt kunnen vertrekken."
+          "a": "Premium geeft je instant alerts in plaats van de dagelijkse digest, meerdere vertrekvelden en uitgebreide prijsgeschiedenis. Handig als je snel wilt zijn en vanaf meerdere luchthavens wilt kunnen vertrekken."
         },
         {
           "q": "Wat kost Premium?",
@@ -67,7 +67,7 @@
         },
         {
           "q": "Hoe kan ik betalen?",
-          "a": "Je betaalt met iDEAL of Bancontact via Mollie. Voor een doorlopend abonnement loopt de verlenging daarna via SEP-incasso. Je ziet je facturen en de volgende incassodatum terug in je account."
+          "a": "Je betaalt veilig met iDEAL of creditcard. Voor een doorlopend abonnement wordt de verlenging daarna automatisch geïnd. Je kunt op elk moment opzeggen en houdt dan toegang tot het einde van je periode."
         },
         {
           "q": "Hoe zeg ik Premium op?",
@@ -84,7 +84,7 @@
       "items": [
         {
           "q": "Welke gegevens bewaren jullie?",
-          "a": "Zo min mogelijk: je e-mailadres en je voorkeuren (vertrekveld, drempel, reisduur, kanaal). Je telefoonnummer bewaren we alleen als je zelf WhatsApp aanzet. We werken zonder wachtwoord, dus dat slaan we niet op."
+          "a": "Zo min mogelijk: je e-mailadres en je voorkeuren (vertrekveld, drempel, reisduur, kanaal). We werken zonder wachtwoord, dus dat slaan we niet op."
         },
         {
           "q": "Verkopen jullie mijn gegevens?",

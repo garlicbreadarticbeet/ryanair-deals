@@ -43,7 +43,7 @@ def premium(user=Depends(optional_web_user)):
     return render("premium.html", **_ctx(
         user, "/premium",
         free_max_origins=settings.free_max_origins,
-        whatsapp_premium=("channel:whatsapp" in settings.premium_only_feature_set),
+        pricing=settings.premium_pricing,
         instant_premium=("mode:instant" in settings.premium_only_feature_set),
     ))
 

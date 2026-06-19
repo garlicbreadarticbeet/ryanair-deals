@@ -74,8 +74,8 @@ Drempel eenmalig overschrijven:
 De single-user CLI hierboven blijft ongewijzigd werken. Daarnaast staat onder `app/`
 de multi-user kern: PostgreSQL i.p.v. `state.json`, een uitbreidbare provider-/kanaal-
 architectuur, accounts + voorkeuren, een ontkoppelde **scan → match → notify**-lus, kanalen
-Telegram + e-mail (WhatsApp achter een feature-flag), en een **premium-abonnement via Mollie**
-met instant-vs-digest-alerts. De primaire interface is een **server-rendered website**
+Telegram + e-mail, en een **premium-abonnement** (Lemon Squeezy als Merchant of Record, Mollie
+als latere optie) met instant-vs-digest-alerts. De primaire interface is een **server-rendered website**
 (FastAPI + Jinja2); de Telegram-bot en de JSON-API zijn aanvullende kanalen op dezelfde kern.
 
 ### Architectuur
@@ -92,11 +92,13 @@ app/
                      #   combine.py (retour-combinatie), horizon.py,
                      #   scan.py (orkestratie), match.py (per-user), dedup.py, gating.py
   channels/          # Notifier-interface + registry
-                     #   telegram.py, email.py (Resend), whatsapp.py (stub)
+                     #   telegram.py, email.py (Resend)
   db/                # SQLAlchemy-modellen, sessie, repo (queries), seed (airports.json)
   web/               # FastAPI: JSON-API (main.py) + website (views.py, templates/, static/),
                      #   deps.py (DB + cookie/Bearer-auth), auth.py (magic-link/sessietokens)
-  billing.py, mollie.py  # Mollie-abonnement (checkout + webhook)
+  billing.py             # provider-agnostische billing-service (checkout/cancel/tier + webhooks)
+  billing_providers/     # BillingProvider-registry: lemonsqueezy_provider.py, mollie_provider.py
+  lemonsqueezy.py, mollie.py  # dunne REST-clients per betaalprovider
   accounts.py        # onboarding-service (Telegram + e-mail) + voorkeuren
   dispatch.py        # stuurt gematchte deals naar de kanalen van een gebruiker
   telegram_handlers.py  # multi-user botcommando's
@@ -105,11 +107,13 @@ migrations/          # Alembic
 tests/               # o.a. no-regression (combine == deals.best_returns) + DB-tests
 ```
 
-Twee uitbreidingspunten, elk **één nieuw bestand**:
+Drie uitbreidingspunten, elk **één nieuw bestand**:
 - **Nieuwe maatschappij** → adapter onder `app/providers/` die het `FlightProvider`-
   Protocol implementeert + een rij in de `providers`-tabel. `app/core/` verandert niet
-  (een test faalt als `core/` een maatschappij-/kanaalnaam bevat).
+  (een test faalt als `core/` een maatschappij-/kanaal-/betaalprovidernaam bevat).
 - **Nieuw kanaal** → een `Notifier` onder `app/channels/` + registratie. `core/` verandert niet.
+- **Nieuwe betaalprovider** → een `BillingProvider` onder `app/billing_providers/` + registratie;
+  selecteerbaar via `BILLING_PROVIDER`. `core/` en `billing.py` (tier-flip) verlaten niet.
 
 ### Lokaal opzetten
 
@@ -161,11 +165,11 @@ Organization/Article/FAQPage) zit in `templates/base.html`.
 **Ingelogde app** (app-shell met zijbalk, `templates/app_base.html`):
 `/login` + `/verify` (magic-link, cookie-sessie) · `/dashboard` (je deals) ·
 `/preferences` (vertrekvelden, drempel, reisduren, filters) · `/channels` (Telegram koppelen,
-e-mail, WhatsApp) · `/account` (upgrade/opzeggen via Mollie, account verwijderen).
+e-mail) · `/account` (upgrade naar maand/jaar, opzeggen, account verwijderen).
 
 Voor de Telegram-koppelknop: zet `TELEGRAM_BOT_USERNAME` in `.env`. Merk/social/analytics zijn
 optioneel te overschrijven via env (zie `.env.example`). De JSON-API blijft beschikbaar
-(o.a. `/health`, `/billing/webhook` voor Mollie).
+(o.a. `/health`, `/billing/webhook` voor Mollie en `/billing/lemonsqueezy/webhook` voor Lemon Squeezy).
 
 Botcommando's: `/start` (account aanmaken/koppelen), `/origins EIN NRN`, `/drempel 50`,
 `/reisduren 3 5 7`, `/mij`, `/deals` (uit de DB), `/stop` (account + data wissen).
@@ -196,30 +200,35 @@ huidige deals (opnieuw) melden; daarna is het stil tenzij een deal nieuw of goed
 
 ### Premium / abonnement (Fase 2)
 
-Premium-features (instelbaar via `PREMIUM_ONLY_FEATURES`): **instant alerts**, **meer
-vertrekvelden** (gratis = `FREE_MAX_ORIGINS`), en het **WhatsApp-kanaal**. Gratis krijgt een
-**dagelijkse digest**, beperkte velden, en Telegram/e-mail. De policy zit op één plek:
-`app/core/gating.py` (`can_use`, `max_origins`, `effective_alert_mode`) — gevoed door settings,
-zodat `core/` vrij blijft van kanaal-/maatschappijnamen.
+Premium-features (instelbaar via `PREMIUM_ONLY_FEATURES`, default `mode:instant`): **instant
+alerts**, **meer vertrekvelden** (gratis = `FREE_MAX_ORIGINS`) en **uitgebreide prijsgeschiedenis**.
+Gratis krijgt een **dagelijkse digest**, beperkte velden, en de kanalen Telegram + e-mail. De
+policy zit op één plek: `app/core/gating.py` (`can_use`, `max_origins`, `effective_alert_mode`) —
+gevoed door settings, zodat `core/` vrij blijft van kanaal-/maatschappij-/betaalprovidernamen.
 
-**Mollie-abonnement** (terugkerend): `app/billing.py` + `app/mollie.py`, endpoints in
-`app/web/main.py`:
-- `POST /billing/checkout` (sessietoken) → Mollie-checkout-URL (eerste betaling + mandaat);
-- `POST /billing/webhook` → activeert/schaalt `tier` op betaalstatus (Mollie roept dit aan);
-- `DELETE /billing/subscription` → opzeggen (terug naar gratis).
+**Maand- of jaarplan** (€ 2,99 / maand of € 24,99 / jaar; jaar is ~30% goedkoper en staat als
+aanrader uitgelicht op `/premium` en `/account`). Prijzen komen volledig uit config
+(`PREMIUM_PRICE_MONTHLY`/`PREMIUM_PRICE_ANNUAL`); de besparing/maandprijs wordt berekend
+(`settings.premium_pricing`) en via de view-context aan de templates gegeven.
 
-Zet in `.env`: `MOLLIE_API_KEY`, `PREMIUM_PRICE`, `PREMIUM_INTERVAL`, `PREMIUM_CURRENCY`.
-De webhook vereist dat `APP_BASE_URL` publiek (HTTPS) bereikbaar is.
+**Abonnement, provider-agnostisch.** `app/billing.py` is een dunne service die op
+`BILLING_PROVIDER` de juiste `BillingProvider` kiest (`app/billing_providers/`) en de tier op
+één plek op-/afschaalt. Twee providers:
+- **Lemon Squeezy** (default; Merchant of Record → innen **zonder KvK**, EU-btw geregeld):
+  client in `app/lemonsqueezy.py`, webhook `POST /billing/lemonsqueezy/webhook`
+  (HMAC-SHA256 `X-Signature` over de rauwe body). Config: `LEMONSQUEEZY_API_KEY`,
+  `LEMONSQUEEZY_STORE_ID`, `LEMONSQUEEZY_VARIANT_MONTHLY/ANNUAL`, `LEMONSQUEEZY_WEBHOOK_SECRET`.
+- **Mollie** (latere optie na KvK): client in `app/mollie.py`, webhook `POST /billing/webhook`.
+  Config: `MOLLIE_API_KEY`, `MOLLIE_INTERVAL_MONTHLY/ANNUAL`.
 
-**WhatsApp** is volledig gebouwd maar staat **uit** tot `WHATSAPP_ENABLED=true` +
-`WHATSAPP_TOKEN`/`WHATSAPP_PHONE_ID` zijn gezet (Cloud API; business-initiated berichten
-vereisen goedgekeurde templates — zie `# TODO(channel)`).
+Endpoints in `app/web/main.py`: `POST /billing/checkout` (sessietoken; neemt `plan` =
+`monthly`/`annual`) → checkout-URL van de actieve provider; `DELETE /billing/subscription` →
+opzeggen. De webhooks vereisen dat `APP_BASE_URL` publiek (HTTPS) bereikbaar is.
 
 ### Nog open (toekomst)
 
 - **Gemengde carriers** (heen Ryanair, terug Wizz) → `# TODO(mixed-carrier)` in `app/core/combine.py`.
 - **Wizz Air-adapter** → `app/providers/wizzair.py` invullen + provider op `enabled` zetten.
-- **WhatsApp live** → credentials + goedgekeurde templates.
 
 ### Acceptatiecriteria
 
@@ -229,7 +238,7 @@ vereisen goedgekeurde templates — zie `# TODO(channel)`).
 | 2 | Meerdere origins; scan op gededupte unie (schaalt niet met #users) | ✅ `repo.deduped_origin_targets` + test |
 | 3 | `state.json` → Postgres; per-user dedup via `sent_alerts` | ✅ `core/dedup.py` (== detect_new_deals) |
 | 4 | Twee users, andere voorkeuren → aantoonbaar andere alerts | ✅ `test_match_two_users` |
-| 5 | Telegram + e-mail werken; WhatsApp als stub | ✅ `app/channels/` |
+| 5 | Telegram + e-mail werken (uitbreidbare kanaal-registry) | ✅ `app/channels/` |
 | 6 | Tests groen; migraties schoon op lege DB; README + `.env.example` bij | ✅ |
 | 7 | Netwerk via requests/certifi; geen geheimen in git | ✅ `app/net.py`, env-only |
 

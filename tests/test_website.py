@@ -140,10 +140,12 @@ def test_channels_shows_telegram_connect(db, client, make_user, monkeypatch):
     assert "/start" in resp.text  # geen bot-username → handmatige koppelinstructie
 
 
-def test_channels_whatsapp_gated_for_free(db, client, make_user):
+def test_channels_lists_telegram_and_email_only(db, client, make_user):
     user = make_user(origins=["EIN"], tier="free")
     _login(client, db, user)
-    assert "Upgrade" in client.get("/channels").text
+    body = client.get("/channels").text
+    assert "Telegram" in body and "E-mail" in body
+    assert "WhatsApp" not in body  # kanaal volledig geschrapt
 
 
 # ---------- account + billing (W4) ----------
@@ -160,30 +162,52 @@ def test_account_premium_shows_cancel(db, client, make_user):
     assert "opzeggen" in client.get("/account").text.lower()
 
 
+def test_upgrade_lemonsqueezy_redirects(db, client, make_user, monkeypatch):
+    # Standaardprovider is Lemon Squeezy; de /upgrade-knop geeft het gekozen plan mee.
+    import app.lemonsqueezy as ls
+    monkeypatch.setattr(settings, "billing_provider", "lemonsqueezy")
+    monkeypatch.setattr(settings, "lemonsqueezy_api_key", "k")
+    monkeypatch.setattr(settings, "lemonsqueezy_store_id", "1")
+    monkeypatch.setattr(settings, "lemonsqueezy_variant_annual", "v_year")
+    captured = {}
+    monkeypatch.setattr(
+        ls, "create_checkout",
+        lambda **kw: captured.update(kw) or "https://checkout.lemonsqueezy/abc",
+    )
+    _login(client, db, make_user(origins=["EIN"], tier="free"))
+    resp = client.post("/upgrade", data={"plan": "annual"}, follow_redirects=False)
+    assert resp.status_code == 303
+    assert resp.headers["location"] == "https://checkout.lemonsqueezy/abc"
+    assert captured["variant_id"] == "v_year"
+
+
 def test_upgrade_redirects_to_mollie(db, client, make_user, monkeypatch):
-    monkeypatch.setattr(settings, "premium_price", "2.99")
+    monkeypatch.setattr(settings, "billing_provider", "mollie")
     monkeypatch.setattr(mollie, "create_customer", lambda email=None, name=None: {"id": "cst_w"})
     monkeypatch.setattr(
         mollie, "create_first_payment",
         lambda **kw: {"_links": {"checkout": {"href": "https://pay.mollie/web"}}},
     )
     _login(client, db, make_user(origins=["EIN"], tier="free"))
-    resp = client.post("/upgrade", follow_redirects=False)
+    resp = client.post("/upgrade", data={"plan": "monthly"}, follow_redirects=False)
     assert resp.status_code == 303
     assert resp.headers["location"] == "https://pay.mollie/web"
 
 
 def test_upgrade_without_price_shows_error(db, client, make_user, monkeypatch):
-    monkeypatch.setattr(settings, "premium_price", "")
+    monkeypatch.setattr(settings, "billing_provider", "mollie")
+    monkeypatch.setattr(settings, "premium_price_monthly", "")
+    monkeypatch.setattr(settings, "premium_price_annual", "")
     _login(client, db, make_user(origins=["EIN"], tier="free"))
     resp = client.post("/upgrade")
     assert "prijs" in resp.text.lower()
 
 
 def test_cancel_downgrades_to_free(db, client, make_user, monkeypatch):
+    monkeypatch.setattr(settings, "billing_provider", "mollie")
     user = make_user(origins=["EIN"], tier="premium")
-    db.add(Subscription(user_id=user.id, mollie_customer_id="cst_x",
-                        mollie_subscription_id="sub_x", status="active"))
+    db.add(Subscription(user_id=user.id, provider="mollie", external_customer_id="cst_x",
+                        external_subscription_id="sub_x", status="active"))
     db.flush()
     monkeypatch.setattr(mollie, "cancel_subscription", lambda cid, sid: {})
     _login(client, db, user)

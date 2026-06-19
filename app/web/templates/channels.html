@@ -26,23 +26,5 @@
       {% if email_verified %}<span class="badge success">geverifieerd</span>{% endif %}</p>
     <p class="muted" style="font-size:14px;margin:0">Je dagelijkse overzicht en inlogmails komen hier binnen.</p>
   </div>
-
-  <div class="card">
-    <h3>WhatsApp <span class="badge premium">premium</span></h3>
-    {% if not is_premium %}
-      <p class="muted">WhatsApp-alerts horen bij Premium. <a href="/premium">Upgrade →</a></p>
-    {% elif whatsapp_number %}
-      <p class="flash ok">Ingesteld: {{ whatsapp_number }}</p>
-    {% else %}
-      <form method="post" action="/channels/whatsapp" class="stack">
-        <div class="field">
-          <label for="wa">WhatsApp-nummer</label>
-          <input type="tel" id="wa" name="number" placeholder="+316...">
-        </div>
-        <button class="btn secondary" type="submit">Opslaan</button>
-        <p class="help">Verzending wordt geactiveerd zodra de WhatsApp-koppeling live is.</p>
-      </form>
-    {% endif %}
-  </div>
 </div>
 {% endblock %}

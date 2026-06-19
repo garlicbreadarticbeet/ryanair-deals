@@ -19,13 +19,12 @@ def test_free_blocked_from_premium_features():
     assert can_use(free, "mode:digest")
     # ...maar niet de premium-only features (default settings):
     assert can_use(free, "mode:instant") is False
-    assert can_use(free, "channel:whatsapp") is False
 
 
 def test_premium_can_use_everything():
     prem = _user("premium")
     assert can_use(prem, "mode:instant")
-    assert can_use(prem, "channel:whatsapp")
+    assert can_use(prem, "channel:telegram")
     assert can_use(prem, "wat-dan-ook")
 
 
@@ -42,7 +41,8 @@ def test_effective_alert_mode():
 
 
 def test_premium_only_set_is_settings_driven(monkeypatch):
-    monkeypatch.setattr(settings, "premium_only_features", "mode:instant")
+    # Welke features premium-only zijn komt volledig uit settings/env, niet uit core/.
+    monkeypatch.setattr(settings, "premium_only_features", "channel:telegram")
     free = _user("free")
-    assert can_use(free, "channel:whatsapp") is True   # niet meer premium-only
-    assert can_use(free, "mode:instant") is False
+    assert can_use(free, "channel:telegram") is False  # nu wél premium-only
+    assert can_use(free, "mode:instant") is True        # niet meer premium-only

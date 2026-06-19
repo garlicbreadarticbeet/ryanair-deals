@@ -27,17 +27,28 @@
   {% else %}
     <div class="plan-card featured">
       <span class="badge premium">Upgrade naar Premium</span>
-      <div class="price">
-        {% if settings.premium_price %}€{{ settings.premium_price }} <small>/ maand</small>
-        {% else %}<small>prijs nog niet ingesteld</small>{% endif %}
-      </div>
-      <ul class="ticks">
-        <li>Je seintje meteen</li><li>Meerdere vertrekvelden</li><li>WhatsApp-meldingen</li>
-      </ul>
-      <form method="post" action="/upgrade">
+      <form method="post" action="/upgrade" class="plan-pick">
+        <input class="plan-radio" type="radio" id="plan-annual" name="plan" value="annual" checked>
+        <input class="plan-radio" type="radio" id="plan-monthly" name="plan" value="monthly">
+        <div class="plan-toggle" role="group" aria-label="Kies je betaaltermijn">
+          <label for="plan-annual">Jaarlijks · bespaar {{ pricing.saving_pct }}%</label>
+          <label for="plan-monthly">Maandelijks</label>
+        </div>
+        <div class="plan-price is-annual">
+          <div class="price">€ {{ pricing.annual_display }} <small>/ jaar</small></div>
+          <p class="plan-price__note">≈ € {{ pricing.annual_per_month_display }} per maand —
+            ~{{ pricing.saving_pct }}% goedkoper, ruim {{ pricing.months_free }} maanden gratis.</p>
+        </div>
+        <div class="plan-price is-monthly">
+          <div class="price">€ {{ pricing.monthly_display }} <small>/ maand</small></div>
+          <p class="plan-price__note">Maandelijks, zonder verplichting.</p>
+        </div>
+        <ul class="ticks">
+          <li>Je seintje meteen</li><li>Meerdere vertrekvelden</li><li>Uitgebreide prijsgeschiedenis</li>
+        </ul>
         <button class="btn block" type="submit">Upgrade nu</button>
+        <p class="help">Veilig betalen met iDEAL of creditcard. Opzeggen wanneer je wilt — je houdt toegang tot het einde van je periode.</p>
       </form>
-      <p class="help">Betalen met iDEAL of Bancontact via Mollie. Opzegbaar wanneer je wilt.</p>
     </div>
   {% endif %}
 

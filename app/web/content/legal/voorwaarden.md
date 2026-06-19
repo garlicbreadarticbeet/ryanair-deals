@@ -23,7 +23,7 @@ In deze voorwaarden noemen we onszelf "Vliegseintje", "wij" of "we". Met "jij" o
 
 ## 2. Waarvoor gelden deze voorwaarden?
 
-Deze algemene voorwaarden gelden voor het gebruik van de website, de app, de meldingen (via Telegram, e-mail of WhatsApp) en alle andere onderdelen van de dienst van Vliegseintje. Door een account aan te maken of de dienst te gebruiken, ga je akkoord met deze voorwaarden.
+Deze algemene voorwaarden gelden voor het gebruik van de website, de app, de meldingen (via Telegram of e-mail) en alle andere onderdelen van de dienst van Vliegseintje. Door een account aan te maken of de dienst te gebruiken, ga je akkoord met deze voorwaarden.
 
 Lukt het niet om akkoord te gaan? Dan kun je de dienst helaas niet gebruiken.
 
@@ -66,13 +66,13 @@ Vliegseintje werkt met een **freemium**-model: er is een gratis versie (Free) en
 
 **Free** is gratis te gebruiken en biedt onder andere dagelijkse meldingen via Telegram en e-mail, met de limieten die op dat moment voor het Free-plan gelden (zoals het aantal vertrekvelden en alerts).
 
-**Premium** is een betaald abonnement met extra mogelijkheden, zoals instant alerts (in plaats van een dagelijkse digest), meerdere vertrekvelden en meldingen via WhatsApp.
+**Premium** is een betaald abonnement met extra mogelijkheden, zoals instant alerts (in plaats van een dagelijkse digest), meerdere vertrekvelden en uitgebreide prijsgeschiedenis. Je kiest bij het afsluiten tussen een maand- en een (voordeliger) jaarabonnement.
 
 Verder geldt:
 
 - De exacte functies, limieten en de prijs van Free en Premium staan op de pagina **Premium/Prijzen** in de app of op de website. Prijzen zijn in euro's en **inclusief btw**, tenzij anders vermeld.
 - We mogen de inhoud, limieten en prijzen van de plannen aanpassen. Wijzigen we de prijs van een lopend abonnement, dan laten we je dat vooraf weten. [TODO: juridisch bevestigen welke aankondigingstermijn geldt en of je bij een prijsverhoging kosteloos mag opzeggen.]
-- Betaling van Premium loopt via onze betaaldienstverlener [TODO: betaalprovider invullen, bijv. Mollie] met methoden zoals iDEAL of Bancontact. Op die betaling kunnen ook de voorwaarden van die betaaldienstverlener van toepassing zijn.
+- Betaling van Premium loopt via onze betaaldienstverlener Lemon Squeezy (Merchant of Record) met methoden zoals iDEAL of creditcard. Op die betaling kunnen ook de voorwaarden van die betaaldienstverlener van toepassing zijn.
 
 [TODO: definitieve Premium-prijs, factuurmoment (vooraf/achteraf), abonnementsduur (maand/jaar) en eventuele proefperiode invullen en juridisch laten controleren.]
 
@@ -88,7 +88,7 @@ Verder geldt:
 
 ## 7. Beschikbaarheid van de dienst
 
-We doen ons best om Vliegseintje goed te laten werken, maar we kunnen niet garanderen dat de dienst altijd, ononderbroken of foutloos beschikbaar is. De dienst kan tijdelijk uit de lucht zijn, bijvoorbeeld door onderhoud, storingen, of problemen bij de externe bronnen, dat+leveranciers of kanalen (Telegram, e-mail, WhatsApp) die we gebruiken.
+We doen ons best om Vliegseintje goed te laten werken, maar we kunnen niet garanderen dat de dienst altijd, ononderbroken of foutloos beschikbaar is. De dienst kan tijdelijk uit de lucht zijn, bijvoorbeeld door onderhoud, storingen, of problemen bij de externe bronnen, dataleveranciers of kanalen (Telegram, e-mail) die we gebruiken.
 
 We mogen onderdelen van de dienst wijzigen, beperken of stoppen. Bij belangrijke wijzigingen die jou raken, proberen we je vooraf te informeren.
 
@@ -118,7 +118,7 @@ De gegevens over vluchten en prijzen die we tonen zijn afkomstig van derden; daa
 
 Om je seintjes te kunnen sturen, verwerken we persoonsgegevens (zoals je e-mailadres, je voorkeuren en je gekoppelde kanalen). Hoe we dat doen, met welke verwerkers we samenwerken en wat je rechten zijn, lees je in onze [Privacyverklaring](/privacy). We gaan zorgvuldig en AVG/GDPR-bewust met je gegevens om.
 
-[TODO: zorg dat de Privacyverklaring de actuele lijst van verwerkers/sub-verwerkers bevat, bijvoorbeeld de vluchtdata-API, e-maildienst, Telegram, WhatsApp/Meta, de betaalprovider en de analytics-dienst, en dat verwerkersovereenkomsten zijn afgesloten.]
+[TODO: zorg dat de Privacyverklaring de actuele lijst van verwerkers/sub-verwerkers bevat, bijvoorbeeld de vluchtdata-API, e-maildienst, Telegram, de betaalprovider (Lemon Squeezy) en de analytics-dienst, en dat verwerkersovereenkomsten zijn afgesloten.]
 
 ## 11. Toepasselijk recht en klachten
 

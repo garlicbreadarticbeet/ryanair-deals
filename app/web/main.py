@@ -54,6 +54,10 @@ class EmailIn(BaseModel):
     email: str
 
 
+class CheckoutIn(BaseModel):
+    plan: str = "annual"   # 'monthly' of 'annual'
+
+
 class PrefsIn(BaseModel):
     threshold: float | None = None
     trip_lengths: list[int] | None = None
@@ -164,12 +168,17 @@ def delete_me(user: User = Depends(current_user), db: Session = Depends(get_db))
     return Response(status_code=204)
 
 
-# ---------- billing (Mollie-abonnement) ----------
+# ---------- billing (abonnement; provider via settings.billing_provider) ----------
 
 @app.post("/billing/checkout")
-def billing_checkout(user: User = Depends(current_user), db: Session = Depends(get_db)) -> dict:
+def billing_checkout(
+    body: CheckoutIn | None = None,
+    user: User = Depends(current_user),
+    db: Session = Depends(get_db),
+) -> dict:
+    plan = body.plan if body else "annual"
     try:
-        url = billing.start_subscription_checkout(db, user)
+        url = billing.start_subscription_checkout(db, user, plan)
     except BillingError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     return {"checkout_url": url}
@@ -183,9 +192,25 @@ async def billing_webhook(request: Request, db: Session = Depends(get_db)) -> di
     payment_id = parse_qs(raw).get("id", [None])[0]
     if payment_id:
         try:
-            billing.handle_webhook(db, payment_id)
+            billing.handle_mollie_webhook(db, payment_id)
         except Exception as exc:  # noqa: BLE001
-            print("billing-webhook-fout:", exc)
+            print("mollie-webhook-fout:", exc)
+    return {"received": True}
+
+
+@app.post("/billing/lemonsqueezy/webhook")
+async def lemonsqueezy_webhook(request: Request, db: Session = Depends(get_db)) -> dict:
+    # Lemon Squeezy ondertekent met X-Signature (HMAC-SHA256 over de rauwe body). Ongeldige
+    # signatuur → weigeren (401). Verwerkingsfouten loggen we, maar we crashen nooit op een webhook.
+    raw = await request.body()
+    signature = request.headers.get("X-Signature")
+    try:
+        accepted = billing.handle_lemonsqueezy_webhook(db, raw, signature)
+    except Exception as exc:  # noqa: BLE001
+        print("lemonsqueezy-webhook-fout:", exc)
+        return {"received": True}
+    if not accepted:
+        raise HTTPException(status_code=401, detail="ongeldige signatuur")
     return {"received": True}
 
 

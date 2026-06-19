@@ -30,18 +30,17 @@ We werken volgens dataminimalisatie: zo min mogelijk, alleen wat de dienst echt 
 
 - **E-mailadres** — voor je account, het inloggen via een magic-link, en (als je dat kanaal kiest) het versturen van alerts.
 - **Je voorkeuren** — je vertrekvelden, je prijsdrempel voor de retour-totaalprijs, hoeveel maanden vooruit we scannen, gewenste reisduur (aantal nachten) en eventuele bestemmingsfilters (landen die je wél of niet wilt zien).
-- **Je gekozen kanalen** — welke kanalen je hebt gekoppeld om seintjes te ontvangen (e-mail, Telegram en/of WhatsApp) en of die bevestigd/opt-in zijn.
+- **Je gekozen kanalen** — welke kanalen je hebt gekoppeld om seintjes te ontvangen (e-mail en/of Telegram) en of die bevestigd/opt-in zijn.
 - **Verzendgeschiedenis van alerts** — welke deals we je al hebben gestuurd, zodat we je niet telkens hetzelfde seintje sturen.
 - **Technische sessie- en inloggegevens** — tijdelijke inlog-tokens (magic-link) en een sessie-cookie zodat je ingelogd blijft.
 
 ### Alleen als je het zelf koppelt
 
 - **Telegram chat-ID** — alleen als je Telegram als kanaal koppelt. Dit is het ID waarmee de Telegram-bot je een bericht kan sturen.
-- **Telefoonnummer** — **alleen als je expliciet kiest voor WhatsApp-alerts (Premium) en je daarvoor opt-in geeft.** Geen WhatsApp gekozen, dan slaan we geen telefoonnummer op.
 
 ### Bij Premium (betaling)
 
-- **Betaalgegevens** — afgehandeld door onze betaalprovider Mollie. Wij bewaren zelf **geen** volledige betaalkaart- of bankgegevens; we bewaren wel de koppeling naar je abonnement (een klant- en abonnement-ID bij Mollie) en de status ervan.
+- **Betaalgegevens** — afgehandeld door onze betaalprovider Lemon Squeezy (Merchant of Record: zij zijn de verkoper en regelen de btw). Wij bewaren zelf **geen** volledige betaalkaart- of bankgegevens; we bewaren wel de koppeling naar je abonnement (een klant- en abonnement-ID) en de status ervan.
 
 ### Wat we bewust níét doen
 
@@ -57,7 +56,6 @@ Per soort verwerking de grondslag uit de AVG (artikel 6):
 |---|---|---|
 | Account aanmaken, inloggen (magic-link), voorkeuren opslaan | Om je de dienst te kunnen leveren | Uitvoering van de overeenkomst (art. 6.1.b) |
 | Dagelijks scannen op basis van jouw voorkeuren en seintjes sturen | Kern van de dienst | Uitvoering van de overeenkomst (art. 6.1.b) |
-| WhatsApp-alerts + opslag telefoonnummer | Alleen op jouw verzoek/opt-in | Toestemming (art. 6.1.a) — intrekbaar |
 | Verzendgeschiedenis bijhouden (geen dubbele alerts) | Goede werking en niet spammen | Gerechtvaardigd belang (art. 6.1.f) |
 | Betaling en abonnementsbeheer (Premium) | Om Premium te kunnen leveren en te factureren | Uitvoering van de overeenkomst (art. 6.1.b) |
 | Bewaren van facturen/betaalgegevens | Wettelijke administratie-/bewaarplicht | Wettelijke verplichting (art. 6.1.c) |
@@ -71,7 +69,6 @@ Per soort verwerking de grondslag uit de AVG (artikel 6):
 - **Verzendgeschiedenis van alerts:** zolang je account actief is, om dubbele seintjes te voorkomen. [TODO: eventueel een kortere bewaartermijn afspreken, bijv. opschonen na X maanden.]
 - **Inlog-tokens (magic-link):** kortstondig — een token verloopt automatisch na korte tijd en wordt na gebruik ongeldig.
 - **Sessie-cookie:** verloopt automatisch (momenteel ingesteld op maximaal 30 dagen) of zodra je uitlogt.
-- **Telefoonnummer (WhatsApp):** zolang je WhatsApp als kanaal gekoppeld houdt. Koppel je het los of trek je je toestemming in, dan verwijderen we het.
 - **Betaal- en factuurgegevens:** zolang nodig voor je abonnement, plus de wettelijke fiscale bewaartermijn. [TODO: bevestigen — in Nederland geldt doorgaans een fiscale bewaarplicht van 7 jaar voor de administratie.]
 
 ## Met wie delen we gegevens (verwerkers)?
@@ -81,9 +78,8 @@ We delen gegevens alleen met dienstverleners die ons helpen de dienst te leveren
 | Verwerker | Waarvoor | Welke gegevens | Locatie |
 |---|---|---|---|
 | **Resend** | Versturen van transactionele e-mail (magic-link, alerts) | E-mailadres, inhoud van de mail | [TODO: serverlocatie/regio bevestigen; mogelijk buiten de EER → doorgiftewaarborgen nodig] |
-| **Mollie** | Betalingen en abonnementen (Premium) | Betaalgegevens, e-mailadres, abonnement-ID's | EU (Nederland) |
+| **Lemon Squeezy** | Betalingen en abonnementen (Merchant of Record, Premium) | Betaalgegevens, e-mailadres, abonnement-ID's | [TODO: Lemon Squeezy verwerkt (deels) in de VS → doorgiftewaarborgen (SCC's) beoordelen] |
 | **Telegram** | Bezorgen van alerts via Telegram | Telegram chat-ID, inhoud van het seintje | [TODO: bevestigen; Telegram verwerkt buiten de EER → doorgiftewaarborgen beoordelen] |
-| **Meta (WhatsApp Cloud API)** | Bezorgen van alerts via WhatsApp (alleen bij opt-in) | Telefoonnummer, inhoud van het seintje | [TODO: bevestigen; verwerking via Meta → doorgiftewaarborgen beoordelen] |
 | **Hostingpartij** | Draaien van de website, database en scan-worker | Alle accountgegevens (opgeslagen in de database) | [TODO: hostingprovider en regio bevestigen — huidige stack draait op Hetzner (Duitsland, EER)] |
 | **Analytics** | Cookieloze, geaggregeerde bezoekstatistieken | Geen direct identificeerbare persoonsgegevens (zie hieronder) | [TODO: gekozen tool (bijv. Plausible) en regio bevestigen] |
 
@@ -109,7 +105,7 @@ Onder de AVG heb je het recht om:
 - **Een kopie/export** van je gegevens te ontvangen (recht op dataportabiliteit).
 - **Correctie** te vragen van onjuiste gegevens — veel kun je zelf aanpassen in je voorkeuren.
 - **Verwijdering** van je account en gegevens te vragen ("recht op vergetelheid"). Je kunt je **account zelf verwijderen** in je accountinstellingen; dat verwijdert je gegevens uit onze database. [TODO: bevestigen dat de zelfbediening-verwijdering volledig cascadeert en eventuele back-ups binnen de afgesproken termijn worden opgeschoond.]
-- **Toestemming in te trekken** (bijv. voor WhatsApp) — even makkelijk als geven. Koppel het kanaal los of pas je instellingen aan.
+- **Toestemming in te trekken** — even makkelijk als geven. Koppel een kanaal los of pas je instellingen aan.
 - **Bezwaar te maken** tegen verwerkingen op grond van gerechtvaardigd belang.
 
 Wil je een van deze rechten uitoefenen en lukt het niet via je account? Mail dan naar **[TODO: privacy-e-mailadres]**. We reageren zo snel mogelijk en uiterlijk binnen de wettelijke termijn van één maand.

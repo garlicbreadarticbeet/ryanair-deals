@@ -73,6 +73,39 @@ ongemoeid. De affiliate-deeplink (marker) + maatschappij worden opgeslagen op `d
 Prijzen zijn indicatief → de "vanaf €X, prijzen kunnen wijzigen"-UX dekt dat af.
 
 ## D7 — Niet in deze ronde
-Geen native apps, geen echte WhatsApp-verzending (stub blijft), geen prijsvoorspelling — conform
-de niet-doelen (§2). Analytics (Plausible) en Sentry zijn als **opt-in via env** voorzien (script
-alleen geladen als de env-var gezet is), niet verplicht aangezet.
+Geen native apps, geen prijsvoorspelling — conform de niet-doelen (§2). Analytics (Plausible) en
+Sentry zijn als **opt-in via env** voorzien (script alleen geladen als de env-var gezet is), niet
+verplicht aangezet.
+
+## D9 — WhatsApp geschrapt (kanaal én premium-feature)
+WhatsApp is **volledig verwijderd** als bezorgkanaal en als premium-feature. **Waarom:** de
+WhatsApp Cloud API rekent **per bericht** (drukt de marge op een prijs-alert-product) en vereist
+**KvK-/Meta-bedrijfsverificatie** die we (nog) niet hebben. De kosten/baten en de drempel wegen
+niet op tegen Telegram + e-mail, die gratis en direct bruikbaar zijn.
+
+Verwijderd: `app/channels/whatsapp.py` + registratie, de `whatsapp_*`-settings, de
+`channel:whatsapp`-default in `PREMIUM_ONLY_FEATURES` (nu `mode:instant`), de koppelflow op
+`/channels`, en alle UI-/content-/legal-teksten. **Behouden:** de Notifier-/kanaal-abstractie
+(`app/channels/base.py`) blijft intact zodat een nieuw kanaal nog steeds één nieuw bestand is; de
+core-purity-test bewaakt dat `core/` kanaalnaam-vrij blijft. Premium-features zijn daarmee:
+**instant alerts + meerdere vertrekvelden + uitgebreide prijsgeschiedenis**; kanalen voor iedereen:
+**Telegram + e-mail**.
+
+## D10 — Betaalprovider: Lemon Squeezy (Merchant of Record) als start, Mollie als latere optie
+Om **vandaag te kunnen innen zonder KvK** kiezen we **Lemon Squeezy** als startprovider: zij zijn
+**Merchant of Record** (de juridische verkoper) en regelen de EU-btw/afdracht. Mollie vereist een
+ingeschreven onderneming en wordt de **latere optie** na KvK-inschrijving.
+
+Daarom een dunne **billing-provider-abstractie** (`app/billing_providers/`, in dezelfde geest als
+`providers/` en `channels/`): `app/billing.py` is een provider-agnostische service die op
+`BILLING_PROVIDER` (`lemonsqueezy`/`mollie`) de juiste provider kiest, de `subscriptions`-rij
+beheert en de tier op **één plek** op-/afschaalt (`upgrade`/`downgrade`). De `subscriptions`-tabel
+is provider-agnostisch gemaakt (`provider`, `external_customer_id`, `external_subscription_id`,
+`plan`; migratie 0005). De Lemon Squeezy-webhook verifieert `X-Signature` (HMAC-SHA256 over de
+rauwe body) en schaalt `users.tier` bij; opzeggen laat de toegang doorlopen tot einde periode
+(afschalen pas bij `expired`). Het Mollie-pad blijft volledig werkend en getest.
+
+**Prijzen (vast, uit config):** maandplan **€ 2,99**, jaarplan **€ 24,99** (≈ € 2,08/maand,
+~30% goedkoper — "ruim 3 maanden gratis"). Het jaarplan staat als aanrader uitgelicht. De
+besparing/maandprijs wordt **berekend** uit de config (`settings.premium_pricing`), niet hardcoded
+in de templates, zodat het klopt als de prijs ooit wijzigt.

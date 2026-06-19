@@ -1,4 +1,5 @@
-"""Bezorgkanalen achter één Notifier-interface (Telegram, e-mail, WhatsApp-stub).
+"""Bezorgkanalen achter één Notifier-interface (Telegram, e-mail).
 
-Wordt in Fase C ingevuld; nu een placeholder zodat de structuur vaststaat.
+De abstractie blijft uitbreidbaar: een nieuw kanaal = één nieuw bestand met een
+@register_notifier-klasse (zie app/channels/base.py).
 """

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}{{ settings.brand_name }} — {{ settings.brand_tagline }}{% endblock %}
-{% block meta_description %}Stel je vertrekvelden en je maximumprijs in. {{ settings.brand_name }} scant elke dag de prijsvechters en geeft je een seintje zodra er een retour onder jouw drempel duikt — via Telegram, e-mail of WhatsApp.{% endblock %}
+{% block meta_description %}Stel je vertrekvelden en je maximumprijs in. {{ settings.brand_name }} scant elke dag de prijsvechters en geeft je een seintje zodra er een retour onder jouw drempel duikt — via Telegram of e-mail.{% endblock %}
 
 {% block content %}
 <!-- Hero -->
@@ -73,7 +73,7 @@
       </div>
       <div class="step is-amber">
         <h3>Wij geven je een seintje</h3>
-        <p class="muted">Zodra er een retour onder je drempel duikt, krijg je bericht via Telegram, e-mail of WhatsApp.</p>
+        <p class="muted">Zodra er een retour onder je drempel duikt, krijg je bericht via Telegram of e-mail.</p>
       </div>
     </div>
     {% if not user %}
@@ -132,7 +132,7 @@
       <div class="vprop">
         <span class="feature__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></span>
         <h3>Waar je al bent</h3>
-        <p class="muted">Telegram, e-mail of WhatsApp — jij kiest het kanaal.</p>
+        <p class="muted">Telegram of e-mail — jij kiest het kanaal.</p>
       </div>
       <div class="vprop">
         <span class="feature__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/></svg></span>
@@ -165,12 +165,12 @@
         <span class="badge premium plan-card__flag">Aanrader</span>
         <span class="badge premium">Premium</span>
         <div class="price">
-          {% if settings.premium_price %}€{{ settings.premium_price }} <small>/ maand</small>{% else %}<small>binnenkort</small>{% endif %}
+          €&nbsp;{{ settings.premium_pricing.monthly_display }} <small>/ maand</small>
         </div>
         <ul class="ticks">
           <li><strong>Meteen</strong> een seintje i.p.v. één keer per dag</li>
           <li>Meerdere vertrekvelden</li>
-          <li>WhatsApp-meldingen</li>
+          <li>Jaarlijks ~{{ settings.premium_pricing.saving_pct }}% goedkoper</li>
           <li>Alles uit gratis</li>
         </ul>
         <a class="btn block" href="/premium">Vergelijk plannen</a>

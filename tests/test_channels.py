@@ -17,8 +17,8 @@ def _deal(total, dest="BCN", nights=3):
 
 
 def test_all_channels_registered_and_conform():
-    assert {"telegram", "email", "whatsapp"} <= set(registered_channels())
-    for channel_type in ("telegram", "email", "whatsapp"):
+    assert {"telegram", "email"} <= set(registered_channels())
+    for channel_type in ("telegram", "email"):
         assert isinstance(get_notifier(channel_type), Notifier)
 
 
@@ -33,8 +33,8 @@ def test_telegram_formatting():
     assert "━━━ 3 dagen ━━━" in text
 
 
-def test_whatsapp_is_stub():
-    assert get_notifier("whatsapp").send("+31600000000", [AlertItem(_deal(30.0))]) is False
+def test_unknown_channel_has_no_notifier():
+    assert get_notifier("whatsapp") is None  # geschrapt kanaal → niet meer geregistreerd
 
 
 def test_email_without_apikey_returns_false(monkeypatch):

@@ -203,15 +203,15 @@ class Channel(Base):
     user_id: Mapped[int] = mapped_column(
         BigInteger, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    type: Mapped[str] = mapped_column(String(16), nullable=False)                # telegram/email/whatsapp
-    address: Mapped[str] = mapped_column(String(256), nullable=False)            # chat_id / e-mail / tel
+    type: Mapped[str] = mapped_column(String(16), nullable=False)                # telegram/email
+    address: Mapped[str] = mapped_column(String(256), nullable=False)            # chat_id / e-mail
     verified: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("false"))
     opted_in_at: Mapped[datetime.datetime | None] = mapped_column(_TS, nullable=True)
     enabled: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("true"))
     created_at: Mapped[datetime.datetime] = _now()
 
     __table_args__ = (
-        CheckConstraint("type IN ('telegram','email','whatsapp')", name="ck_channels_type"),
+        CheckConstraint("type IN ('telegram','email')", name="ck_channels_type"),
         UniqueConstraint("type", "address", name="uq_channels_type_address"),
         Index("ix_channels_user", "user_id"),
     )
@@ -324,10 +324,12 @@ class ContactMessage(Base):
 
 
 class Subscription(Base):
-    """Mollie-abonnementsstatus per gebruiker (Fase 2). Eén rij per gebruiker.
+    """Abonnementsstatus per gebruiker (Fase 2). Eén rij per gebruiker, provider-agnostisch.
 
-    De feitelijke premium-toegang zit in users.tier; deze tabel houdt de Mollie-koppeling
-    en de levenscyclus bij zodat de webhook tier kan bij- en afschalen.
+    De feitelijke premium-toegang zit in users.tier; deze tabel houdt de koppeling met de
+    betaalprovider (Lemon Squeezy of Mollie) en de levenscyclus bij zodat de webhook tier
+    kan bij- en afschalen. ``provider`` zegt welke provider de rij beheert; de externe ID's
+    zijn generiek (Mollie-customer/subscription of Lemon Squeezy-customer/subscription).
     """
 
     __tablename__ = "subscriptions"
@@ -336,8 +338,12 @@ class Subscription(Base):
     user_id: Mapped[int] = mapped_column(
         BigInteger, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True
     )
-    mollie_customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
-    mollie_subscription_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    provider: Mapped[str] = mapped_column(
+        String(32), nullable=False, server_default=text("'lemonsqueezy'")
+    )
+    external_customer_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    external_subscription_id: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    plan: Mapped[str | None] = mapped_column(String(16), nullable=True)          # monthly/annual
     status: Mapped[str] = mapped_column(String(16), nullable=False, server_default=text("'pending'"))
     current_period_end: Mapped[datetime.datetime | None] = mapped_column(_TS, nullable=True)
     created_at: Mapped[datetime.datetime] = _now()
@@ -352,4 +358,5 @@ class Subscription(Base):
             "status IN ('pending','active','canceled','suspended','failed')",
             name="ck_subscriptions_status",
         ),
+        CheckConstraint("plan IS NULL OR plan IN ('monthly','annual')", name="ck_subscriptions_plan"),
     )

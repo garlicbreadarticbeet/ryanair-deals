@@ -56,6 +56,6 @@ Het nadeel van flexibiliteit? Je moet er meer voor zoeken. En precies dat is het
 
 De kortste samenvatting: boek niet te vroeg en niet te laat, vlieg liever doordeweeks, mik op het laag- of schouderseizoen, en wees flexibel met datum, bestemming en vertrekveld. Doe je dat, dan zit je structureel onder de prijs van wie alles in het weekend in augustus boekt.
 
-Maar elke dag handmatig prijzen vergelijken is niet vol te houden. Daarom scant Vliegseintje dagelijks de retour-totaalprijzen vanaf de vertrekvelden die jij kiest, en stuurt een seintje zodra een retour onder jóuw drempel duikt — via Telegram, e-mail of (Premium) WhatsApp. Wij boeken niets; we linken je door naar de airline.
+Maar elke dag handmatig prijzen vergelijken is niet vol te houden. Daarom scant Vliegseintje dagelijks de retour-totaalprijzen vanaf de vertrekvelden die jij kiest, en stuurt een seintje zodra een retour onder jóuw drempel duikt — via Telegram of e-mail. Wij boeken niets; we linken je door naar de airline.
 
 Zet je eerste seintje aan en laat het goede boekmoment voortaan naar jou toe komen.

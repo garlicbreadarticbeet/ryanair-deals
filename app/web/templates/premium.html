@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Premium &amp; prijzen — {{ settings.brand_name }}{% endblock %}
-{% block meta_description %}Vergelijk Gratis en Premium. Premium stuurt je seintje meteen, geeft meerdere vertrekvelden en WhatsApp. Betaal met iDEAL of Bancontact. Geen verborgen kosten.{% endblock %}
+{% block meta_description %}Vergelijk Gratis en Premium. Premium stuurt je seintje meteen en geeft meerdere vertrekvelden. Kies maand of jaar — jaarlijks is ~{{ pricing.saving_pct }}% goedkoper. Veilig betalen met iDEAL of creditcard, geen verborgen kosten.{% endblock %}
 
 {% block content %}
 <section class="section">
@@ -35,27 +35,45 @@
       <div class="plan-card featured">
         <span class="badge premium plan-card__flag">Aanrader</span>
         <span class="badge premium">Premium</span>
-        <div class="price">
-          {% if settings.premium_price %}€{{ settings.premium_price }} <small>/ maand</small>
-          {% else %}<small>prijs binnenkort</small>{% endif %}
-        </div>
-        <p class="muted">Voor wie de scherpste deals als eerste wil.</p>
-        <ul class="ticks">
-          <li><strong>Meteen</strong> een seintje i.p.v. één keer per dag</li>
-          <li>Meerdere vertrekvelden</li>
-          <li>WhatsApp-meldingen</li>
-          <li>Uitgebreide prijsgeschiedenis</li>
-          <li>Alles uit gratis</li>
-        </ul>
-        {% if user %}
-          <a class="btn block" href="/account">Upgrade naar Premium</a>
-        {% else %}
-          <a class="btn block" href="/login">Begin gratis →</a>
-        {% endif %}
+
+        {% set can_checkout = user and user.tier != 'premium' %}
+        {% if can_checkout %}<form method="post" action="/upgrade" class="plan-pick">{% else %}<div class="plan-pick">{% endif %}
+          <input class="plan-radio" type="radio" id="plan-annual" name="plan" value="annual" checked>
+          <input class="plan-radio" type="radio" id="plan-monthly" name="plan" value="monthly">
+          <div class="plan-toggle" role="group" aria-label="Kies je betaaltermijn">
+            <label for="plan-annual">Jaarlijks · bespaar {{ pricing.saving_pct }}%</label>
+            <label for="plan-monthly">Maandelijks</label>
+          </div>
+          <div class="plan-price is-annual">
+            <div class="price">€ {{ pricing.annual_display }} <small>/ jaar</small></div>
+            <p class="plan-price__note">≈ € {{ pricing.annual_per_month_display }} per maand —
+              ~{{ pricing.saving_pct }}% goedkoper, ruim {{ pricing.months_free }} maanden gratis.</p>
+          </div>
+          <div class="plan-price is-monthly">
+            <div class="price">€ {{ pricing.monthly_display }} <small>/ maand</small></div>
+            <p class="plan-price__note">Maandelijks, zonder verplichting.</p>
+          </div>
+
+          <p class="muted">Voor wie de scherpste deals als eerste wil.</p>
+          <ul class="ticks">
+            <li><strong>Meteen</strong> een seintje i.p.v. één keer per dag</li>
+            <li>Meerdere vertrekvelden</li>
+            <li>Uitgebreide prijsgeschiedenis</li>
+            <li>Alles uit gratis</li>
+          </ul>
+
+          {% if can_checkout %}
+            <button class="btn block" type="submit">Upgrade naar Premium</button>
+          {% elif user %}
+            <a class="btn block" href="/account">Naar je account</a>
+          {% else %}
+            <a class="btn block" href="/login">Begin gratis →</a>
+          {% endif %}
+        {% if can_checkout %}</form>{% else %}</div>{% endif %}
       </div>
     </div>
     <p class="muted center" style="margin-top:20px;font-size:14px">
-      Betalen met iDEAL of Bancontact · veilig via Mollie · daarna automatische verlenging via SEPA, opzegbaar op elk moment.
+      Veilig betalen met iDEAL of creditcard · opzeggen wanneer je wilt — je houdt toegang tot het einde van je periode.
     </p>
   </div>
 </section>
@@ -71,7 +89,6 @@
         <tr><td>Aantal vertrekvelden</td><td class="col">{{ free_max_origins }}</td><td class="col">Meerdere</td></tr>
         <tr><td>Wanneer je bericht krijgt</td><td class="col">Eén keer per dag</td><td class="col">{{ 'Meteen' if instant_premium else 'Meteen of dagelijks' }}</td></tr>
         <tr><td>Telegram &amp; e-mail</td><td class="col">✓</td><td class="col">✓</td></tr>
-        <tr><td>WhatsApp</td><td class="col">{{ '—' if whatsapp_premium else '✓' }}</td><td class="col">✓</td></tr>
         <tr><td>Prijsdrempel &amp; reisduur</td><td class="col">✓</td><td class="col">✓</td></tr>
         <tr><td>Prijsgeschiedenis per alert</td><td class="col">Basis</td><td class="col">Uitgebreid</td></tr>
         <tr><td>Extra airlines (later)</td><td class="col">—</td><td class="col">✓</td></tr>
