@@ -44,7 +44,7 @@ services:
   # Eenmalig: schema migreren + luchthavens/providers seeden, dan stoppen.
   migrate:
     build: .
-    command: sh -c "alembic upgrade head && python -m app.db.seed_airports"
+    command: sh -c "python -m alembic upgrade head && python -m app.db.seed_airports"
     env_file: .env
     environment:
       DATABASE_URL: postgresql+psycopg://ryanair:ryanair@db:5432/ryanair
@@ -63,12 +63,34 @@ services:
     <<: *app
     command: python bot.py --forever
 
-  # Web-API (health, magic-link, voorkeuren).
+  # Website + JSON-API. --proxy-headers zodat het echte client-IP (X-Forwarded-For van Caddy)
+  # doorkomt — nodig voor de contact-rate-limit en correcte logging achter de proxy.
   web:
     <<: *app
-    command: uvicorn app.web.main:app --host 0.0.0.0 --port 8000
+    command: uvicorn app.web.main:app --host 0.0.0.0 --port 8000 --proxy-headers --forwarded-allow-ips=*
+    # Handig lokaal; in productie kun je 8000 dichtzetten in de firewall (Caddy is de ingang).
     ports:
       - "8000:8000"
 
+  # Reverse proxy + automatische HTTPS (Let's Encrypt). Alleen in productie: --profile prod.
+  # Caddy is dan de enige publieke ingang; 'web' hoeft geen hostpoort meer te publiceren.
+  caddy:
+    image: caddy:2-alpine
+    profiles: ["prod"]
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:-localhost}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+
 volumes:
   gv_pgdata:
+  caddy_data:
+  caddy_config:

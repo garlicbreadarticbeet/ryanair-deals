@@ -172,14 +172,17 @@ Botcommando's: `/start` (account aanmaken/koppelen), `/origins EIN NRN`, `/dremp
 
 ### Deploy op Hetzner (volledige stack)
 
+Volledige stap-voor-stap handleiding: **[DEPLOY.md](DEPLOY.md)**. Kort:
+
 ```bash
-cp .env.example .env        # en vul je waarden in (token, Resend-key, ...)
-docker compose up -d --build
+cp .env.example .env                          # vul SITE_DOMAIN, secrets, Travelpayouts, ...
+docker compose --profile prod up -d --build   # incl. Caddy (auto-HTTPS op SITE_DOMAIN)
 ```
 
-Start `db` + `migrate` (alembic + seed, eenmalig) + always-on `worker`, `bot` en `web`.
-Alles geïsoleerd onder projectnaam `goedkoopvliegen`, Postgres op hostpoort **5433** zodat
-een ander project op dezelfde server niet botst.
+Start `db` + `migrate` (alembic + seed, eenmalig) + always-on `worker`, `bot`, `web` en — in het
+`prod`-profiel — **`caddy`** als reverse proxy met automatische Let's Encrypt-HTTPS. Zonder profiel
+(`docker compose up`) draait alles behalve Caddy, handig lokaal. Alles geïsoleerd onder projectnaam
+`goedkoopvliegen`, Postgres op hostpoort **5433** zodat een ander project niet botst.
 
 > GitHub Actions (`.github/workflows/`) blijft als alternatief bestaan, maar de cron staat
 > standaard **uit** — draai het niet tegelijk met de always-on worker (dubbele alerts).
