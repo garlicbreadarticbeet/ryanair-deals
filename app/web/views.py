@@ -6,9 +6,9 @@ from __future__ import annotations
 import datetime
 import unicodedata
 
-from fastapi import APIRouter, Depends, Form
+from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app import accounts, billing
@@ -21,7 +21,7 @@ from app.core import gating
 from app.core.combine import deal_row_to_return_deal
 from app.core.match import match_user
 from app.db import repo
-from app.db.models import Channel, Subscription, UserOrigin
+from app.db.models import Channel, Subscription, User, UserOrigin
 from app.errors import PremiumRequired
 from app.settings import settings
 from app.web import content_store as content
@@ -113,7 +113,7 @@ def login_submit(email: str = Form(...), db: Session = Depends(get_db)):
 
 
 @router.get("/verify")
-def verify(token: str, db: Session = Depends(get_db)):
+def verify(request: Request, token: str, db: Session = Depends(get_db)):
     result = accounts.complete_email_login(db, token)
     if result is None:
         return render(
@@ -122,9 +122,19 @@ def verify(token: str, db: Session = Depends(get_db)):
             message="Deze inloglink werkt niet meer. Vraag een nieuwe aan.",
             link="/login", link_label="Opnieuw inloggen",
         )
-    _, session_token = result
-    response = RedirectResponse("/dashboard", status_code=303)
+    user, session_token = result
+    # Koos iemand in de onboarding voor Premium? Rond na bevestiging meteen de checkout af.
+    dest = "/dashboard"
+    plan_intent = request.cookies.get("vs_onboard_plan")
+    if plan_intent in ("monthly", "annual") and user.tier != "premium":
+        try:
+            dest = billing.start_subscription_checkout(db, user, plan_intent)
+        except BillingError:
+            dest = "/account"
+    response = RedirectResponse(dest, status_code=303)
     set_session_cookie(response, session_token)
+    if plan_intent:
+        response.delete_cookie("vs_onboard_plan", path="/")
     return response
 
 
@@ -133,6 +143,120 @@ def logout():
     response = RedirectResponse("/", status_code=303)
     clear_session_cookie(response)
     return response
+
+
+# ---------- onboarding ----------
+
+def _render_onboarding(db, *, user=None, error=None, status_code=200):
+    """Render de stap-voor-stap onboarding-wizard met de data die de client nodig heeft."""
+    # Slanke deal-lijst voor de voorbeeld-stap (alleen wat de client nodig heeft; geen blurbs).
+    deals = [
+        {"origin": d["origin"], "city": d["city"], "country": d["country"],
+         "price": d["price"], "nights": d["nights"], "airline": d["airline"]}
+        for d in content.destinations()
+    ]
+    return render(
+        "onboarding.html", status_code=status_code, user=user, settings=settings,
+        airports=[{"iata": i, "name": n} for i, n in content.ORIGIN_NAMES.items()],
+        deals=deals, pricing=settings.premium_pricing, error=error,
+    )
+
+
+def _apply_onboarding(db, user, *, threshold, trip_lengths, plan, origins, channel="email") -> None:
+    """Pas de onboarding-antwoorden toe op de voorkeuren van deze (nieuwe) gebruiker."""
+    accounts.set_threshold(db, user, threshold)
+    lengths = sorted({int(t) for t in _tokens(trip_lengths) if t.isdigit()})
+    accounts.set_trip_lengths(db, user, lengths or list(user.preferences.trip_lengths))
+    # 'Meteen' is premium; gating.effective_alert_mode schaalt vanzelf af tot premium actief is.
+    user.preferences.alert_mode = "instant" if plan in ("monthly", "annual") else "digest"
+    # Vertrekvelden via set_origins (de enige bron van waarheid voor de gratis-limiet); bij
+    # overschrijding cappen op de gratis-limiet (premium voegt later meer toe op /preferences).
+    if origins:
+        try:
+            accounts.set_origins(db, user, settings.default_origin_provider, origins)
+        except PremiumRequired:
+            accounts.set_origins(
+                db, user, settings.default_origin_provider, origins[: settings.free_max_origins]
+            )
+    # Kanaal-consent: koos iemand alléén Telegram, schakel het e-mailkanaal niet in als
+    # alertkanaal (het blijft bestaan voor de login); Telegram koppelt de gebruiker daarna zelf.
+    if channel == "telegram":
+        em = db.execute(
+            select(Channel).where(Channel.user_id == user.id, Channel.type == "email")
+        ).scalar_one_or_none()
+        if em is not None:
+            em.enabled = False
+    db.flush()
+
+
+@router.get("/onboarding", response_class=HTMLResponse)
+def onboarding_form(user=Depends(optional_web_user), db: Session = Depends(get_db)):
+    # Ingelogde gebruikers hebben al een account; voorkeuren wijzig je op /preferences.
+    if user is not None:
+        return RedirectResponse("/dashboard", status_code=303)
+    return _render_onboarding(db)
+
+
+@router.post("/onboarding")
+def onboarding_submit(
+    request: Request,
+    user=Depends(optional_web_user),
+    db: Session = Depends(get_db),
+    goal: str = Form(""),
+    origins: list[str] = Form(default=[]),
+    threshold: float = Form(50.0),
+    trip_lengths: str = Form("3,5,7"),
+    channel: str = Form("email"),
+    plan: str = Form("free"),
+    email: str = Form(""),
+):
+    # Ingelogd: onboarding muteert nooit een bestaand account (geen stille downgrade/dataverlies).
+    if user is not None:
+        return RedirectResponse("/dashboard", status_code=303)
+
+    plan = plan if plan in ("free", "monthly", "annual") else "free"
+    channel = channel if channel in ("email", "telegram", "both") else "email"
+    origins = [o.strip().upper() for o in origins if o.strip()]
+    threshold = min(500.0, max(10.0, threshold))   # clamp tot een redelijk bereik
+    email = email.strip().lower()
+    domain = email.rsplit("@", 1)[-1] if "@" in email else ""
+    if "@" not in email or "." not in domain:
+        return _render_onboarding(
+            db, error="Vul een geldig e-mailadres in om je waakhond aan te zetten.", status_code=400
+        )
+    if not origins:
+        return _render_onboarding(
+            db, error="Kies minstens één vertrekveld, zodat we weten waar je vandaan vliegt.",
+            status_code=400,
+        )
+
+    # Bestaand, geverifieerd account NOOIT muteren vanuit een anonieme request: stuur enkel de
+    # inloglink (de eigenaar bevestigt zelf). Voorkomt ongeauthenticeerde writes op andermans account.
+    existing = db.execute(select(User).where(func.lower(User.email) == email)).scalar_one_or_none()
+    is_existing = existing is not None and existing.email_verified
+    token = accounts.start_email_login(db, email)
+    if not is_existing:
+        target = existing or db.execute(
+            select(User).where(func.lower(User.email) == email)
+        ).scalar_one()
+        _apply_onboarding(db, target, threshold=threshold, trip_lengths=trip_lengths,
+                          plan=plan, origins=origins, channel=channel)
+
+    link = f"{settings.app_base_url}/verify?token={token}"
+    sent = send_login_email(email, link)
+    dev_link = None if (sent and settings.resend_api_key) else link
+    resp = render(
+        "onboarding_done.html", user=None, settings=settings, email=email, dev_link=dev_link,
+        plan=plan, channel=channel, pricing=settings.premium_pricing,
+        telegram_username=settings.telegram_bot_username,
+    )
+    if plan in ("monthly", "annual") and not is_existing:
+        # Onthoud de premium-keuze zodat /verify na bevestiging meteen de checkout opent.
+        resp.set_cookie(
+            "vs_onboard_plan", plan, max_age=1800, httponly=True, samesite="lax", path="/",
+            secure=settings.app_base_url.startswith("https"),
+        )
+    return resp
 
 
 # ---------- dashboard ----------

@@ -29,7 +29,7 @@
         {% if user %}
           <a class="btn secondary block" href="/dashboard">Naar je deals</a>
         {% else %}
-          <a class="btn secondary block" href="/login">Gratis aanmelden</a>
+          <a class="btn secondary block" href="/onboarding">Gratis aanmelden</a>
         {% endif %}
       </div>
       <div class="plan-card featured">
@@ -67,7 +67,7 @@
           {% elif user %}
             <a class="btn block" href="/account">Naar je account</a>
           {% else %}
-            <a class="btn block" href="/login">Begin gratis →</a>
+            <a class="btn block" href="/onboarding">Begin gratis →</a>
           {% endif %}
         {% if can_checkout %}</form>{% else %}</div>{% endif %}
       </div>

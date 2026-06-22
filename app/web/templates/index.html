@@ -17,7 +17,7 @@
         {% if user %}
           <a class="btn lg" href="/dashboard">Naar je deals</a>
         {% else %}
-          <a class="btn lg" href="/login">Zet mijn eerste seintje aan</a>
+          <a class="btn lg" href="/onboarding">Zet mijn eerste seintje aan</a>
         {% endif %}
         <a class="btn ghost lg" href="/hoe-het-werkt">Bekijk hoe het werkt</a>
       </div>
@@ -97,7 +97,7 @@
     </div>
     {% if not user %}
     <div class="center" style="margin-top:40px">
-      <a class="btn" href="/login">Zet mijn eerste seintje aan</a>
+      <a class="btn" href="/onboarding">Zet mijn eerste seintje aan</a>
     </div>
     {% endif %}
   </div>
@@ -166,7 +166,7 @@
           <li>1 vertrekveld</li>
           <li>Telegram &amp; e-mail</li>
         </ul>
-        {% if not user %}<a class="btn secondary block" href="/login">Gratis aanmelden</a>{% endif %}
+        {% if not user %}<a class="btn secondary block" href="/onboarding">Gratis aanmelden</a>{% endif %}
       </div>
       <div class="plan-card featured card-lift">
         <span class="badge premium plan-card__flag">Aanrader</span>
@@ -196,7 +196,7 @@
           <h2>Liever alles in Telegram?</h2>
           <p class="muted">Koppel je account aan onze bot en ontvang je seintjes direct in je chat.
             Stel je voorkeuren in met simpele commando's en vraag op elk moment je actuele deals op.</p>
-          {% if not user %}<a class="btn" href="/login">Begin gratis</a>{% endif %}
+          {% if not user %}<a class="btn" href="/onboarding">Begin gratis</a>{% endif %}
         </div>
         <div class="deal-card signature">
           <div class="chat-line"><span class="ping"><span class="ping__ring"></span><span class="ping__dot"></span></span> {{ settings.brand_name }}-bot</div>

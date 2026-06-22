@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Aan de slag · {{ settings.brand_name }}</title>
+  <link rel="icon" href="/static/favicon.svg" type="image/svg+xml">
+  <link rel="preload" as="font" type="font/woff2" href="/static/fonts/inter-400.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/static/fonts/poppins-700.woff2" crossorigin>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="ob-body">
+  <header class="ob-top">
+    <a class="brand" href="/" aria-label="{{ settings.brand_name }}">
+      <svg class="brand__mark" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="48" height="48" rx="12" fill="#2563EB"/>
+        <path d="M11.5 20.25 36.5 11.5 22.75 25.25Z" fill="#fff"/>
+        <path d="M36.5 11.5 27.75 36.5 22.75 25.25Z" fill="#BFD4FB"/>
+        <circle cx="36.5" cy="11.5" r="8.5" fill="none" stroke="#FFB703" stroke-width="2" opacity=".4"/>
+        <circle cx="36.5" cy="11.5" r="4" fill="#FFB703" stroke="#2563EB" stroke-width="1.5"/>
+      </svg>
+      <span class="brand__name">{{ settings.brand_name }}</span>
+    </a>
+    <a class="ob-exit" href="/">Sluiten</a>
+  </header>
+
+  <div class="ob-progress" aria-hidden="true"><div class="ob-progress__bar" id="obBar"></div></div>
+
+  <main class="ob-main">
+    {% if error %}<div class="ob-flash ob-flash--err" role="alert">{{ error }}</div>{% endif %}
+
+    <form class="ob-form" id="obForm" method="post" action="/onboarding"
+          data-deals='{{ deals | tojson }}'>
+
+      <!-- 1 · Welkom -->
+      <section class="ob-step is-active" data-step="welkom" data-title="Welkom">
+        <p class="ob-eyebrow">Je waakhond voor goedkope retours</p>
+        <h1 class="ob-h1">Goedkoop vliegen,<br>zonder zoeken.</h1>
+        <p class="ob-lead">Stel in 1 minuut je waakhond in. Daarna komt de deal naar jou: een seintje
+          zodra een retour vanaf jouw velden onder jóuw drempel duikt. Gratis te proberen.</p>
+        <ul class="ob-ticks">
+          <li>Jij hoeft niet meer te zoeken; wij scannen dagelijks</li>
+          <li>Alleen een seintje als het écht onder je maximum zit</li>
+          <li>Via Telegram of e-mail, waar je al bent</li>
+        </ul>
+        <div class="ob-nav ob-nav--solo">
+          <button type="button" class="btn lg" data-next>Begin (duurt 1 minuut)</button>
+        </div>
+        <p class="ob-mini">Al een account? <a href="/login">Inloggen</a></p>
+      </section>
+
+      <!-- 2 · Doel -->
+      <section class="ob-step" data-step="doel" data-title="Jouw doel">
+        <h2 class="ob-h2" id="q-doel">Waar droom je van?</h2>
+        <p class="ob-sub">Goed om te weten, zo snappen we wat je zoekt.</p>
+        <div class="ob-options ob-options--single" role="radiogroup" aria-labelledby="q-doel">
+          <label class="ob-option"><input type="radio" name="goal" value="zon"><span class="ob-option__emoji">☀️</span><span class="ob-option__txt"><strong>Zon &amp; strand</strong><small>weg uit de regen, even opladen</small></span></label>
+          <label class="ob-option"><input type="radio" name="goal" value="citytrip"><span class="ob-option__emoji">🏙️</span><span class="ob-option__txt"><strong>Citytrips &amp; weekendjes</strong><small>cultuur, eten, een nieuwe stad</small></span></label>
+          <label class="ob-option"><input type="radio" name="goal" value="goedkoop"><span class="ob-option__emoji">🎯</span><span class="ob-option__txt"><strong>Maakt niet uit, als 't maar goedkoop is</strong><small>verras me met de scherpste deals</small></span></label>
+          <label class="ob-option"><input type="radio" name="goal" value="specifiek"><span class="ob-option__emoji">📍</span><span class="ob-option__txt"><strong>Specifieke bestemmingen</strong><small>ik weet al waar ik heen wil</small></span></label>
+        </div>
+        <div class="ob-nav">
+          <button type="button" class="btn ghost" data-back>Terug</button>
+          <button type="button" class="btn" data-next>Verder</button>
+        </div>
+      </section>
+
+      <!-- 3 · Vertrekvelden -->
+      <section class="ob-step" data-step="velden" data-title="Vertrekvelden">
+        <h2 class="ob-h2">Vanaf welke velden wil je vliegen?</h2>
+        <p class="ob-sub">Kies je thuisvliegveld(en). <strong>Eén is gratis</strong>. Meerdere velden geven dubbel zoveel kans op een lage prijs.</p>
+        <div class="ob-options ob-options--grid" id="obAirports">
+          {% for a in airports %}
+          <label class="ob-option ob-option--chip"><input type="checkbox" name="origins" value="{{ a.iata }}"><span class="ob-option__txt"><strong>{{ a.name }}</strong><small>{{ a.iata }}</small></span></label>
+          {% endfor %}
+        </div>
+        <p class="ob-nudge" id="obFieldNudge" hidden>✨ Meerdere vertrekvelden horen bij <strong>Premium</strong>. We onthouden je keuze en je zet ze straks aan.</p>
+        <div class="ob-nav">
+          <button type="button" class="btn ghost" data-back>Terug</button>
+          <button type="button" class="btn" data-next data-require="origins">Verder</button>
+        </div>
+      </section>
+
+      <!-- 4 · Drempel & reisduur -->
+      <section class="ob-step" data-step="drempel" data-title="Drempel &amp; duur">
+        <h2 class="ob-h2" id="q-prijs">Wat is je maximale retourprijs?</h2>
+        <p class="ob-sub">De totaalprijs heen én terug. We sturen alleen een seintje als het hieronder zit.</p>
+        <div class="ob-options ob-options--single ob-options--row" role="radiogroup" aria-labelledby="q-prijs">
+          <label class="ob-option ob-option--pill"><input type="radio" name="threshold" value="30"><span>tot €30</span></label>
+          <label class="ob-option ob-option--pill"><input type="radio" name="threshold" value="50" checked><span>tot €50</span></label>
+          <label class="ob-option ob-option--pill"><input type="radio" name="threshold" value="75"><span>tot €75</span></label>
+          <label class="ob-option ob-option--pill"><input type="radio" name="threshold" value="100"><span>tot €100</span></label>
+        </div>
+        <h3 class="ob-h3" id="q-nachten">Hoeveel nachten wil je weg?</h3>
+        <div class="ob-options ob-options--single ob-options--row" role="radiogroup" aria-labelledby="q-nachten">
+          <label class="ob-option ob-option--pill"><input type="radio" name="trip_lengths" value="2,3,4"><span>Weekendje<small>2–4 nachten</small></span></label>
+          <label class="ob-option ob-option--pill"><input type="radio" name="trip_lengths" value="3,4,5" checked><span>Midweek<small>3–5 nachten</small></span></label>
+          <label class="ob-option ob-option--pill"><input type="radio" name="trip_lengths" value="5,6,7"><span>Een week<small>5–7 nachten</small></span></label>
+          <label class="ob-option ob-option--pill"><input type="radio" name="trip_lengths" value="2,3,4,5,6,7"><span>Maakt niet uit</span></label>
+        </div>
+        <div class="ob-nav">
+          <button type="button" class="btn ghost" data-back>Terug</button>
+          <button type="button" class="btn" data-next>Verder</button>
+        </div>
+      </section>
+
+      <!-- 5 · Processing (JS auto-advance) -->
+      <section class="ob-step ob-step--center" data-step="rekenen" data-title="Even rekenen" data-auto="2000">
+        <div class="ob-spinner" aria-hidden="true"><span></span></div>
+        <h2 class="ob-h2">We stellen je waakhond in…</h2>
+        <p class="ob-sub" id="obProcessing">We zetten je vertrekvelden, drempel en reisduur klaar.</p>
+        <div class="ob-nav ob-nav--solo"><button type="button" class="btn ghost" data-next>Verder</button></div>
+      </section>
+
+      <!-- 6 · Voorbeelddeals (aha) -->
+      <section class="ob-step" data-step="voorbeelden" data-title="Voorbeelden">
+        <h2 class="ob-h2">Dit had je gekregen</h2>
+        <p class="ob-sub" id="obDealsSub">Voorbeelden van retours die met jouw instellingen voorbijkomen. Prijzen kunnen wijzigen.</p>
+        <div class="ob-deals" id="obDeals">
+          {% for d in deals[:4] %}
+          <div class="ob-deal">
+            <div class="ob-deal__top"><span class="ob-deal__route">{{ d.city }}</span><span class="ob-deal__price">€{{ d.price }}</span></div>
+            <div class="ob-deal__meta">{{ d.country }} · {{ d.nights }} nachten · retour</div>
+          </div>
+          {% endfor %}
+        </div>
+        <div class="ob-nav">
+          <button type="button" class="btn ghost" data-back>Terug</button>
+          <button type="button" class="btn" data-next>Ja, die wil ik!</button>
+        </div>
+      </section>
+
+      <!-- 7 · Kanaal -->
+      <section class="ob-step" data-step="kanaal" data-title="Kanaal">
+        <h2 class="ob-h2" id="q-kanaal">Waar wil je je seintjes ontvangen?</h2>
+        <p class="ob-sub">Daar waar je toch al kijkt, zo mis je geen scherpe prijs.</p>
+        <div class="ob-options ob-options--single" role="radiogroup" aria-labelledby="q-kanaal">
+          <label class="ob-option"><input type="radio" name="channel" value="email" checked><span class="ob-option__emoji">📧</span><span class="ob-option__txt"><strong>E-mail</strong><small>direct klaar, we bevestigen zo je adres</small></span></label>
+          <label class="ob-option"><input type="radio" name="channel" value="telegram"><span class="ob-option__emoji">💬</span><span class="ob-option__txt"><strong>Telegram</strong><small>meteen op je telefoon, koppelen doe je zo</small></span></label>
+          <label class="ob-option"><input type="radio" name="channel" value="both"><span class="ob-option__emoji">🔔</span><span class="ob-option__txt"><strong>Allebei</strong><small>maximale kans dat je 'm op tijd ziet</small></span></label>
+        </div>
+        <div class="ob-nav">
+          <button type="button" class="btn ghost" data-back>Terug</button>
+          <button type="button" class="btn" data-next>Verder</button>
+        </div>
+      </section>
+
+      <!-- 8 · Plan -->
+      <section class="ob-step" data-step="plan" data-title="Jouw plan">
+        <h2 class="ob-h2" id="q-plan">Kies hoe snel je je seintjes wilt</h2>
+        <p class="ob-sub" id="obPlanSub">De scherpste prijzen zijn vaak het eerst weg. Begin gratis of wees er met Premium meteen bij. Je kiest zelf.</p>
+        <div class="ob-plans" role="radiogroup" aria-labelledby="q-plan">
+          <label class="ob-plan">
+            <input type="radio" name="plan" value="free" checked>
+            <span class="ob-plan__body">
+              <span class="ob-plan__name">Gratis</span>
+              <span class="ob-plan__price">€0</span>
+              <span class="ob-plan__list">
+                <span>Eén keer per dag al je deals gebundeld</span>
+                <span>Eén vertrekveld</span>
+                <span>Telegram &amp; e-mail</span>
+              </span>
+            </span>
+          </label>
+          <label class="ob-plan ob-plan--featured">
+            <span class="ob-plan__flag">Aanrader</span>
+            <input type="radio" name="plan" value="annual">
+            <span class="ob-plan__body">
+              <span class="ob-plan__name">Premium <small>· per jaar</small></span>
+              <span class="ob-plan__price">€&nbsp;{{ pricing.annual_display }}<small>/jaar</small></span>
+              <span class="ob-plan__sub">≈ €&nbsp;{{ pricing.annual_per_month_display }}/maand · ~{{ pricing.saving_pct }}% goedkoper</span>
+              <span class="ob-plan__list">
+                <span><strong>Meteen</strong> een seintje i.p.v. 1× per dag</span>
+                <span><strong>Meerdere</strong> vertrekvelden</span>
+                <span>Uitgebreide prijsgeschiedenis</span>
+                <span>Alles uit gratis</span>
+              </span>
+            </span>
+          </label>
+          <label class="ob-plan ob-plan--compact">
+            <input type="radio" name="plan" value="monthly">
+            <span class="ob-plan__body">
+              <span class="ob-plan__name">Premium <small>· per maand</small></span>
+              <span class="ob-plan__price">€&nbsp;{{ pricing.monthly_display }}<small>/maand</small></span>
+              <span class="ob-plan__sub">maandelijks opzegbaar</span>
+            </span>
+          </label>
+        </div>
+        <p class="ob-mini ob-mini--center">Geen creditcard nodig om gratis te beginnen · stop wanneer je wilt.</p>
+        <div class="ob-nav">
+          <button type="button" class="btn ghost" data-back>Terug</button>
+          <button type="button" class="btn" data-next>Verder</button>
+        </div>
+      </section>
+
+      <!-- 9 · Klaar / e-mail -->
+      <section class="ob-step" data-step="klaar" data-title="Klaar">
+        {% if user %}
+          <h2 class="ob-h2">Klaar om aan te zetten</h2>
+          <p class="ob-sub">Je bent ingelogd, we passen je waakhond meteen aan.</p>
+          <div class="ob-nav ob-nav--solo">
+            <button type="submit" class="btn lg">Zet mijn waakhond aan →</button>
+          </div>
+        {% else %}
+          <h2 class="ob-h2">Bevestig je e-mail en je waakhond staat aan</h2>
+          <p class="ob-sub">We sturen je één bevestigingslink, geen wachtwoord nodig. Je antwoorden staan al klaar.</p>
+          <label class="ob-field">
+            <span>Je e-mailadres</span>
+            <input type="email" name="email" id="obEmail" required autocomplete="email"
+                   inputmode="email" placeholder="jij@voorbeeld.nl">
+          </label>
+          <div class="ob-nav ob-nav--solo">
+            <button type="submit" class="btn lg" id="obSubmit">Zet mijn waakhond aan →</button>
+          </div>
+          <p class="ob-mini ob-mini--center">Door verder te gaan ga je akkoord met onze
+            <a href="/voorwaarden" target="_blank" rel="noopener">voorwaarden</a> en
+            <a href="/privacy" target="_blank" rel="noopener">privacyverklaring</a>.</p>
+        {% endif %}
+        <div class="ob-nav">
+          <button type="button" class="btn ghost" data-back>Terug</button>
+        </div>
+      </section>
+
+    </form>
+  </main>
+
+  <script src="/static/onboarding.js" defer></script>
+</body>
+</html>

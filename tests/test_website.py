@@ -6,7 +6,7 @@ from decimal import Decimal
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 import app.mollie as mollie
 from app import accounts
@@ -239,3 +239,69 @@ def test_airport_search(client):
     assert any(a["iata"] == "EIN" for a in data)
     assert data and data[0]["label"]               # "Naam (CODE)" voor de chip
     assert client.get("/api/airports", params={"q": ""}).json() == []  # lege query → niks
+
+
+# ---------- onboarding (W3) ----------
+
+def test_onboarding_form_renders_for_anonymous(client):
+    resp = client.get("/onboarding")
+    assert resp.status_code == 200
+    assert 'id="obForm"' in resp.text
+    assert "waakhond" in resp.text.lower()
+
+
+def test_onboarding_redirects_logged_in_user(client, db):
+    u = accounts.create_user(db, email="ob-loggedin@example.nl")
+    db.flush()
+    _login(client, db, u)
+    resp = client.get("/onboarding", follow_redirects=False)
+    assert resp.status_code == 303
+    assert resp.headers["location"] == "/dashboard"
+
+
+def test_onboarding_creates_account_and_caps_origins(client, db):
+    resp = client.post("/onboarding", data={
+        "email": "ob-new@example.nl", "origins": ["EIN", "CRL"],
+        "threshold": "75", "trip_lengths": "3,4,5", "plan": "free", "channel": "email",
+    })
+    assert resp.status_code == 200
+    u = db.execute(select(User).where(func.lower(User.email) == "ob-new@example.nl")).scalar_one()
+    assert u.tier == "free"
+    origins = db.execute(
+        select(UserOrigin.origin_iata).where(UserOrigin.user_id == u.id)
+    ).scalars().all()
+    assert len(origins) == settings.free_max_origins        # gecapt op de gratis-limiet
+    assert float(u.preferences.threshold) == 75.0
+    assert list(u.preferences.trip_lengths) == [3, 4, 5]
+    assert u.preferences.alert_mode == "digest"             # gratis -> geen 'meteen'
+
+
+def test_onboarding_requires_at_least_one_origin(client, db):
+    resp = client.post("/onboarding", data={
+        "email": "ob-noorigin@example.nl", "threshold": "50", "plan": "free", "channel": "email",
+    })
+    assert resp.status_code == 400
+    assert "vertrekveld" in resp.text.lower()
+    assert db.execute(
+        select(User).where(func.lower(User.email) == "ob-noorigin@example.nl")
+    ).scalar_one_or_none() is None
+
+
+def test_onboarding_does_not_mutate_existing_verified_account(client, db):
+    owner = accounts.create_user(db, email="ob-owner@example.nl")
+    owner.email_verified = True
+    owner.preferences.threshold = Decimal("99")
+    db.flush()
+    accounts.set_origins(db, owner, settings.default_origin_provider, ["AMS"])
+    # Anonieme 'aanvaller' probeert de voorkeuren te overschrijven met alleen het e-mailadres.
+    resp = client.post("/onboarding", data={
+        "email": "ob-owner@example.nl", "origins": ["EIN"],
+        "threshold": "30", "trip_lengths": "5,6,7", "plan": "free", "channel": "email",
+    })
+    assert resp.status_code == 200                          # stuurt wel een inloglink
+    db.refresh(owner.preferences)
+    assert float(owner.preferences.threshold) == 99.0       # NIET overschreven
+    origins = db.execute(
+        select(UserOrigin.origin_iata).where(UserOrigin.user_id == owner.id)
+    ).scalars().all()
+    assert origins == ["AMS"]                               # NIET overschreven
