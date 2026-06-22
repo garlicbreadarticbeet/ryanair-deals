@@ -3,13 +3,18 @@ en cookie-sessies voor auth. De JSON-API in main.py blijft daarnaast bestaan.
 """
 from __future__ import annotations
 
+import datetime
+
 from fastapi import APIRouter, Depends, Form
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app import accounts, billing
+from app.alerts import render as alert_render
+from app.alerts.enrich import enrich_deals
 from app.billing import BillingError
+from app.channels.base import AlertItem
 from app.channels.email import send_email
 from app.core import gating
 from app.core.combine import deal_row_to_return_deal
@@ -100,24 +105,139 @@ def logout():
 
 # ---------- dashboard ----------
 
+# Bovengrens aan getoonde deal-kaarten (de scherpste eerst); filters helpen de rest vinden.
+_MAX_DASHBOARD_DEALS = 60
+
+
+def _sparkline(prices: list[float]) -> dict | None:
+    """Maak SVG-polyline-punten van een prijsreeks (goedkoper = lager in de grafiek)."""
+    if not prices or len(prices) < 3:
+        return None
+    w, h, pad = 120, 26, 3
+    lo, hi = min(prices), max(prices)
+    rng = (hi - lo) or 1.0
+    n = len(prices)
+    pts = [
+        (round(pad + (w - 2 * pad) * i / (n - 1)), round(pad + (h - 2 * pad) * (hi - p) / rng))
+        for i, p in enumerate(prices)
+    ]
+    return {
+        "points": " ".join(f"{x},{y}" for x, y in pts),
+        "lastx": pts[-1][0], "lasty": pts[-1][1],
+        "down": prices[-1] <= prices[0],
+    }
+
+
+def _deal_vm(it: AlertItem, prices: list[float] | None, is_premium: bool) -> dict:
+    """View-model voor één deal-kaart (gedeelde alert-render → leesbare velden)."""
+    b = alert_render.badge(it)
+    s = it.score
+    return {
+        "price": float(it.deal.total),
+        "price_display": alert_render.money(it.deal.total),
+        "dest": alert_render.destination_full(it),
+        "city": alert_render.city_to(it),
+        "flag": alert_render.flag(it.country_to),
+        "country": alert_render.country_name(it),
+        "country_code": it.country_to or "",
+        "city_from": alert_render.city_from(it),
+        "nights": it.deal.nights,
+        "airline": it.deal.airline,
+        "dates": alert_render.dates_label(it),
+        "deeplink": alert_render.safe_href(it.deal.deeplink),
+        "badge_text": b.text if b else None,
+        "badge_tone": b.tone if b else None,
+        "badge_emoji": b.emoji if b else None,
+        "strength": s.strength if s else 0.0,
+        "out_ord": it.deal.out_date.toordinal(),
+        "history_days": s.days_span if (s and s.has_baseline) else 0,
+        "spark": _sparkline(prices) if (is_premium and prices) else None,
+    }
+
+
+def _trip_summary(lengths) -> str:
+    xs = sorted(set(int(n) for n in (lengths or [])))
+    if not xs:
+        return "—"
+    if len(xs) == 1:
+        return f"{xs[0]} nacht" if xs[0] == 1 else f"{xs[0]} nachten"
+    if xs == list(range(xs[0], xs[-1] + 1)):
+        return f"{xs[0]}–{xs[-1]} nachten"
+    return ", ".join(map(str, xs)) + " nachten"
+
+
+def _dest_summary(prefs) -> str:
+    if prefs.dest_filter_mode == "country" and prefs.dest_countries:
+        n = len(prefs.dest_countries)
+        return f"{n} land" if n == 1 else f"{n} landen"
+    if prefs.dest_filter_mode == "whitelist" and prefs.dest_whitelist:
+        return f"{len(prefs.dest_whitelist)} bestemmingen"
+    if prefs.dest_filter_mode == "blacklist" and prefs.dest_blacklist:
+        return "bijna alles"
+    return "alle bestemmingen"
+
+
 @router.get("/dashboard", response_class=HTMLResponse)
 def dashboard(user=Depends(optional_web_user), db: Session = Depends(get_db)):
     if user is None:
         return RedirectResponse("/login", status_code=303)
+    prefs = user.preferences
+    is_premium = user.tier == "premium"
     pairs = repo.allowed_provider_origins(db, user.id)
     origins = sorted({iata for _, iata in pairs})
     deals = [deal_row_to_return_deal(d) for d in repo.deals_for_origins(db, pairs)]
     matched = match_user(db, user, deals)
-    by_len: dict[int, list] = {}
+
+    enr = enrich_deals(db, matched)
+    items: list[AlertItem] = []
     for d in matched:
-        by_len.setdefault(d.nights, []).append(d)
-    deal_groups = [
-        {"nights": n, "deals": sorted(by_len[n], key=lambda x: x.total)} for n in sorted(by_len)
+        e = enr.get((d.provider, d.origin, d.destination, d.nights))
+        items.append(AlertItem(
+            deal=d,
+            city_from=e.city_from if e else None,
+            city_to=e.city_to if e else None,
+            country_to=e.country_to if e else None,
+            score=e.score if e else None,
+        ))
+    items.sort(key=alert_render.sort_key)        # spannendste deal eerst
+    total_count = len(items)
+    items = items[:_MAX_DASHBOARD_DEALS]
+
+    series: dict = {}
+    if is_premium and items:
+        fps = {(it.deal.provider, it.deal.origin, it.deal.destination, it.deal.nights) for it in items}
+        series = repo.price_series(db, fps, today=datetime.date.today())
+
+    vms = [
+        _deal_vm(it, series.get((it.deal.provider, it.deal.origin, it.deal.destination, it.deal.nights)), is_premium)
+        for it in items
     ]
+
+    cheapest = min(vms, key=lambda v: v["price"]) if vms else None
+    discounts = [it.score.discount_pct for it in items
+                 if it.score and it.score.has_baseline and it.score.discount_pct > 0]
+    avg_discount = round(sum(discounts) / len(discounts)) if discounts else None
+
+    connected = list(db.execute(
+        select(Channel.type).where(
+            Channel.user_id == user.id, Channel.verified.is_(True),
+            Channel.opted_in_at.isnot(None), Channel.enabled.is_(True),
+        )
+    ).scalars())
+
+    countries = sorted({(v["country_code"], v["country"]) for v in vms if v["country"]}, key=lambda x: x[1])
+    nights_opts = sorted({v["nights"] for v in vms})
+
     return render(
-        "dashboard.html", user=user, settings=settings, prefs=user.preferences,
-        origins=origins, has_origins=bool(origins), deal_groups=deal_groups,
-        effective_mode=gating.effective_alert_mode(user), active="dashboard",
+        "dashboard.html", user=user, settings=settings, prefs=prefs,
+        origins=origins, origin_names=content.ORIGIN_NAMES, has_origins=bool(origins),
+        hero=(vms[0] if vms else None), deals=vms[1:], total_count=total_count, shown_count=len(vms),
+        cheapest=cheapest, avg_discount=avg_discount, dest_summary=_dest_summary(prefs),
+        trip_summary=_trip_summary(prefs.trip_lengths),
+        connected_channels=connected, is_premium=is_premium,
+        effective_mode=gating.effective_alert_mode(user),
+        countries=countries, nights_opts=nights_opts, max_origins=gating.max_origins(user),
+        active="dashboard",
     )
 
 

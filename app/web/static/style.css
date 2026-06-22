@@ -552,3 +552,93 @@ textarea { min-height: 120px; resize: vertical; }
 .seg-item:has(input:checked) { border-color: var(--color-primary); background: var(--color-primary-soft);
   color: var(--color-primary-hover); }
 .country-grid { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+
+/* =====================================================================
+   Dashboard (/dashboard) — deal-board + bedieningspaneel
+   ===================================================================== */
+.eyebrow2 { font-family: var(--font-head); font-weight: 600; font-size: 13px; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--color-muted); margin: 0 0 10px; }
+
+/* Waarschuwingsbalk (geen kanaal gekoppeld) */
+.warn-banner { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: space-between;
+  background: #FFF4D6; border: 1px solid #F4D58A; border-radius: var(--r-card); padding: 14px 18px;
+  color: #8A5A00; margin-bottom: 22px; }
+.warn-banner .btn { background: var(--color-accent); color: var(--color-ink); }
+.warn-link { color: var(--color-danger); font-weight: 600; }
+
+/* Metric-rij */
+.dash-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 18px 0 22px; }
+.metric { background: #fff; border: 1px solid var(--color-border); border-radius: 14px; padding: 14px 16px; }
+.metric .label { font-size: 13px; color: var(--color-muted); }
+.metric .value { font-family: var(--font-head); font-weight: 700; font-size: 22px; color: var(--color-ink);
+  margin-top: 4px; line-height: 1.2; }
+.metric .value small { font-size: 13px; font-weight: 500; color: var(--color-muted); }
+.metric .value.ok { color: #0B6B48; font-size: 16px; }
+
+/* Setup-chips */
+.dash-chips { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 26px; }
+.dash-chip { background: #fff; border: 1px solid var(--color-border); border-radius: var(--r-pill);
+  padding: 6px 13px; font-size: 13px; color: var(--color-body); }
+.dash-chip strong { color: var(--color-ink); font-weight: 600; }
+.dash-chip--edit { background: var(--color-primary-soft); color: var(--color-primary-hover);
+  border-color: transparent; font-weight: 600; }
+.dash-chip--edit:hover { background: #dbe7fd; text-decoration: none; }
+
+/* Dealscore-badge (zelfde tonen als in de mail/kaart) */
+.dscore { display: inline-block; font-size: 12.5px; font-weight: 700; padding: 4px 11px; border-radius: var(--r-pill); }
+.dscore.hot { background: #FFF4D6; color: #8A5A00; }
+.dscore.good { background: var(--color-success-soft); color: #0B6B48; }
+.dscore.info { background: var(--color-primary-soft); color: var(--color-primary-hover); }
+
+/* Deal van de dag (hero) */
+.deal-hero { background: #fff; border: 1px solid var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent), var(--shadow-lift); border-radius: 18px;
+  padding: 22px 24px; display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center;
+  margin-bottom: 30px; }
+.dhero__city { font-family: var(--font-head); font-weight: 700; font-size: 22px; color: var(--color-ink); margin: 2px 0 6px; }
+.dhero__meta { font-size: 14px; color: var(--color-muted); }
+.dhero__nudge { margin: 12px 0 0; font-size: 13.5px; }
+.dhero__nudge a { color: var(--color-primary-hover); font-weight: 500; }
+.dhero__right { text-align: right; min-width: 190px; }
+.dhero__price { font-family: var(--font-head); font-weight: 700; font-size: 50px; color: var(--color-ink); line-height: 1; }
+.dhero__right .btn { margin-top: 12px; }
+
+/* Sorteer/filter-balk */
+.filterbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 0 0 18px; }
+.filterbar select { width: auto; padding: 9px 12px; font-size: 14px; }
+.sortseg { display: inline-flex; background: #fff; border: 1px solid var(--color-border); border-radius: var(--r-pill); padding: 3px; }
+.sortseg span { padding: 7px 13px; font-size: 13px; border-radius: var(--r-pill); color: var(--color-body);
+  cursor: pointer; user-select: none; transition: background .15s var(--ease), color .15s var(--ease); }
+.sortseg span.on { background: var(--color-accent); color: var(--color-ink); font-weight: 600; }
+.filter-count { font-size: 13px; color: var(--color-muted); }
+
+/* Deal-grid + kaarten */
+.deal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+.dcard { background: #fff; border: 1px solid var(--color-border); border-radius: 16px; box-shadow: var(--shadow-card);
+  padding: 18px; display: flex; flex-direction: column; }
+.dcard__top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.dcard__price { font-family: var(--font-head); font-weight: 700; font-size: 29px; color: var(--color-ink); }
+.dcard__city { font-family: var(--font-head); font-weight: 600; font-size: 15px; color: var(--color-ink); text-align: right; }
+.dcard__badges { margin-top: 10px; }
+.dcard__meta { font-size: 13px; color: var(--color-muted); margin-top: 8px; line-height: 1.6; }
+.dcard .btn { margin-top: 14px; }
+
+/* Prijsverloop-sparkline (premium) + slot (gratis = upsell) */
+.spark { display: flex; align-items: center; gap: 8px; margin-top: 12px; font-size: 12px; color: var(--color-muted); }
+.spark svg { flex: none; }
+.spark--building { font-style: italic; }
+.spark--locked { color: var(--color-primary-hover); font-weight: 600; }
+.spark--locked:hover { text-decoration: none; opacity: .85; }
+.spark--locked svg { opacity: .5; }
+
+/* Premium-upsell onderaan (waarde-gericht, niet schreeuwerig) */
+.upsell { margin-top: 30px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  justify-content: space-between; background: var(--color-surface); border: 1px solid var(--color-border);
+  border-radius: var(--r-card); padding: 18px 22px; }
+.upsell strong { font-family: var(--font-head); }
+
+@media (max-width: 720px) {
+  .dash-metrics { grid-template-columns: 1fr 1fr; }
+  .deal-hero { grid-template-columns: 1fr; }
+  .dhero__right { text-align: left; }
+}

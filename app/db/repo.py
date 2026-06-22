@@ -268,6 +268,43 @@ def price_baselines(
     return out
 
 
+def price_series(
+    session: Session,
+    fingerprints,
+    *,
+    today: datetime.date,
+    window_days: int = 90,
+) -> dict[tuple[str, str, str, int], list[float]]:
+    """Per route-fingerprint de prijswaarnemingen (oplopend op datum) voor een sparkline.
+
+    Inclusief vandaag (de grafiek toont het verloop t/m nu). Routes zonder historie ontbreken.
+    """
+    fps = {tuple(fp) for fp in fingerprints}
+    if not fps:
+        return {}
+    since = today - datetime.timedelta(days=window_days)
+    origins = {o for _, o, _, _ in fps}
+    dests = {d for _, _, d, _ in fps}
+    rows = session.execute(
+        select(
+            DealPricePoint.provider, DealPricePoint.origin, DealPricePoint.destination,
+            DealPricePoint.nights, DealPricePoint.total_price,
+        )
+        .where(
+            DealPricePoint.observed_on >= since,
+            DealPricePoint.origin.in_(origins),
+            DealPricePoint.destination.in_(dests),
+        )
+        .order_by(DealPricePoint.observed_on)
+    ).all()
+    out: dict[tuple[str, str, str, int], list[float]] = {}
+    for r in rows:
+        key = (r.provider, r.origin, r.destination, r.nights)
+        if key in fps:
+            out.setdefault(key, []).append(float(r.total_price))
+    return out
+
+
 def airport_display(session: Session, iatas) -> dict[str, dict]:
     """IATA → {name, city, country} voor leesbare alerts (stad valt terug op luchthavennaam)."""
     iatas = list(iatas)

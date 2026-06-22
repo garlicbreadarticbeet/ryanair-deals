@@ -93,16 +93,19 @@ def test_dashboard_prompts_without_origins(db, client, make_user):
 
 
 def test_dashboard_lists_matching_deals(db, client, make_user):
-    user = make_user(origins=["EIN"], threshold=50)
+    user = make_user(origins=["EIN"], threshold=80)   # free
     _login(client, db, user)
-    db.add(Deal(provider="ryanair", origin="EIN", destination="BCN", nights=3,
-                out_date=datetime.date(2026, 8, 1), in_date=datetime.date(2026, 8, 4),
-                out_price=Decimal("20"), in_price=Decimal("15"),
-                total_price=Decimal("35"), currency="EUR"))
+    for dest, total in (("BCN", "35"), ("AGP", "45")):
+        db.add(Deal(provider="ryanair", origin="EIN", destination=dest, nights=3,
+                    out_date=datetime.date(2026, 8, 1), in_date=datetime.date(2026, 8, 4),
+                    out_price=Decimal("20"), in_price=Decimal("15"),
+                    total_price=Decimal(total), currency="EUR"))
     db.flush()
     resp = client.get("/dashboard")
-    assert "EIN ⇄ BCN" in resp.text
-    assert "35.00" in resp.text
+    assert resp.status_code == 200
+    assert "Barcelona" in resp.text and "Málaga" in resp.text   # stadsnamen i.p.v. IATA
+    assert "€35" in resp.text                                    # NL-prijsnotatie
+    assert "Prijsverloop met Premium" in resp.text               # premium-slot voor gratis gebruiker
 
 
 def test_preferences_get_and_save_premium(db, client, make_user):
