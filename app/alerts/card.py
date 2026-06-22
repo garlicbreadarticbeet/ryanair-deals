@@ -94,19 +94,17 @@ def _fonts() -> dict | None:
 
 
 def _logo_mark(draw, x: int, y: int, size: int = 52) -> None:
-    """Een vereenvoudigde merk-mark: blauw afgerond vierkant + wit vliegtuigje + amber 'ping'."""
-    draw.rounded_rectangle([x, y, x + size, y + size], radius=size // 4, fill=_BLUE)
+    """Merk-mark (variant A): blauw afgerond vierkant + wit vliegtuigje + amber ping aan de neus."""
     s = size
-    # Wit paper-plane-achtig driehoekje.
-    draw.polygon(
-        [(x + s * 0.22, y + s * 0.58), (x + s * 0.80, y + s * 0.26),
-         (x + s * 0.46, y + s * 0.74), (x + s * 0.40, y + s * 0.56)],
-        fill=_WHITE,
-    )
-    # Amber 'seintje'-stip rechtsboven.
-    r = s * 0.12
-    cx, cy = x + s * 0.80, y + s * 0.26
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], fill=_AMBER)
+    draw.rounded_rectangle([x, y, x + s, y + s], radius=round(s * 0.25), fill=_BLUE)
+    # Vliegtuigje: witte bovenkant + lichtblauwe vouw (zelfde geometrie als het SVG-logo).
+    nose = (x + 0.760 * s, y + 0.240 * s)
+    draw.polygon([(x + 0.240 * s, y + 0.422 * s), nose, (x + 0.474 * s, y + 0.526 * s)], fill=_WHITE)
+    draw.polygon([nose, (x + 0.578 * s, y + 0.760 * s), (x + 0.474 * s, y + 0.526 * s)], fill=_BLUE_SOFT)
+    # Amber ping aan de neus (met dunne blauwe rand zodat 'ie loskomt van het witte vliegtuig).
+    r = 0.092 * s
+    draw.ellipse([nose[0] - r, nose[1] - r, nose[0] + r, nose[1] + r],
+                 fill=_AMBER, outline=_BLUE, width=max(1, round(s * 0.03)))
 
 
 def _truncate(draw, text: str, font, max_w: int) -> str:
