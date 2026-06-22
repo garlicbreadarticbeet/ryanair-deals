@@ -136,11 +136,16 @@ def _email_shell(rows_html: str, *, intro: str | None = None, footer_html: str |
         if intro else ""
     )
     footer = footer_html or f"{html.escape(settings.brand_name)} · {html.escape(settings.brand_tagline)}"
+    banner = (
+        f'<tr><td style="padding:0;line-height:0;"><img src="{settings.app_base_url}/static/img/email-banner.jpg" '
+        f'width="600" alt="" style="display:block;width:100%;max-width:600px;border-radius:14px 14px 0 0;"></td></tr>'
+    )
     return (
         f'<div style="background:{_SURFACE};padding:24px 0;font-family:{_FONT};">'
         f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">'
         f'<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:92%;">'
-        f'<tr><td style="background:{_BLUE};border-radius:14px;padding:22px 24px;">'
+        f"{banner}"
+        f'<tr><td style="background:{_BLUE};border-radius:0 0 14px 14px;padding:22px 24px;">'
         f'<div style="font:800 22px {_FONT};color:#ffffff;">✈️ {html.escape(settings.brand_name)}</div>'
         f"{intro_row}</td></tr>"
         f'<tr><td style="height:18px;line-height:18px;">&nbsp;</td></tr>'

@@ -3,6 +3,7 @@ title: Wanneer zijn vliegtickets het goedkoopst? Boekmoment, dag en seizoen op e
 excerpt: Wanneer boek je een retour het slimst? Een nuchtere kijk op boekmoment, dag van de week, seizoen en flexibiliteit.
 date: 2026-06-19
 tags: goedkoop vliegen, boekmoment, retourvluchten, reistips
+image: blog/wanneer-zijn-vliegtickets-het-goedkoopst.webp
 ---
 
 "Wanneer zijn vliegtickets nou écht het goedkoopst?" Het eerlijke antwoord: er is geen magische dag waarop alles ineens halve prijs wordt. Maar er zijn wél patronen die je in je voordeel kunt gebruiken. We zetten ze op een rij — boekmoment, dag van de week, seizoen en flexibiliteit — zodat je weet waar je op moet letten.

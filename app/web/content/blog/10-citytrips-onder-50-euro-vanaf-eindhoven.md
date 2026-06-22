@@ -3,6 +3,7 @@ title: 10 citytrips onder 50 euro retour vanaf Eindhoven en Weeze
 excerpt: Tien Europese steden die je vanaf Eindhoven of Weeze voor minder dan 50 euro retour kunt doen — als je flexibel bent.
 date: 2026-04-14
 tags: citytrips, eindhoven, weeze, goedkoop vliegen
+image: blog/10-citytrips-onder-50-euro-vanaf-eindhoven.webp
 ---
 
 Een weekend weg voor minder dan een avondje uit eten met z'n tweeën? Dat kan vaker dan je denkt. Vanaf **Eindhoven Airport** en het Duitse **Weeze** (Niederrhein, net over de grens bij Venlo) vertrekken dagelijks prijsvechters naar tientallen Europese steden. En als je niet vastzit aan één specifieke datum, duiken de prijzen geregeld onder de 50 euro — voor de hele retour.

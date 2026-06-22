@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% from "_destcard.html" import destcard with context %}
 {% block title %}{{ settings.brand_name }} — {{ settings.brand_tagline }}{% endblock %}
 {% block meta_description %}Stel je vertrekvelden en je maximumprijs in. {{ settings.brand_name }} scant elke dag de prijsvechters en geeft je een seintje zodra er een retour onder jouw drempel duikt — via Telegram of e-mail.{% endblock %}
 
@@ -91,20 +92,8 @@
       <h2>Zulke retours komen voorbij</h2>
       <p class="sub">Voorbeelden van citytrips vanaf NL/BE-velden. Prijzen kunnen wijzigen — wij houden ze voor je in de gaten.</p>
     </div>
-    <div class="grid cols-3 reveal-group">
-      {% for d in deals %}
-      <div class="deal-card signature">
-        <div class="deal-card__top">
-          <span class="deal-card__route">{{ origin_names.get(d.origin, d.origin) }} → {{ d.city }}</span>
-          <span class="deal-card__price">€{{ d.price }}</span>
-        </div>
-        <p class="deal-card__meta">{{ d.nights }} nachten · {{ d.airline }} · retour</p>
-        <div class="deal-card__foot">
-          <span class="tag">voorbeeld</span>
-          <span class="muted" style="font-size:13px">{{ d.country }}</span>
-        </div>
-      </div>
-      {% endfor %}
+    <div class="dest-grid reveal-group">
+      {% for d in deals %}{{ destcard(d) }}{% endfor %}
     </div>
     <div class="center" style="margin-top:32px">
       <a class="btn ghost" href="/bestemmingen">Bekijk meer bestemmingen</a>

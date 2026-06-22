@@ -1,0 +1,24 @@
+{% macro destcard(d) %}
+<div class="dest-card">
+  <div class="dest-card__img">
+    <img src="/static/img/{{ d.image }}" alt="{{ d.city }}, {{ d.country }}" loading="lazy" decoding="async">
+  </div>
+  <div class="dest-card__body">
+    <div class="dest-card__head">
+      <div>
+        <div class="city">{{ d.city }}</div>
+        <div class="country">{{ d.country }}</div>
+      </div>
+      <div class="dest-card__price">
+        <div class="pricelabel">€{{ d.price }}</div>
+        <div class="muted" style="font-size:12px">retour</div>
+      </div>
+    </div>
+    {% if d.blurb %}<p class="dest-card__blurb">{{ d.blurb }}</p>{% endif %}
+    <div class="dest-card__foot">
+      <span class="tag">{{ origin_names.get(d.origin, d.origin) }} → {{ d.iata_to }}</span>
+      <span class="muted" style="font-size:13px">{{ d.nights }} nachten · {{ d.airline }}</span>
+    </div>
+  </div>
+</div>
+{% endmacro %}

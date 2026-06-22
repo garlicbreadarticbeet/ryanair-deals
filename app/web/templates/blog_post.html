@@ -23,6 +23,7 @@
     <div class="tag-row" style="margin-bottom:24px">
       {% for t in post.tags %}<span class="tag">{{ t }}</span>{% endfor %}
     </div>
+    {% if post.image %}<img class="blog-hero" src="/static/img/{{ post.image }}" alt="{{ post.title }}" decoding="async">{% endif %}
     {{ post.html | safe }}
     <hr class="soft">
     <div class="cta-row">

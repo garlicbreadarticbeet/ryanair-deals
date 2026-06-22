@@ -8,7 +8,8 @@
       "price": 39,
       "nights": 5,
       "airline": "Ryanair",
-      "blurb": "Tramlijn 28, pastel de nata en uitzicht over de Taag — een zonzekere klassieker voor een lang weekend."
+      "blurb": "Tramlijn 28, pastel de nata en uitzicht over de Taag — een zonzekere klassieker voor een lang weekend.",
+      "image": "dest/lis.webp"
     },
     {
       "city": "Barcelona",
@@ -18,7 +19,8 @@
       "price": 34,
       "nights": 3,
       "airline": "Ryanair",
-      "blurb": "Gaudí, tapas en strand binnen handbereik; ideaal voor een korte stedentrip met zon erbij."
+      "blurb": "Gaudí, tapas en strand binnen handbereik; ideaal voor een korte stedentrip met zon erbij.",
+      "image": "dest/bcn.webp"
     },
     {
       "city": "Porto",
@@ -28,7 +30,8 @@
       "price": 32,
       "nights": 3,
       "airline": "Ryanair",
-      "blurb": "Port proeven aan de Douro en dwalen door de Ribeira — compact, goedkoop en sfeervol."
+      "blurb": "Port proeven aan de Douro en dwalen door de Ribeira — compact, goedkoop en sfeervol.",
+      "image": "dest/opo.webp"
     },
     {
       "city": "Praag",
@@ -38,7 +41,8 @@
       "price": 29,
       "nights": 3,
       "airline": "Ryanair",
-      "blurb": "Goedkoop bier, gotische torens en de Karelsbrug bij zonsopkomst; prima voor een eerste citytrip."
+      "blurb": "Goedkoop bier, gotische torens en de Karelsbrug bij zonsopkomst; prima voor een eerste citytrip.",
+      "image": "dest/prg.webp"
     },
     {
       "city": "Boedapest",
@@ -48,7 +52,8 @@
       "price": 37,
       "nights": 5,
       "airline": "Wizz Air",
-      "blurb": "Thermale baden, ruïnebars en uitzicht vanaf de burcht — veel stad voor weinig geld."
+      "blurb": "Thermale baden, ruïnebars en uitzicht vanaf de burcht — veel stad voor weinig geld.",
+      "image": "dest/bud.webp"
     },
     {
       "city": "Wenen",
@@ -58,7 +63,8 @@
       "price": 41,
       "nights": 3,
       "airline": "Wizz Air",
-      "blurb": "Koffiehuizen, Sachertorte en keizerlijke paleizen; klassiek en goed te belopen in drie dagen."
+      "blurb": "Koffiehuizen, Sachertorte en keizerlijke paleizen; klassiek en goed te belopen in drie dagen.",
+      "image": "dest/vie.webp"
     },
     {
       "city": "Krakau",
@@ -68,7 +74,8 @@
       "price": 28,
       "nights": 5,
       "airline": "Wizz Air",
-      "blurb": "Een van de goedkoopste citytrips van Europa: middeleeuws marktplein, joods erfgoed en stevige zlotykoersen."
+      "blurb": "Een van de goedkoopste citytrips van Europa: middeleeuws marktplein, joods erfgoed en stevige zlotykoersen.",
+      "image": "dest/krk.webp"
     },
     {
       "city": "Malaga",
@@ -78,7 +85,8 @@
       "price": 45,
       "nights": 5,
       "airline": "Ryanair",
-      "blurb": "Poort naar de Costa del Sol: tapas, Picasso en bijna altijd zon — fijn voor wie strand en stad wil combineren."
+      "blurb": "Poort naar de Costa del Sol: tapas, Picasso en bijna altijd zon — fijn voor wie strand en stad wil combineren.",
+      "image": "dest/agp.webp"
     },
     {
       "city": "Alicante",
@@ -88,7 +96,8 @@
       "price": 36,
       "nights": 7,
       "airline": "Ryanair",
-      "blurb": "Boulevard, kasteel op de heuvel en zon tot in het najaar; geschikt voor een wat langere ontspanweek."
+      "blurb": "Boulevard, kasteel op de heuvel en zon tot in het najaar; geschikt voor een wat langere ontspanweek.",
+      "image": "dest/alc.webp"
     },
     {
       "city": "Faro",
@@ -98,7 +107,8 @@
       "price": 42,
       "nights": 7,
       "airline": "Ryanair",
-      "blurb": "Uitvalsbasis voor de Algarve-stranden, met een rustige oude stad als thuishaven; prettig voor een week zon."
+      "blurb": "Uitvalsbasis voor de Algarve-stranden, met een rustige oude stad als thuishaven; prettig voor een week zon.",
+      "image": "dest/fao.webp"
     },
     {
       "city": "Bologna",
@@ -108,7 +118,8 @@
       "price": 35,
       "nights": 3,
       "airline": "Ryanair",
-      "blurb": "Pasta aan de bron, porticos en een centrum dat je lopend afdoet — een culinaire stedentrip zonder toeristendrukte."
+      "blurb": "Pasta aan de bron, porticos en een centrum dat je lopend afdoet — een culinaire stedentrip zonder toeristendrukte.",
+      "image": "dest/blq.webp"
     },
     {
       "city": "Sevilla",
@@ -118,7 +129,8 @@
       "price": 38,
       "nights": 5,
       "airline": "Ryanair",
-      "blurb": "Flamenco, sinaasappelbomen en het Alcázar-paleis; warm en fotogeniek, ideaal in lente of najaar."
+      "blurb": "Flamenco, sinaasappelbomen en het Alcázar-paleis; warm en fotogeniek, ideaal in lente of najaar.",
+      "image": "dest/svq.webp"
     },
     {
       "city": "Boekarest",
@@ -128,7 +140,8 @@
       "price": 31,
       "nights": 5,
       "airline": "Wizz Air",
-      "blurb": "Onderschatte hoofdstad met brede boulevards, lage prijzen en een levendig oud centrum."
+      "blurb": "Onderschatte hoofdstad met brede boulevards, lage prijzen en een levendig oud centrum.",
+      "image": "dest/otp.webp"
     },
     {
       "city": "Rome",
@@ -138,7 +151,8 @@
       "price": 44,
       "nights": 3,
       "airline": "Ryanair",
-      "blurb": "Colosseum, gelato en eindeloos slenteren door de eeuwige stad; perfect voor een vol en kort weekend."
+      "blurb": "Colosseum, gelato en eindeloos slenteren door de eeuwige stad; perfect voor een vol en kort weekend.",
+      "image": "dest/cia.webp"
     }
   ]
 }

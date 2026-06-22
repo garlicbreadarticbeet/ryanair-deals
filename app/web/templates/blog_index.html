@@ -12,12 +12,19 @@
     <div class="grid cols-3" style="margin-top:32px">
       {% for post in posts %}
       <article class="card blog-card">
-        <div class="tag-row">
-          {% for t in post.tags[:2] %}<span class="tag">{{ t }}</span>{% endfor %}
+        {% if post.image %}
+        <a href="/blog/{{ post.slug }}" class="blog-card__img">
+          <img src="/static/img/{{ post.image }}" alt="{{ post.title }}" loading="lazy" decoding="async">
+        </a>
+        {% endif %}
+        <div class="blog-card__body">
+          <div class="tag-row">
+            {% for t in post.tags[:2] %}<span class="tag">{{ t }}</span>{% endfor %}
+          </div>
+          <h3><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h3>
+          <p class="muted">{{ post.excerpt }}</p>
+          <p class="meta">{{ post.date_label }}</p>
         </div>
-        <h3><a href="/blog/{{ post.slug }}">{{ post.title }}</a></h3>
-        <p class="muted">{{ post.excerpt }}</p>
-        <p class="meta">{{ post.date_label }}</p>
       </article>
       {% endfor %}
     </div>

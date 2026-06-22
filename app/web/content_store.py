@@ -59,6 +59,7 @@ class BlogPost:
     date: datetime.date
     tags: tuple[str, ...]
     html: str = ""
+    image: str = ""           # optionele header-afbeelding (pad onder static/img/)
 
     @property
     def date_label(self) -> str:
@@ -102,6 +103,7 @@ def blog_index() -> list[BlogPost]:
         posts.append(BlogPost(
             slug=path.stem, title=meta.get("title", path.stem),
             excerpt=meta.get("excerpt", ""), date=date, tags=tags,
+            image=meta.get("image", ""),
         ))
     return sorted(posts, key=lambda p: p.date, reverse=True)
 
@@ -120,7 +122,7 @@ def blog_post(slug: str) -> BlogPost | None:
     tags = tuple(t.strip() for t in meta.get("tags", "").split(",") if t.strip())
     return BlogPost(
         slug=slug, title=meta.get("title", slug), excerpt=meta.get("excerpt", ""),
-        date=date, tags=tags, html=_render_md(body),
+        date=date, tags=tags, html=_render_md(body), image=meta.get("image", ""),
     )
 
 

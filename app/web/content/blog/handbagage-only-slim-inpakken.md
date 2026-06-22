@@ -3,6 +3,7 @@ title: Handbagage-only slim inpakken bij prijsvechters: zo bespaar je op bagaget
 excerpt: Met alleen handbagage vlieg je bij Ryanair en Wizz Air het goedkoopst. Zo pak je slim in en ontloop je de toeslagen.
 date: 2026-06-19
 tags: handbagage, ryanair, wizz-air, bespaartips
+image: blog/handbagage-only-slim-inpakken.webp
 ---
 
 Je vindt een retour van een paar tientjes, klikt door naar de prijsvechter en plots staat er een bagagetoeslag bij die net zoveel kost als de vlucht zelf. Dat voelt zuur. De oplossing is simpel: reis met alleen handbagage. Dan betaal je voor je tas niets extra, en blijft de prijs die je zag ook de prijs die je betaalt. In deze gids lees je de bagageregels van Ryanair en Wizz Air, en hoe je slim genoeg inpakt om een weekend of korte citytrip te overleven met één tas onder de stoel.
