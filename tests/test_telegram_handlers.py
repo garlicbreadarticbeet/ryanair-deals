@@ -63,13 +63,13 @@ def test_deals_reads_from_db_and_filters(db):
     th.handle_command(db, 666, "/origins EIN")
     th.handle_command(db, 666, "/drempel 50")
 
-    # Origins worden via /origins onder de default-provider gekoppeld (travelpayouts);
+    # Origins worden via /origins onder de default-provider gekoppeld (ryanair);
     # de deals matchen daarom op diezelfde provider.
-    db.add(Deal(provider="travelpayouts", origin="EIN", destination="BCN", nights=3,
+    db.add(Deal(provider="ryanair", origin="EIN", destination="BCN", nights=3,
                 out_date=datetime.date(2026, 8, 1), in_date=datetime.date(2026, 8, 4),
                 out_price=Decimal("20.00"), in_price=Decimal("15.00"),
                 total_price=Decimal("35.00"), currency="EUR"))
-    db.add(Deal(provider="travelpayouts", origin="EIN", destination="AGP", nights=3,
+    db.add(Deal(provider="ryanair", origin="EIN", destination="AGP", nights=3,
                 out_date=datetime.date(2026, 8, 1), in_date=datetime.date(2026, 8, 4),
                 out_price=Decimal("60.00"), in_price=Decimal("60.00"),
                 total_price=Decimal("120.00"), currency="EUR"))

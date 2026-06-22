@@ -105,3 +105,13 @@ def test_discover_routes_tolerant_on_error():
 
     prov._api = SimpleNamespace(get_cheapest_flights=_boom)
     assert list(prov.discover_routes(["EIN"], datetime.date(2026, 6, 16), datetime.date(2026, 9, 16))) == []
+
+
+def test_booking_url_and_airline_name():
+    prov = _provider_without_network()
+    assert prov.airline_name == "Ryanair"
+    url = prov.booking_url("EIN", "BCN", datetime.date(2026, 8, 19), datetime.date(2026, 8, 22))
+    assert url.startswith("https://www.ryanair.com/")
+    assert "originIata=EIN" in url and "destinationIata=BCN" in url
+    assert "dateOut=2026-08-19" in url and "dateIn=2026-08-22" in url
+    assert "isReturn=true" in url

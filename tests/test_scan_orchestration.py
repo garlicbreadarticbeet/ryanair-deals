@@ -18,6 +18,7 @@ IN_DAY = OUT_DAY + datetime.timedelta(days=3)
 
 class _FakeProvider:
     code = "ryanair"
+    airline_name = "Ryanair"
 
     def discover_routes(self, origins, date_from, date_to, destination_country=None):
         assert "EIN" in origins
@@ -29,6 +30,9 @@ class _FakeProvider:
         if (origin, destination) == ("BCN", "EIN"):
             return [DailyFare("ryanair", "BCN", "EIN", IN_DAY, 15.0, currency)]
         return []
+
+    def booking_url(self, origin, destination, out_date, in_date):
+        return f"https://book.example/{origin}-{destination}-{out_date}-{in_date}"
 
 
 def test_run_scan_finds_and_persists_deal(db, make_user, monkeypatch):
@@ -42,12 +46,16 @@ def test_run_scan_finds_and_persists_deal(db, make_user, monkeypatch):
     assert len(combo) == 1
     assert combo[0].total == 35.0
     assert combo[0].out_date == OUT_DAY and combo[0].in_date == IN_DAY
+    # boekingslink + airline-naam van de provider zijn aan de deal gehangen
+    assert combo[0].airline == "Ryanair"
+    assert combo[0].deeplink == f"https://book.example/EIN-BCN-{OUT_DAY}-{IN_DAY}"
 
     row = db.execute(
         select(Deal).where(Deal.origin == "EIN", Deal.destination == "BCN", Deal.nights == 3)
     ).scalar_one()
     assert float(row.total_price) == 35.0
     assert row.currency == "EUR"
+    assert row.airline == "Ryanair" and row.deeplink.startswith("https://book.example/")
 
 
 def test_run_scan_empty_when_no_users(db, monkeypatch):

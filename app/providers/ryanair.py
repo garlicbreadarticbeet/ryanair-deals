@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Iterable, Sequence
+from urllib.parse import urlencode
 
 from ryanair import Ryanair
 
@@ -19,6 +20,7 @@ from app.providers.registry import register
 from app.settings import settings
 
 _FARE_BASE = "https://services-api.ryanair.com/farfnd/v4/oneWayFares"
+_BOOKING_BASE = "https://www.ryanair.com/nl/nl/trip/flights/select"
 
 
 @register
@@ -26,6 +28,22 @@ class RyanairProvider:
     """Adapter voor Ryanair (provider-code 'ryanair')."""
 
     code = "ryanair"
+    airline_name = "Ryanair"  # leesbare naam voor de alert (DailyFare-pad levert die niet)
+
+    def booking_url(
+        self,
+        origin: str,
+        destination: str,
+        out_date: datetime.date,
+        in_date: datetime.date,
+    ) -> str:
+        """Directe Ryanair.com-boekingslink voor deze retour (route + datums vooringevuld)."""
+        return f"{_BOOKING_BASE}?" + urlencode({
+            "adults": 1, "teens": 0, "children": 0, "infants": 0,
+            "dateOut": out_date.isoformat(), "dateIn": in_date.isoformat(),
+            "isConnectedFlight": "false", "isReturn": "true", "discount": 0,
+            "originIata": origin, "destinationIata": destination,
+        })
 
     def __init__(self) -> None:
         # Fase 1 is EUR-only; ryanair-py wil de valuta bij constructie weten.

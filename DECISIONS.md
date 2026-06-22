@@ -134,3 +134,25 @@ merkkleuren). Bewust buiten `core/` (UI/merk) en buiten `channels/` (kanaal-agno
 HTML/tekst zonder beeld (nooit een harde fout op een alert). Geen emoji in het beeld (Latijnse
 fonts) — de punch komt van kleur, de grote prijs en de amber pill. Per run capt de dispatcher
 op **12** deals zodat het een gerichte "top-deals"-melding blijft; de rest volgt een volgende run.
+
+## D12 — Databron: terug naar Ryanair-direct (cheapestPerDay), Travelpayouts als latere optie
+**Herziening van D8.** D8 koos de Travelpayouts cached Data API als startbron (gratis, dekt
+Ryanair + Wizz, levert affiliate-deeplinks). In de praktijk bleken die prijzen **te zwak**: een
+live vergelijking op de productieserver (20-06-2026, vertrekveld EIN) gaf via Travelpayouts een
+goedkoopste retour van **€96** (gemiddeld €166), terwijl **Ryanair's eigen `cheapestPerDay`**
+(via de bestaande `app/providers/ryanair.py`-adapter, ryanair-py) op dezelfde server **€37**
+(Londen), €54 (Reus), €57 (Pisa) vond. De cache is geaggregeerd/verouderd; geen enkele 3rd-party
+cache verslaat de airline-bron zelf. Een prijs-alert-product staat of valt met scherpe deals.
+
+**Besluit:** Ryanair-direct wordt de **productiebron** (`DEFAULT_ORIGIN_PROVIDER=ryanair`).
+Ryanair's API werkt prima vanaf de Hetzner-server (geen IP-blokkade — getest, 38 routes vanaf
+EIN). De boekknop linkt **rechtstreeks naar ryanair.com** (de adapter bouwt een deeplink met
+route + datums + retour vooringevuld via `booking_url`), zodat de getoonde prijs en de
+landingspagina kloppen — **eerlijk en transparant**, conform de merkstem. Geen
+affiliate-commissie voor nu: het verdienmodel is **premium-abonnementen** (D10), en commissie op
+zwakke deals die niemand boekt is ~€0 waard.
+
+De **Travelpayouts-adapter blijft bestaan** (selecteerbaar via `DEFAULT_ORIGIN_PROVIDER`/per
+origin) als latere optie voor **Wizz-dekking + affiliate** waar die wél scherp is — een
+mogelijke fase-2-uitbreiding (beide bronnen combineren). De scan-architectuur (provider-registry,
+DailyFare- vs ReturnFare-pad) maakt zo'n omschakeling een config-/datakwestie, geen herbouw.

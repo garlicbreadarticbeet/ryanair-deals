@@ -8,6 +8,7 @@ Eén scan i.p.v. één per gebruiker: dezelfde route wordt maar één keer bij d
 """
 from __future__ import annotations
 
+import dataclasses
 import datetime
 from concurrent.futures import ThreadPoolExecutor
 
@@ -66,9 +67,30 @@ def run_scan(session: Session, today: datetime.date | None = None) -> list[Retur
         with ThreadPoolExecutor(max_workers=settings.concurrency) as pool:
             for deals in pool.map(_fetch, routes):
                 for d in deals:
+                    d = _with_booking(provider, d)
                     _persist(session, d, today)
                     all_deals.append(d)
     return all_deals
+
+
+def _with_booking(provider, d: ReturnDeal) -> ReturnDeal:
+    """Verrijk een DailyFare-pad-deal met de boekingslink + airline-naam van de provider.
+
+    Duck-typed en provider-agnostisch (geen maatschappijnaam hier): een provider die deze
+    capability biedt, levert ``booking_url(origin, dest, out_date, in_date)`` en/of
+    ``airline_name``. Bronnen die het niet bieden laten de deal ongemoeid.
+    """
+    url = None
+    builder = getattr(provider, "booking_url", None)
+    if callable(builder):
+        try:
+            url = builder(d.origin, d.destination, d.out_date, d.in_date)
+        except Exception:  # noqa: BLE001 — een kapotte link mag de scan niet stoppen
+            url = None
+    airline = getattr(provider, "airline_name", None)
+    if url or airline:
+        return dataclasses.replace(d, deeplink=url or d.deeplink, airline=airline or d.airline)
+    return d
 
 
 def _returnfare_to_deal(rf) -> ReturnDeal:
