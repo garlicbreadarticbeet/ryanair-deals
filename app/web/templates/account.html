@@ -27,9 +27,9 @@
   {% else %}
     <div class="plan-card featured">
       <span class="badge premium">Upgrade naar Premium</span>
-      <form method="post" action="/upgrade" class="plan-pick">
-        <input class="plan-radio" type="radio" id="plan-annual" name="plan" value="annual" checked>
-        <input class="plan-radio" type="radio" id="plan-monthly" name="plan" value="monthly">
+      <form id="upgradeForm" method="post" action="/upgrade" class="plan-pick">
+        <input class="plan-radio" type="radio" id="plan-annual" name="plan" value="annual" {{ '' if start_checkout == 'monthly' else 'checked' }}>
+        <input class="plan-radio" type="radio" id="plan-monthly" name="plan" value="monthly" {{ 'checked' if start_checkout == 'monthly' else '' }}>
         <div class="plan-toggle" role="group" aria-label="Kies je betaaltermijn">
           <label for="plan-annual">Jaarlijks · bespaar {{ pricing.saving_pct }}%</label>
           <label for="plan-monthly">Maandelijks</label>
@@ -61,4 +61,10 @@
     </form>
   </div>
 </div>
+
+{% if not is_premium %}
+  {% if start_checkout %}<span id="lsAuto" data-plan="{{ start_checkout }}" hidden></span>{% endif %}
+  <script src="https://app.lemonsqueezy.com/js/lemon.js" defer></script>
+  <script src="/static/checkout.js" defer></script>
+{% endif %}
 {% endblock %}

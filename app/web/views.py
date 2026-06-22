@@ -131,14 +131,12 @@ def verify(request: Request, token: str, db: Session = Depends(get_db)):
             link="/login", link_label="Opnieuw inloggen",
         )
     user, session_token = result
-    # Koos iemand in de onboarding voor Premium? Rond na bevestiging meteen de checkout af.
+    # Koos iemand in de onboarding voor Premium? Open de checkout als overlay op /account
+    # (met nette terugval naar de hosted checkout als JavaScript uit staat).
     dest = "/dashboard"
     plan_intent = request.cookies.get("vs_onboard_plan")
     if plan_intent in ("monthly", "annual") and user.tier != "premium":
-        try:
-            dest = billing.start_subscription_checkout(db, user, plan_intent)
-        except BillingError:
-            dest = "/account"
+        dest = f"/account?start={plan_intent}"
     response = RedirectResponse(dest, status_code=303)
     set_session_cookie(response, session_token)
     if plan_intent:
@@ -512,21 +510,21 @@ def channels_page(user=Depends(optional_web_user), db: Session = Depends(get_db)
 
 # ---------- account + billing ----------
 
-def _render_account(db, user, *, flash=None, flash_kind=None):
+def _render_account(db, user, *, flash=None, flash_kind=None, start_checkout=None):
     sub = db.execute(
         select(Subscription).where(Subscription.user_id == user.id)
     ).scalar_one_or_none()
     return render(
         "account.html", user=user, settings=settings, subscription=sub,
         is_premium=(user.tier == "premium"), pricing=settings.premium_pricing,
-        flash=flash, flash_kind=flash_kind, active="account",
+        flash=flash, flash_kind=flash_kind, start_checkout=start_checkout, active="account",
     )
 
 
 @router.get("/account", response_class=HTMLResponse)
 def account_page(
     user=Depends(optional_web_user), db: Session = Depends(get_db),
-    paid: str | None = None, canceled: str | None = None,
+    paid: str | None = None, canceled: str | None = None, start: str | None = None,
 ):
     if user is None:
         return RedirectResponse("/login", status_code=303)
@@ -539,11 +537,13 @@ def account_page(
             db, user, flash="Je Premium is opgezegd. Je houdt je toegang tot het einde van de "
             "lopende periode; daarna word je niet meer geïncasseerd.", flash_kind="ok",
         )
-    return _render_account(db, user)
+    # ?start=monthly|annual komt van de onboarding-premium-keuze: open de checkout-overlay.
+    return _render_account(db, user, start_checkout=start if start in ("monthly", "annual") else None)
 
 
 @router.post("/upgrade")
 def upgrade(user=Depends(optional_web_user), db: Session = Depends(get_db), plan: str = Form("annual")):
+    """No-JS-terugval: server-redirect naar de hosted checkout (de JS-overlay gebruikt /billing/checkout-url)."""
     if user is None:
         return RedirectResponse("/login", status_code=303)
     try:
@@ -551,6 +551,21 @@ def upgrade(user=Depends(optional_web_user), db: Session = Depends(get_db), plan
     except BillingError as exc:
         return _render_account(db, user, flash=str(exc), flash_kind="err")
     return RedirectResponse(url, status_code=303)
+
+
+@router.post("/billing/checkout-url")
+def billing_checkout_url(
+    user=Depends(optional_web_user), db: Session = Depends(get_db), plan: str = Form("annual"),
+):
+    """Geef de checkout-URL als JSON terug, voor de Lemon Squeezy-overlay op de eigen site."""
+    if user is None:
+        return JSONResponse({"error": "niet ingelogd"}, status_code=401)
+    plan = plan if plan in ("monthly", "annual") else "annual"
+    try:
+        url = billing.start_subscription_checkout(db, user, plan)
+    except BillingError as exc:
+        return JSONResponse({"error": str(exc)}, status_code=400)
+    return JSONResponse({"url": url})
 
 
 @router.get("/account/cancel", response_class=HTMLResponse)

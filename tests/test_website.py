@@ -361,3 +361,40 @@ def test_onboarding_does_not_mutate_existing_verified_account(client, db):
         select(UserOrigin.origin_iata).where(UserOrigin.user_id == owner.id)
     ).scalars().all()
     assert origins == ["AMS"]                               # NIET overschreven
+
+
+# ---------- checkout-overlay (Lemon Squeezy) ----------
+
+def _ls_env(monkeypatch):
+    import app.lemonsqueezy as ls
+    monkeypatch.setattr(settings, "billing_provider", "lemonsqueezy")
+    monkeypatch.setattr(settings, "lemonsqueezy_api_key", "k")
+    monkeypatch.setattr(settings, "lemonsqueezy_store_id", "1")
+    monkeypatch.setattr(settings, "lemonsqueezy_variant_annual", "v_year")
+    monkeypatch.setattr(settings, "lemonsqueezy_variant_monthly", "v_month")
+    monkeypatch.setattr(ls, "create_checkout", lambda **kw: "https://checkout.lemonsqueezy/xyz")
+
+
+def test_checkout_url_returns_json(db, client, make_user, monkeypatch):
+    _ls_env(monkeypatch)
+    _login(client, db, make_user(origins=["EIN"], tier="free"))
+    resp = client.post("/billing/checkout-url", data={"plan": "annual"})
+    assert resp.status_code == 200
+    assert resp.json()["url"] == "https://checkout.lemonsqueezy/xyz"
+
+
+def test_checkout_url_requires_login(client):
+    resp = client.post("/billing/checkout-url", data={"plan": "annual"})
+    assert resp.status_code == 401
+
+
+def test_account_start_triggers_overlay_autostart(db, client, make_user):
+    _login(client, db, make_user(origins=["EIN"], tier="free"))
+    body = client.get("/account?start=annual").text
+    assert 'id="lsAuto"' in body and 'data-plan="annual"' in body
+    assert "lemon.js" in body and "/static/checkout.js" in body
+
+
+def test_account_upgrade_form_has_id_for_overlay(db, client, make_user):
+    _login(client, db, make_user(origins=["EIN"], tier="free"))
+    assert 'id="upgradeForm"' in client.get("/account").text
