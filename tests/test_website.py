@@ -216,8 +216,23 @@ def test_cancel_downgrades_to_free(db, client, make_user, monkeypatch):
     _login(client, db, user)
 
     resp = client.post("/billing/cancel", follow_redirects=False)
-    assert resp.status_code == 303 and resp.headers["location"] == "/account"
+    assert resp.status_code == 303 and resp.headers["location"] == "/account?canceled=1"
     assert user.tier == "free"
+
+
+def test_cancel_confirm_page_shown_for_premium(db, client, make_user):
+    user = make_user(origins=["EIN"], tier="premium")
+    _login(client, db, user)
+    resp = client.get("/account/cancel")
+    assert resp.status_code == 200
+    assert "weet je het zeker" in resp.text.lower()
+    assert 'action="/billing/cancel"' in resp.text   # echte opzegging zit achter de bevestiging
+
+
+def test_cancel_confirm_redirects_free_user(db, client, make_user):
+    _login(client, db, make_user(origins=["EIN"], tier="free"))
+    resp = client.get("/account/cancel", follow_redirects=False)
+    assert resp.status_code == 303 and resp.headers["location"] == "/account"
 
 
 def test_account_delete_removes_user(db, client, make_user):

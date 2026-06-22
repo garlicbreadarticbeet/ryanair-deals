@@ -16,6 +16,7 @@ from app.settings import settings
 
 _BASE = "https://api.lemonsqueezy.com/v1"
 _MEDIA = "application/vnd.api+json"
+_BRAND_BUTTON = "#2563EB"   # Vliegseintje-primair: kleurt de checkout-knop/accenten in de huisstijl
 
 
 class LemonSqueezyError(Exception):
@@ -50,6 +51,9 @@ def create_checkout(
             "type": "checkouts",
             "attributes": {
                 "checkout_data": checkout_data,
+                # Huisstijl op de hosted checkout: merk-kleur op knop/accenten, licht thema.
+                # (Logo + achtergrond stel je in het LS-dashboard in onder Settings -> Design.)
+                "checkout_options": {"button_color": _BRAND_BUTTON, "dark": False},
                 "product_options": {"redirect_url": redirect_url},
             },
             "relationships": {

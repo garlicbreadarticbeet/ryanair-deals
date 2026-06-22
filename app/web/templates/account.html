@@ -6,6 +6,8 @@
   <p class="sub">Je gegevens, je abonnement en je privacy — op één plek.</p>
 </div>
 
+{% if flash %}<div class="flash {{ flash_kind or 'ok' }}" style="max-width:640px">{{ flash }}</div>{% endif %}
+
 <div class="stack" style="max-width:640px">
   <div class="card">
     <p>E-mail: <strong>{{ user.email or '—' }}</strong></p>
@@ -20,9 +22,7 @@
     <div class="card">
       <h3>Premium opzeggen</h3>
       <p class="muted">Je toegang stopt aan het einde van de periode en je wordt daarna niet meer geïncasseerd.</p>
-      <form method="post" action="/billing/cancel">
-        <button class="btn secondary" type="submit">Abonnement opzeggen</button>
-      </form>
+      <a class="btn secondary" href="/account/cancel">Abonnement opzeggen</a>
     </div>
   {% else %}
     <div class="plan-card featured">

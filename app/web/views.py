@@ -53,6 +53,9 @@ def airports_search(q: str = "", db: Session = Depends(get_db)):
 _BOARD_WIDTHS = {"from": 9, "to": 9, "price": 4, "nights": 2, "via": 3}
 _AIRLINE_TAG = {"Ryanair": "RYR", "Wizz Air": "W6"}
 
+_NL_MONTHS = ["", "januari", "februari", "maart", "april", "mei", "juni", "juli",
+              "augustus", "september", "oktober", "november", "december"]
+
 
 def _board_rows(destinations: list[dict]) -> list[dict]:
     """Bouw de bordrijen server-side: per cel een vaste-breedte glyph-string (zichtbaar bord,
@@ -521,12 +524,20 @@ def _render_account(db, user, *, flash=None, flash_kind=None):
 
 
 @router.get("/account", response_class=HTMLResponse)
-def account_page(user=Depends(optional_web_user), db: Session = Depends(get_db), paid: str | None = None):
+def account_page(
+    user=Depends(optional_web_user), db: Session = Depends(get_db),
+    paid: str | None = None, canceled: str | None = None,
+):
     if user is None:
         return RedirectResponse("/login", status_code=303)
     if paid == "1":
         return _render_account(
-            db, user, flash="Betaling ontvangen — je account wordt zo bijgewerkt.", flash_kind="ok"
+            db, user, flash="Betaling ontvangen, je account wordt zo bijgewerkt.", flash_kind="ok"
+        )
+    if canceled == "1":
+        return _render_account(
+            db, user, flash="Je Premium is opgezegd. Je houdt je toegang tot het einde van de "
+            "lopende periode; daarna word je niet meer geïncasseerd.", flash_kind="ok",
         )
     return _render_account(db, user)
 
@@ -542,12 +553,33 @@ def upgrade(user=Depends(optional_web_user), db: Session = Depends(get_db), plan
     return RedirectResponse(url, status_code=303)
 
 
+@router.get("/account/cancel", response_class=HTMLResponse)
+def cancel_confirm(user=Depends(optional_web_user), db: Session = Depends(get_db)):
+    """Bevestigingsstap vóór het opzeggen: laat de gevolgen zien i.p.v. direct te annuleren."""
+    if user is None:
+        return RedirectResponse("/login", status_code=303)
+    if user.tier != "premium":
+        return RedirectResponse("/account", status_code=303)
+    sub = db.execute(
+        select(Subscription).where(Subscription.user_id == user.id)
+    ).scalar_one_or_none()
+    period_end = None
+    if sub and sub.current_period_end:
+        d = sub.current_period_end
+        period_end = f"{d.day} {_NL_MONTHS[d.month]} {d.year}"
+    return render(
+        "cancel_confirm.html", user=user, settings=settings, subscription=sub,
+        period_end=period_end, pricing=settings.premium_pricing, active="account",
+    )
+
+
 @router.post("/billing/cancel")
 def billing_cancel_web(user=Depends(optional_web_user), db: Session = Depends(get_db)):
     if user is None:
         return RedirectResponse("/login", status_code=303)
-    billing.cancel_subscription(db, user)
-    return RedirectResponse("/account", status_code=303)
+    if user.tier == "premium":          # alleen opzeggen als er iets te annuleren valt
+        billing.cancel_subscription(db, user)
+    return RedirectResponse("/account?canceled=1", status_code=303)
 
 
 @router.post("/account/delete")

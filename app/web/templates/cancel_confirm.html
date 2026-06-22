@@ -1,0 +1,30 @@
+{% extends "app_base.html" %}
+{% block title %}Premium opzeggen — {{ settings.brand_name }}{% endblock %}
+{% block app %}
+<div class="section__head" style="margin-bottom:24px">
+  <h1>Weet je het zeker?</h1>
+  <p class="sub">Voordat je je Premium opzegt: dit verandert er.</p>
+</div>
+
+<div class="stack" style="max-width:560px">
+  <div class="card">
+    <p>{% if period_end %}Je houdt je <strong>Premium</strong> nog tot <strong>{{ period_end }}</strong>.
+       {% else %}Je houdt je <strong>Premium</strong> tot het einde van je lopende periode.{% endif %}
+       Daarna word je niet meer geïncasseerd en val je terug naar gratis.</p>
+    <p class="muted" style="margin:14px 0 6px">Na die datum verlies je:</p>
+    <ul style="margin:0; padding-left:20px; color:var(--color-muted); line-height:1.7">
+      <li><strong>Meteen</strong> een seintje (terug naar één keer per dag)</li>
+      <li><strong>Meerdere</strong> vertrekvelden (terug naar één)</li>
+      <li>Uitgebreide prijsgeschiedenis</li>
+    </ul>
+  </div>
+
+  <div class="cta-row">
+    <a class="btn" href="/account">Nee, ik hou mijn Premium</a>
+    <form method="post" action="/billing/cancel" style="display:contents">
+      <button class="btn secondary" type="submit">Ja, opzeggen</button>
+    </form>
+  </div>
+  <p class="help">Van gedachten veranderen kan altijd. Je kunt later opnieuw upgraden.</p>
+</div>
+{% endblock %}
