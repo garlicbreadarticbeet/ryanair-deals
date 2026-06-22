@@ -5,6 +5,7 @@ De website is de primaire interface; de JSON-API blijft bestaan voor programmati
 """
 from __future__ import annotations
 
+import mimetypes
 from pathlib import Path
 from urllib.parse import parse_qs
 
@@ -26,7 +27,9 @@ from app.web.templating import render
 
 app = FastAPI(title=settings.brand_name, version="0.3.0")
 
-# Static + server-rendered website.
+# Static + server-rendered website. Zorg dat WebP de juiste MIME-type krijgt (niet alle
+# omgevingen kennen .webp → anders octet-stream, wat caching/correctheid schaadt).
+mimetypes.add_type("image/webp", ".webp")
 _WEB_DIR = Path(__file__).resolve().parent
 app.mount("/static", StaticFiles(directory=str(_WEB_DIR / "static")), name="static")
 
