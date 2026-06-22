@@ -4,6 +4,7 @@ en cookie-sessies voor auth. De JSON-API in main.py blijft daarnaast bestaan.
 from __future__ import annotations
 
 import datetime
+import unicodedata
 
 from fastapi import APIRouter, Depends, Form
 from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
@@ -46,14 +47,49 @@ def airports_search(q: str = "", db: Session = Depends(get_db)):
     return JSONResponse(repo.search_airports(db, q))
 
 
+# Split-flap departure board (homepage-hero). Vaste tegelbreedtes per kolom zodat de
+# tegels uitlijnen en er geen layout shift optreedt tijdens het flippen.
+_BOARD_WIDTHS = {"from": 9, "to": 9, "price": 4, "nights": 2, "via": 3}
+_AIRLINE_TAG = {"Ryanair": "RYR", "Wizz Air": "W6"}
+
+
+def _board_rows(destinations: list[dict]) -> list[dict]:
+    """Bouw de bordrijen server-side: per cel een vaste-breedte glyph-string (zichtbaar bord,
+    ook zonder JS) plus een leesbare waarde voor screenreaders. Alle items vormen samen de
+    rotatie-pool voor de JS-animatie."""
+    names = content.ORIGIN_NAMES
+    rows: list[dict] = []
+    for d in destinations:
+        # NFC zodat één glyph = één code point (vaste-breedte tegels lijnen dan altijd uit).
+        origin = unicodedata.normalize("NFC", names.get(d["origin"], d["origin"]))
+        city = unicodedata.normalize("NFC", d["city"])
+        tiles = {
+            "from": origin.upper()[:9].ljust(9),
+            "to": city.upper()[:9].ljust(9),
+            "price": f"€{d['price']}"[:4].rjust(4),
+            "nights": f"{d['nights']}N"[:2].ljust(2),
+            "via": _AIRLINE_TAG.get(d["airline"], d["airline"][:3].upper()).ljust(3),
+        }
+        read = {
+            "from": origin,
+            "to": city,
+            "price": f"{d['price']} euro",
+            "nights": f"{d['nights']} nachten",
+            "via": d["airline"],
+        }
+        rows.append({"tiles": tiles, "read": read})
+    return rows
+
+
 @router.get("/", response_class=HTMLResponse)
 def landing(user=Depends(optional_web_user)):
     faq_groups = content.faq_groups()
     faq_preview = faq_groups[0]["items"][:4] if faq_groups else []
+    destinations = content.destinations()
     return render(
         "index.html", user=user, settings=settings,
-        deals=content.destinations()[:6], origin_names=content.ORIGIN_NAMES,
-        faq_preview=faq_preview,
+        deals=destinations[:6], board_rows=_board_rows(destinations),
+        origin_names=content.ORIGIN_NAMES, faq_preview=faq_preview,
     )
 
 

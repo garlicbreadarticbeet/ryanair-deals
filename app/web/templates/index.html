@@ -1,16 +1,18 @@
 {% extends "base.html" %}
 {% from "_destcard.html" import destcard with context %}
+{% macro flapcell(r, col) %}<td class="flap-cell flap-cell--{{ col }}" data-col="{{ col }}"><span class="flap-tiles" aria-hidden="true">{% for c in r.tiles[col] %}<span class="flap{% if c == ' ' %} is-blank{% endif %}">{{ c }}</span>{% endfor %}</span><span class="sr-only">{{ r.read[col] }}</span></td>{% endmacro %}
 {% block title %}{{ settings.brand_name }} — {{ settings.brand_tagline }}{% endblock %}
 {% block meta_description %}Stel je vertrekvelden en je maximumprijs in. {{ settings.brand_name }} scant elke dag de prijsvechters en geeft je een seintje zodra er een retour onder jouw drempel duikt — via Telegram of e-mail.{% endblock %}
 
 {% block content %}
 <!-- Hero -->
 <section class="hero">
+  <div class="hero__bg" aria-hidden="true" role="presentation"></div>
   <div class="container hero__grid">
     <div class="reveal">
       <h1>Goedkoop vliegen,<br>zonder zoeken.</h1>
-      <p class="lead">Stel je vertrekvelden en je maximumprijs in. Wij scannen dagelijks de
-        prijsvechters en sturen een seintje zodra een retour onder jouw drempel duikt.</p>
+      <p class="lead">Zulke retours komen voorbij. Stel je vertrekvelden en je maximumprijs in, en
+        wij geven je een seintje zodra zo'n deal onder jouw drempel duikt — via Telegram of e-mail.</p>
       <div class="cta-row">
         {% if user %}
           <a class="btn lg" href="/dashboard">Naar je deals</a>
@@ -25,26 +27,42 @@
       </p>
     </div>
 
-    <!-- Visual: voorbeeld-seintje als gelaagde kaartstapel -->
-    <div class="reveal">
-      <div class="hero__stack">
-        <div class="deal-card signature">
-          <div class="chat-line">
-            <span class="ping"><span class="ping__ring"></span><span class="ping__dot"></span></span>
-            Nieuw seintje · vandaag 07:00
+    <!-- Visual: split-flap vertrekbord met voorbeelddeals -->
+    <div class="reveal hero__board-col">
+      <div class="flap-wrap">
+        <div class="flap-board" id="flapBoard" data-pool='{{ board_rows | tojson }}'>
+          <div class="flap-board__head">
+            <span class="flap-board__brand"><span class="flap-dot" aria-hidden="true"></span>{{ settings.brand_name|upper }}</span>
+            <button type="button" class="flap-pause" id="flapPause" aria-pressed="false" aria-label="Pauzeer de voorbeelden">
+              <span>Voorbeelden</span>
+              <svg class="flap-pause__icon" viewBox="0 0 12 12" fill="currentColor" aria-hidden="true">
+                <g class="flap-pause__bars"><rect x="2" y="2" width="3" height="8" rx="1"/><rect x="7" y="2" width="3" height="8" rx="1"/></g>
+                <path class="flap-pause__play" d="M3 2 10 6 3 10Z"/>
+              </svg>
+            </button>
           </div>
-          <div class="deal-card__top">
-            <span class="deal-card__route">Amsterdam → Lissabon</span>
-            <span class="deal-card__price">€38</span>
-          </div>
-          <p class="deal-card__meta">Heen 14 sep · terug 18 sep (4 nachten) · Ryanair</p>
-          <div class="deal-card__foot">
-            <span class="badge success">Onder jouw drempel van €60</span>
-            <a class="navlink" href="/login">Bekijk →</a>
-          </div>
+          <table class="flap-board__table">
+            <caption class="sr-only">Voorbeelden van goedkope retour-deals die voorbijkomen</caption>
+            <thead>
+              <tr>
+                <th scope="col">Vertrek</th>
+                <th scope="col">Bestemming</th>
+                <th scope="col" class="flap-th--price">Retour</th>
+                <th scope="col">Nachten</th>
+                <th scope="col" class="flap-th--via">Via</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for r in board_rows[:6] %}
+              <tr class="flap-row" data-idx="{{ loop.index0 }}">
+                {{ flapcell(r, 'from') }}{{ flapcell(r, 'to') }}{{ flapcell(r, 'price') }}{{ flapcell(r, 'nights') }}{{ flapcell(r, 'via') }}
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
         </div>
+        <p class="muted flap-caption">Voorbeelden van retour-totaalprijzen vanaf NL/BE-velden — heen én terug. Prijzen kunnen wijzigen; je boekt zelf bij de airline.</p>
       </div>
-      <p class="muted" style="font-size:13px;margin:18px 4px 0">Voorbeeld. Prijzen kunnen wijzigen; je boekt bij de airline.</p>
     </div>
   </div>
 </section>
@@ -215,4 +233,6 @@
 
 <!-- Slot-CTA -->
 {% include "_cta_band.html" %}
+
+<script src="/static/flap.js" defer></script>
 {% endblock %}
