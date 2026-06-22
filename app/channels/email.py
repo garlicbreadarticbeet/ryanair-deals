@@ -89,7 +89,7 @@ def _card_html(it: AlertItem) -> str:
         f"{R.money(d.total)}</td>"
         f'<td valign="top" align="right">'
         f'<div style="font:700 18px {_FONT};color:{_INK};">'
-        f"{R.flag(it.country_to)} {html.escape(R.city_to(it))}</div>"
+        f"{R.flag(it.country_to)} {html.escape(R.destination_full(it))}</div>"
         f'<div style="font:400 14px {_FONT};color:{_MUTED};margin-top:3px;">'
         f"vanaf {html.escape(R.city_from(it))} · {R.nights_label(it)}{airline}</div>"
         f'<div style="font:400 14px {_FONT};color:{_MUTED};">{R.dates_label(it)}</div>'

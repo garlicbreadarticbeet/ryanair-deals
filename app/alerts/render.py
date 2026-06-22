@@ -8,6 +8,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from app.alerts import places
 from app.channels.base import AlertItem
 
 # NL-afkortingen (locale-onafhankelijk, geen system-locale nodig).
@@ -37,7 +38,7 @@ def safe_href(url: str | None, fallback: str = "") -> str:
 
 
 def city_to(item: AlertItem) -> str:
-    """Bestemmingsstad (valt terug op de IATA-code als de naam onbekend is)."""
+    """Bestemmingsstad (+ vliegveld), zónder land: 'Barcelona (Reus)'. Valt terug op IATA."""
     return item.city_to or item.deal.destination
 
 
@@ -45,9 +46,20 @@ def city_from(item: AlertItem) -> str:
     return item.city_from or item.deal.origin
 
 
+def country_name(item: AlertItem) -> str:
+    """Bestemmingsland in het Nederlands ('Spanje'), of '' als onbekend."""
+    return places.nl_country(item.country_to)
+
+
+def destination_full(item: AlertItem) -> str:
+    """'Barcelona (Reus), Spanje' — stad (+ vliegveld) + land, voor de tekstkanalen."""
+    land = country_name(item)
+    return f"{city_to(item)}, {land}" if land else city_to(item)
+
+
 def route_label(item: AlertItem) -> str:
-    """'Eindhoven → Barcelona' (stadsnamen; valt terug op IATA-codes)."""
-    return f"{city_from(item)} → {city_to(item)}"
+    """'Eindhoven → Barcelona (Reus), Spanje' (Nederlandse namen; valt terug op IATA-codes)."""
+    return f"{city_from(item)} → {destination_full(item)}"
 
 
 def money(value: float) -> str:

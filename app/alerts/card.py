@@ -63,11 +63,13 @@ def build_card_data(item: AlertItem) -> CardData:
     # En-dash i.p.v. de '→' uit dates_label: de gesubsette merk-TTF heeft geen pijl-glyph
     # (op de site vangt de systeemfont dat op; Pillow heeft die fallback niet).
     dates = f"{R.date_label(item.deal.out_date)} – {R.date_label(item.deal.in_date)}"
+    # Hero = stad (+ vliegveld) kort; het land staat in de subtitel (anders te lang voor de hero).
+    sub = " · ".join(p for p in (R.country_name(item), R.nights_label(item), item.deal.airline) if p)
     return CardData(
         price=R.money(item.deal.total),
         city_to=R.city_to(item),
         city_from=R.city_from(item),
-        subtitle=R.subtitle(item),
+        subtitle=sub,
         dates=dates,
         badge_text=b.text if b else None,
         badge_tone=b.tone if b else None,

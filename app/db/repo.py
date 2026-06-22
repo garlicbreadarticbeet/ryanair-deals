@@ -269,7 +269,7 @@ def price_baselines(
 
 
 def airport_display(session: Session, iatas) -> dict[str, dict]:
-    """IATA → {city, country} voor leesbare alerts (stad valt terug op luchthavennaam)."""
+    """IATA → {name, city, country} voor leesbare alerts (stad valt terug op luchthavennaam)."""
     iatas = list(iatas)
     if not iatas:
         return {}
@@ -277,4 +277,4 @@ def airport_display(session: Session, iatas) -> dict[str, dict]:
         select(Airport.iata, Airport.city, Airport.name, Airport.country_code)
         .where(Airport.iata.in_(iatas))
     ).all()
-    return {i: {"city": (c or n), "country": cc} for i, c, n, cc in rows}
+    return {i: {"name": n, "city": (c or n), "country": cc} for i, c, n, cc in rows}

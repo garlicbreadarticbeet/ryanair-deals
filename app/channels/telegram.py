@@ -29,7 +29,7 @@ def _deal_block(it: AlertItem) -> str:
         if href else ""
     )
     return (
-        f"\n\n<b>{R.money(d.total)}</b> · <b>{html.escape(R.city_to(it))}</b> "
+        f"\n\n<b>{R.money(d.total)}</b> · <b>{html.escape(R.destination_full(it))}</b> "
         f"{R.flag(it.country_to)}{badge}"
         f"\n   vanaf {html.escape(R.city_from(it))} · {R.nights_label(it)}{airline}"
         f"\n   {R.dates_label(it)}{link}"

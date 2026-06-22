@@ -12,6 +12,7 @@ from dataclasses import dataclass
 
 from sqlalchemy.orm import Session
 
+from app.alerts import places
 from app.core.combine import ReturnDeal
 from app.core.scoring import DealScore, score_deal
 from app.db import repo
@@ -50,10 +51,12 @@ def enrich_deals(
     out: dict[_Fingerprint, Enrichment] = {}
     for d in deals:
         fp = _fingerprint(d)
+        src = display.get(d.origin, {})
         dst = display.get(d.destination, {})
         out[fp] = Enrichment(
-            city_from=display.get(d.origin, {}).get("city", d.origin),
-            city_to=dst.get("city", d.destination),
+            city_from=places.origin_label(d.origin, src.get("name"), src.get("city")),
+            # Stad (+ vliegveld) zonder land; het land komt via country_to (vlag + NL-naam).
+            city_to=places.destination_city(d.destination, dst.get("name"), dst.get("city")),
             country_to=dst.get("country"),
             score=score_deal(d.total, baselines.get(fp)),
         )
