@@ -125,37 +125,70 @@ def _hero_html(it: AlertItem) -> str:
     return f'<tr><td style="padding:0 0 14px;">{img}{_cta_html(it)}</td></tr>'
 
 
+def _email_shell(rows_html: str, *, intro: str | None = None, footer_html: str | None = None) -> str:
+    """Gebrande, email-veilige wrapper (header + content-rijen + footer) in de Vliegseintje-stijl.
+
+    ``rows_html`` zijn ``<tr>``-rijen die direct in de 600px-tabel komen (zo blijft de
+    deal-hero, die zelf een rij is, geldig). Gedeeld door de deal-alerts én de inlogmail.
+    """
+    intro_row = (
+        f'<div style="font:400 14px {_FONT};color:{_BLUE_SOFT};margin-top:4px;">{html.escape(intro)}</div>'
+        if intro else ""
+    )
+    footer = footer_html or f"{html.escape(settings.brand_name)} · {html.escape(settings.brand_tagline)}"
+    return (
+        f'<div style="background:{_SURFACE};padding:24px 0;font-family:{_FONT};">'
+        f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center">'
+        f'<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:92%;">'
+        f'<tr><td style="background:{_BLUE};border-radius:14px;padding:22px 24px;">'
+        f'<div style="font:800 22px {_FONT};color:#ffffff;">✈️ {html.escape(settings.brand_name)}</div>'
+        f"{intro_row}</td></tr>"
+        f'<tr><td style="height:18px;line-height:18px;">&nbsp;</td></tr>'
+        f"{rows_html}"
+        f'<tr><td style="padding:14px 8px 0;">'
+        f'<p style="font:400 12px {_FONT};color:{_MUTED};text-align:center;line-height:1.6;">{footer}</p>'
+        f"</td></tr></table></td></tr></table></div>"
+    )
+
+
 def _render(items: list[AlertItem]) -> tuple[str, str]:
     n = len(items)
     intro = f"Je seintje is binnen — {n} {'deal' if n == 1 else 'deals'} onder je drempel."
     hero = _hero_html(items[0])
     rest = items[1:] if hero else items   # hero vervangt de eerste kaart (geen dubbele beste deal)
     cards = "".join(_card_html(it) for it in rest)
-    body = (
-        f'<div style="background:{_SURFACE};padding:24px 0;font-family:{_FONT};">'
-        f'<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>'
-        f'<td align="center">'
-        f'<table role="presentation" width="600" cellpadding="0" cellspacing="0" '
-        f'style="width:600px;max-width:92%;">'
-        # Header
-        f'<tr><td style="background:{_BLUE};border-radius:14px;padding:22px 24px;">'
-        f'<div style="font:800 22px {_FONT};color:#ffffff;">✈️ {html.escape(settings.brand_name)}</div>'
-        f'<div style="font:400 14px {_FONT};color:{_BLUE_SOFT};margin-top:4px;">{html.escape(intro)}</div>'
-        f"</td></tr>"
-        f'<tr><td style="height:18px;line-height:18px;">&nbsp;</td></tr>'
-        # Hero (beste deal als gebrande afbeelding, indien geconfigureerd) + de overige kaarten
-        f"{hero}"
-        f'<tr><td>{cards}</td></tr>'
-        # Footer
-        f'<tr><td style="padding:6px 8px 0;">'
-        f'<p style="font:400 12px {_FONT};color:{_MUTED};text-align:center;line-height:1.6;">'
-        f"Prijzen zijn indicatief en kunnen wijzigen; je boekt zelf bij de airline.<br>"
+    footer = (
+        "Prijzen zijn indicatief en kunnen wijzigen; je boekt zelf bij de airline.<br>"
         f'<a href="{settings.app_base_url}/preferences" style="color:{_MUTED};">Voorkeuren aanpassen</a> · '
         f'<a href="{settings.app_base_url}/account" style="color:{_MUTED};">Afmelden</a>'
-        f"</p></td></tr>"
-        f"</table></td></tr></table></div>"
     )
+    body = _email_shell(f"{hero}<tr><td>{cards}</td></tr>", intro=intro, footer_html=footer)
     return _subject(items), body
+
+
+def _login_email(link: str) -> tuple[str, str]:
+    """Gebrande inlogmail (magic-link): één duidelijke knop + fallback-link + veiligheidsnoot."""
+    safe = html.escape(link, quote=True)
+    inner = (
+        f'<tr><td style="background:#ffffff;border:1px solid {_BORDER};border-radius:16px;padding:30px 28px;">'
+        f'<div style="font:700 22px {_FONT};color:{_INK};">Log in bij {html.escape(settings.brand_name)}</div>'
+        f'<p style="font:400 15px {_FONT};color:{_BODY};margin:10px 0 22px;">Klik op de knop om in te loggen '
+        f"en je e-mailadres te bevestigen. Je hebt geen wachtwoord nodig.</p>"
+        f'<a href="{safe}" style="display:inline-block;background:{_AMBER};color:{_INK};text-decoration:none;'
+        f'font:700 16px {_FONT};padding:14px 30px;border-radius:10px;">Log in →</a>'
+        f'<p style="font:400 13px {_FONT};color:{_MUTED};margin:22px 0 0;">Werkt de knop niet? Plak deze link '
+        f'in je browser:<br><a href="{safe}" style="color:{_BLUE};word-break:break-all;">{safe}</a></p>'
+        f'<p style="font:400 12px {_FONT};color:{_MUTED};margin:14px 0 0;">Deze link is eenmalig en verloopt na '
+        f"korte tijd. Heb je dit niet aangevraagd? Dan kun je deze mail negeren.</p>"
+        f"</td></tr>"
+    )
+    return f"Je inloglink voor {settings.brand_name}", _email_shell(inner)
+
+
+def send_login_email(to: str, link: str) -> bool:
+    """Bouw + verstuur de gebrande inlogmail (magic-link)."""
+    subject, body = _login_email(link)
+    return send_email(to, subject, body)
 
 
 @register_notifier

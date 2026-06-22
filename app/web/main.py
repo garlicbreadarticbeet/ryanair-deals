@@ -17,7 +17,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app import accounts, billing
 from app.billing import BillingError
-from app.channels.email import send_email
+from app.channels.email import send_login_email
 from app.db.models import User, UserOrigin
 from app.errors import PremiumRequired
 from app.settings import settings
@@ -112,11 +112,7 @@ def health() -> dict:
 def request_magic_link(body: EmailIn, db: Session = Depends(get_db)) -> dict:
     token = accounts.start_email_login(db, body.email)
     link = f"{settings.app_base_url}/auth/verify?token={token}"
-    sent = send_email(
-        body.email,
-        "Je inloglink voor Goedkoop Vliegen",
-        f'<p>Klik om in te loggen en je e-mail te bevestigen:</p><p><a href="{link}">{link}</a></p>',
-    )
+    sent = send_login_email(body.email, link)
     return {"status": "verstuurd" if sent else "aangemaakt"}
 
 

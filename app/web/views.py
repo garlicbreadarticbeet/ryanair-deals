@@ -15,7 +15,7 @@ from app.alerts import render as alert_render
 from app.alerts.enrich import enrich_deals
 from app.billing import BillingError
 from app.channels.base import AlertItem
-from app.channels.email import send_email
+from app.channels.email import send_login_email
 from app.core import gating
 from app.core.combine import deal_row_to_return_deal
 from app.core.match import match_user
@@ -70,11 +70,7 @@ def login_form(user=Depends(optional_web_user)):
 def login_submit(email: str = Form(...), db: Session = Depends(get_db)):
     token = accounts.start_email_login(db, email)
     link = f"{settings.app_base_url}/verify?token={token}"
-    sent = send_email(
-        email,
-        "Je inloglink voor Goedkoop Vliegen",
-        f'<p>Klik om in te loggen en je e-mail te bevestigen:</p><p><a href="{link}">{link}</a></p>',
-    )
+    sent = send_login_email(email, link)
     # Zonder e-mailprovider (dev) tonen we de link direct zodat je toch kunt inloggen.
     dev_link = None if (sent and settings.resend_api_key) else link
     return render("check_email.html", user=None, settings=settings, email=email, dev_link=dev_link)

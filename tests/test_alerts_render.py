@@ -88,6 +88,16 @@ def test_telegram_html_has_brand_elements():
     assert 'href="https://book.example/x"' in text
 
 
+def test_login_email_is_branded():
+    from app.channels.email import _login_email
+    link = "https://vliegseintje.nl/verify?token=abc123"
+    subject, body = _login_email(link)
+    assert "Vliegseintje" in subject
+    assert "Goedkoop Vliegen" not in subject and "Goedkoop Vliegen" not in body  # oude merknaam weg
+    assert "#2563EB" in body and "#FFB703" in body    # merk-blauw header + amber knop
+    assert "Log in" in body and link in body           # knop + fallback-link
+
+
 def test_email_html_is_branded_and_complete():
     subject, body = render_email([
         _item(34.0, baseline=_base(80.0, 34.0)),
