@@ -32,6 +32,21 @@ def test_request_magic_link_returns_202(client):
     assert resp.json()["status"] in {"verstuurd", "aangemaakt"}
 
 
+def test_auth_email_rate_limited(db, client, monkeypatch):
+    """Boven de limiet stuurt /auth/email geen extra mail; het antwoord blijft generiek
+    (zelfde 202/'aangemaakt') zodat account-enumeratie niet makkelijker wordt."""
+    from app.settings import settings
+
+    calls: list[str] = []
+    monkeypatch.setattr("app.web.main.send_login_email", lambda to, link: calls.append(to) or True)
+    for _ in range(settings.login_mail_rate_max):
+        assert client.post("/auth/email", json={"email": "api-spam@example.nl"}).status_code == 202
+    resp = client.post("/auth/email", json={"email": "api-spam@example.nl"})
+    assert resp.status_code == 202
+    assert resp.json()["status"] == "aangemaakt"   # generiek, geen mail
+    assert len(calls) == settings.login_mail_rate_max
+
+
 def test_verify_then_prefs_roundtrip(db, client):
     raw = accounts.start_email_login(db, "web@example.nl")
     resp = client.get("/auth/verify", params={"token": raw})

@@ -287,6 +287,47 @@ def test_onboarding_requires_at_least_one_origin(client, db):
     ).scalar_one_or_none() is None
 
 
+# ---------- rate-limiting magic-link-mails ----------
+
+def test_login_mail_rate_limited_per_email(db, client, monkeypatch):
+    """Boven de limiet binnen het venster sturen we geen extra inlogmail (anti-spam/kosten),
+    maar tonen we wél dezelfde generieke bevestiging (geen enumeratie-signaal)."""
+    sent: list[str] = []
+
+    def _capture(to, link):
+        sent.append(to)
+        return True
+
+    monkeypatch.setattr("app.web.views.send_login_email", _capture)
+    for _ in range(settings.login_mail_rate_max):
+        resp = client.post("/login", data={"email": "spam@example.nl"})
+        assert resp.status_code == 200 and "Check je inbox" in resp.text
+    # N+1e binnen het venster: dezelfde pagina, maar geen mail meer verstuurd.
+    resp = client.post("/login", data={"email": "spam@example.nl"})
+    assert resp.status_code == 200 and "Check je inbox" in resp.text
+    assert len(sent) == settings.login_mail_rate_max
+
+
+def test_onboarding_mail_rate_limited_per_email(db, client, monkeypatch):
+    """De onboarding-mail valt onder dezelfde limiet; de N+1e wordt genegeerd (geen mail),
+    met een identieke bevestigingspagina (geen makkelijkere account-enumeratie)."""
+    sent: list[str] = []
+
+    def _capture(to, link):
+        sent.append(to)
+        return True
+
+    monkeypatch.setattr("app.web.views.send_login_email", _capture)
+    payload = {"email": "ob-spam@example.nl", "origins": ["EIN"], "threshold": "50",
+               "trip_lengths": "3,5,7", "plan": "free", "channel": "email"}
+    for _ in range(settings.login_mail_rate_max):
+        resp = client.post("/onboarding", data=payload)
+        assert resp.status_code == 200 and "Check je mail" in resp.text
+    resp = client.post("/onboarding", data=payload)
+    assert resp.status_code == 200 and "Check je mail" in resp.text
+    assert len(sent) == settings.login_mail_rate_max
+
+
 def test_onboarding_does_not_mutate_existing_verified_account(client, db):
     owner = accounts.create_user(db, email="ob-owner@example.nl")
     owner.email_verified = True

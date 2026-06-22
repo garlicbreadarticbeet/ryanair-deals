@@ -25,6 +25,7 @@ from app.db.models import Channel, Subscription, User, UserOrigin
 from app.errors import PremiumRequired
 from app.settings import settings
 from app.web import content_store as content
+from app.web import ratelimit
 from app.web.auth import issue_token
 from app.web.deps import (
     clear_session_cookie,
@@ -103,12 +104,16 @@ def login_form(user=Depends(optional_web_user)):
 
 
 @router.post("/login", response_class=HTMLResponse)
-def login_submit(email: str = Form(...), db: Session = Depends(get_db)):
-    token = accounts.start_email_login(db, email)
-    link = f"{settings.app_base_url}/verify?token={token}"
-    sent = send_login_email(email, link)
-    # Zonder e-mailprovider (dev) tonen we de link direct zodat je toch kunt inloggen.
-    dev_link = None if (sent and settings.resend_api_key) else link
+def login_submit(request: Request, email: str = Form(...), db: Session = Depends(get_db)):
+    email = email.strip().lower()
+    dev_link = None
+    # Rate-limit per e-mail/IP: boven de limiet geen mail, maar dezelfde generieke bevestiging.
+    if ratelimit.allow_login_email(db, email=email, ip=ratelimit.client_ip(request)):
+        token = accounts.start_email_login(db, email)
+        link = f"{settings.app_base_url}/verify?token={token}"
+        sent = send_login_email(email, link)
+        # Zonder e-mailprovider (dev) tonen we de link direct zodat je toch kunt inloggen.
+        dev_link = None if (sent and settings.resend_api_key) else link
     return render("check_email.html", user=None, settings=settings, email=email, dev_link=dev_link)
 
 
@@ -234,17 +239,21 @@ def onboarding_submit(
     # inloglink (de eigenaar bevestigt zelf). Voorkomt ongeauthenticeerde writes op andermans account.
     existing = db.execute(select(User).where(func.lower(User.email) == email)).scalar_one_or_none()
     is_existing = existing is not None and existing.email_verified
-    token = accounts.start_email_login(db, email)
-    if not is_existing:
-        target = existing or db.execute(
-            select(User).where(func.lower(User.email) == email)
-        ).scalar_one()
-        _apply_onboarding(db, target, threshold=threshold, trip_lengths=trip_lengths,
-                          plan=plan, origins=origins, channel=channel)
 
-    link = f"{settings.app_base_url}/verify?token={token}"
-    sent = send_login_email(email, link)
-    dev_link = None if (sent and settings.resend_api_key) else link
+    # Rate-limit per e-mail/IP: boven de limiet sturen we geen mail en muteren we niets, maar
+    # tonen we dezelfde generieke bevestiging (anti-spam/kosten + geen makkelijkere enumeratie).
+    dev_link = None
+    if ratelimit.allow_login_email(db, email=email, ip=ratelimit.client_ip(request)):
+        token = accounts.start_email_login(db, email)
+        if not is_existing:
+            target = existing or db.execute(
+                select(User).where(func.lower(User.email) == email)
+            ).scalar_one()
+            _apply_onboarding(db, target, threshold=threshold, trip_lengths=trip_lengths,
+                              plan=plan, origins=origins, channel=channel)
+        link = f"{settings.app_base_url}/verify?token={token}"
+        sent = send_login_email(email, link)
+        dev_link = None if (sent and settings.resend_api_key) else link
     resp = render(
         "onboarding_done.html", user=None, settings=settings, email=email, dev_link=dev_link,
         plan=plan, channel=channel, pricing=settings.premium_pricing,

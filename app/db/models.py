@@ -341,6 +341,28 @@ class AuthToken(Base):
     )
 
 
+class AuthThrottle(Base):
+    """Eén rij per verstuurde magic-link-poging — voedt de rate-limiting per e-mail/IP.
+
+    De mail-versturende auth-endpoints (POST /login, POST /onboarding, POST /auth/email)
+    tellen recente rijen per sleutel in een glijdend venster en weigeren boven de limiet.
+    Bewust een aparte tabel i.p.v. auth_tokens tellen: die heeft geen IP, terwijl de
+    inlogmails óók per IP begrensd moeten worden (spam/kosten + lichte enumeratie-rem).
+    """
+
+    __tablename__ = "auth_throttle"
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    scope: Mapped[str] = mapped_column(String(8), nullable=False)        # 'email' | 'ip'
+    identifier: Mapped[str] = mapped_column(String(256), nullable=False)  # e-mailadres of IP
+    created_at: Mapped[datetime.datetime] = _now()
+
+    __table_args__ = (
+        CheckConstraint("scope IN ('email','ip')", name="ck_auth_throttle_scope"),
+        Index("ix_auth_throttle_lookup", "scope", "identifier", "created_at"),
+    )
+
+
 class ContactMessage(Base):
     """Bericht uit het publieke contactformulier (/contact). Niet aan een user gekoppeld."""
 

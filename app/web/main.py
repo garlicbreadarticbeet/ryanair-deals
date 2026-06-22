@@ -22,6 +22,7 @@ from app.channels.email import send_login_email
 from app.db.models import User, UserOrigin
 from app.errors import PremiumRequired
 from app.settings import settings
+from app.web import ratelimit
 from app.web.deps import current_user, get_db
 from app.web.templating import render
 
@@ -112,10 +113,15 @@ def health() -> dict:
 
 
 @app.post("/auth/email", status_code=202)
-def request_magic_link(body: EmailIn, db: Session = Depends(get_db)) -> dict:
-    token = accounts.start_email_login(db, body.email)
+def request_magic_link(body: EmailIn, request: Request, db: Session = Depends(get_db)) -> dict:
+    email = body.email.strip().lower()
+    # Rate-limit per e-mail/IP: boven de limiet geen mail, maar wel een generiek antwoord
+    # (zelfde vorm als 'aangemaakt') zodat enumeratie niet makkelijker wordt.
+    if not ratelimit.allow_login_email(db, email=email, ip=ratelimit.client_ip(request)):
+        return {"status": "aangemaakt"}
+    token = accounts.start_email_login(db, email)
     link = f"{settings.app_base_url}/auth/verify?token={token}"
-    sent = send_login_email(body.email, link)
+    sent = send_login_email(email, link)
     return {"status": "verstuurd" if sent else "aangemaakt"}
 
 

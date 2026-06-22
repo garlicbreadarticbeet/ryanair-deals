@@ -108,6 +108,12 @@ class Settings(BaseSettings):
     premium_only_features: str = "mode:instant"
     free_max_origins: int = 1           # max vertrekvelden voor een gratis account
 
+    # --- Rate-limiting magic-link-mails (anti-spam/kosten + lichte enumeratie-rem) ---
+    # Max. aantal inlogmails per e-mailadres én per IP binnen het venster; daarboven sturen
+    # we geen mail (de UI toont dezelfde generieke bevestiging). Zie app/web/ratelimit.py.
+    login_mail_rate_max: int = 3
+    login_mail_rate_window_minutes: int = 15
+
     # --- Prijzen (maand + jaar; incl. btw, in EUR). Komen volledig uit config. ---
     premium_price_monthly: str = "2.99"   # € per maand
     premium_price_annual: str = "24.99"   # € per jaar (≈ €2,08/maand, ~30% goedkoper)
